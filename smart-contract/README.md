@@ -21,3 +21,87 @@
 <br />
 
 A dApp on the Fantom Opera network to browse info about stakers.
+
+## How does it work
+
+We created a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each validator to add information (a URL to a `JSON` file) without the involvement of a third party.
+
+## Usage
+
+The smart contract is already deployed and can be found on the Fantom Opera MainNet:
+
+```solidity
+0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
+```
+
+### Config File
+
+Create a config file in `JSON` format that contains the following parameters (you can also leave parameters empty):
+
+```json
+{
+  "name": "block42",
+  "website": "https://block42.tech",
+  "contact": "https://t.me/block42_fantom",
+  "keybase": "C57B29418AE33CC0",
+  "logoUrl": "https://s3.amazonaws.com/keybase_processed_uploads/74f5b2d24aa5308993fd7163204eef05_360_360.jpg",
+  "description": "We invest into the most promising crypto ecosystems and help them secure their networks. We provide consulting and development services on top of those protocols to bring adoption and use to them."
+}
+```
+
+Then host it somewhere so it is publicly accessible!
+
+### Update your validator info
+
+1. Connect to your validator node via `ssh`
+2. Open up a lachesis console session via `lachesis attach`
+3. Load the StakerInfo contract ABI and instantiate the contract
+
+```solidity
+abi = JSON.parse('[{"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"stakerID","type":"uint256"}],"name":"InfoUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"stakerInfos","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"name":"updateStakerContractAddress","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"string","name":"_configUrl","type":"string"}],"name":"updateInfo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_stakerID","type":"uint256"}],"name":"getInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}]')
+stakerInfo = web3.ftm.contract(abi).at("0x92ffad75b8a942d149621a39502cdd8ad1dd57b4")
+```
+
+4. Call the `updateInfo` function of the StakerInfo contract (make sure you have enough FTM on your wallet to cover the transaction fee)
+
+```solidity
+stakerInfo.updateInfo("CONFIG_URL", { from: VALIDATOR_ADDRESS })
+```
+
+5. Validate if you updated your info correctly
+
+```solidity
+stakerInfo.getInfo(VALIDATOR_ID)
+```
+
+## Support
+
+If you have any issues updating your validator info do not hesitate to join our [validator group](https://t.me/block42_fantom) or contact [me](https://t.me/christianlanz) directly.
+
+## Licence
+
+This project is licensed under the MIT license. For more information see LICENSE.md.
+
+```
+The MIT License
+
+Copyright (c) 2020 block42 Blockchain Company GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```
