@@ -1,19 +1,17 @@
-import flask
 import json
-from flask import request, jsonify
-from tinydb import TinyDB, Query
 
+import flask
+from tinydb import TinyDB
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
 
+
 @app.route('/', methods=['GET'])
 def home():
-    return '''<h1>API for Fantom Validator Infos - by block42</h1>'''
+    return ''
 
 
-# A route to return all of the available entries in our catalog.
-@app.route('/api/v1/resources/fantom-validators/all', methods=['GET'])
-def api_all():
-    db = TinyDB('./../db/db.json')
-    return json.dumps(db.all())
+@app.route('/api/v1/validators', methods=['GET'])
+def validators():
+    return json.dumps(TinyDB('../db.json').all())
