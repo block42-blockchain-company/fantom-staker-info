@@ -19,9 +19,9 @@ contract StakerInfo is Ownable {
     stakerContractAddress = _stakerContractAddress;
   }
 
-  event Updated(uint256 stakerID);
+  event InfoUpdated(uint256 stakerID);
 
-  function update(string calldata _configUrl) external {
+  function updateInfo(string calldata _configUrl) external {
     StakersInterface stakersInterface = StakersInterface(stakerContractAddress);
 
     // Get staker ID from staker contract
@@ -33,10 +33,10 @@ contract StakerInfo is Ownable {
     // Update config url
     stakerInfos[stakerID] = _configUrl;
 
-    emit Updated(stakerID);
+    emit InfoUpdated(stakerID);
   }
 
-  function stakerInfo(uint256 _stakerID) external view returns (string memory) {
+  function getInfo(uint256 _stakerID) external view returns (string memory) {
     return stakerInfos[_stakerID];
   }
 }
