@@ -48,7 +48,8 @@ Create a config file in `JSON` format that contains the following parameters (yo
   "description": "DESCRIPTION_TEXT"
 }
 
-// e.g.:
+// This is what it could look like 👇
+
 {
   "name": "block42",
   "website": "https://block42.tech",
@@ -69,21 +70,21 @@ Then host it somewhere so it is publicly accessible!
 
 ```solidity
 abi = JSON.parse('[{"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"stakerID","type":"uint256"}],"name":"InfoUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"stakerInfos","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"name":"updateStakerContractAddress","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"string","name":"_configUrl","type":"string"}],"name":"updateInfo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_stakerID","type":"uint256"}],"name":"getInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}]')
-stakerInfo = web3.ftm.contract(abi).at("0x92ffad75b8a942d149621a39502cdd8ad1dd57b4")
+stakerInfoContract = web3.ftm.contract(abi).at("0x92ffad75b8a942d149621a39502cdd8ad1dd57b4")
 ```
 
 4. Call the `updateInfo` function of the StakerInfo contract (make sure you have enough FTM on your wallet to cover the transaction fee)
 
 ```solidity
-stakerInfo.updateInfo("CONFIG_URL", { from: VALIDATOR_ADDRESS })
-// e.g.: stakerInfo.updateInfo("https://fantom.b42.tech/config.json", { from: 0xa4ddde0afdaea05a3d5a2ec6b5c7f3fc9945020b })
+stakerInfoContract.updateInfo("CONFIG_URL", { from: VALIDATOR_ADDRESS })
+// e.g.: stakerInfoContract.updateInfo("https://fantom.b42.tech/config.json", { from: 0xa4ddde0afdaea05a3d5a2ec6b5c7f3fc9945020b })
 ```
 
 5. Validate if you updated your info correctly
 
 ```solidity
-stakerInfo.getInfo(VALIDATOR_ID)
-// e.g.: stakerInfo.getInfo(14)
+stakerInfoContract.getInfo(VALIDATOR_ID)
+// e.g.: stakerInfoContract.getInfo(14)
 ```
 
 ## Support
