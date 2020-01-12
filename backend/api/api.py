@@ -1,10 +1,12 @@
 import json
 
 import flask
+from flask_cors import CORS
 from tinydb import TinyDB
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
+CORS(app)
 
 
 @app.route('/', methods=['GET'])
