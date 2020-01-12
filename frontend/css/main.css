@@ -3,7 +3,7 @@
 /* ////////////////////////////////////////////////////////////////// */
 @font-face {
   font-family: "Work Sans";
-  src: url('../fonts/work-sans/WorkSans-Regular.ttf'), url('../fonts/work-sans/WorkSans-Light.ttf'), url('../fonts/work-sans/WorkSans-Bold.ttf');
+  src: url('../fonts/WorkSans/WorkSans-Regular.ttf'), url('../fonts/WorkSans/WorkSans-Light.ttf'), url('../fonts/WorkSans/WorkSans-Bold.ttf');
 }
 
 /* ////////////////////////////////////////////////////////////////// */
@@ -134,17 +134,8 @@ iframe {
   background: #0d44a5;
 }
 
-.table-row img.logo {
-  border-radius: 50%;
-  width: 40px;
-}
-
-.table-row img.link {
-  width: 24px;
-}
-
-.table-row img.check {
-  width: 12px;
+.table .table-row > * {
+  font-size: 8px;
 }
 
 @media screen and (max-width: 768px) {
@@ -177,6 +168,34 @@ iframe {
 
 .cell {
   display: table-cell;
+}
+
+.cell.name img {
+  border-radius: 50%;
+  width: 40px;
+}
+
+.cell.name .icon {
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+}
+
+.cell.name .verified {
+  color: green;
+}
+
+.cell.available span {
+  font-size: 12px;
+}
+
+.cell.contact .link {
+  font-size: 24px;
+  color: #89b0f6;
+}
+
+.cell img.check {
+  width: 12px;
 }
 
 @media screen and (max-width: 768px) {

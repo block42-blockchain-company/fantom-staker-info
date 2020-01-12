@@ -1,20 +1,24 @@
 function addStaker(staker) {
     const markup = `
-    <div class="cell" data-title="ID">${staker.id}</div>
-    <div class="cell" data-title="Name">
-      <img class="logo float-left" src="${staker.logoUrl ? staker.logoUrl : "images/unknown.png"}">
+    <div class="cell" data-title="ID"><p>${staker.id}</p></div>
+    <div class="cell name" data-title="Name">
+      ${staker.logoUrl ? `
+        <img class="float-left" src="${staker.logoUrl}">
+      ` : `
+        <i class="fas fa-question float-left icon"></i>
+      `}
       <div class="float-left ml-3">
-        <p class="text-left font-weight-bold"><span id="name">${staker.name ? staker.name : "Unknown"}</span>${staker.keybase ? `<span><img class="check ml-1" src="images/check.png"></span>` : ""}</p>
+        <p class="text-left font-weight-bold"><span>${staker.name ? staker.name : "Unknown"}${staker.name && staker.keybase ? ` <i class="fas fa-check-circle verified"></i>` : ""}</span></p>
         <p class="text-left font-weight-light">${staker.address}</p>
       </div>
     </div>
-    <div class="cell" data-title="Self-Staked">${numeral(staker.selfStaked).format("0,0")} FTM</div>
-    <div class="cell" data-title="Delegated">${numeral(staker.delegated).format("0,0")} FTM</div>
-    <div class="cell" data-title="Available">${numeral(staker.available).format("0,0")} FTM (${numeral(staker.availablePercent).format("0.00")} %)</div>
-    <div class="cell" data-title="Contact">
+    <div class="cell" data-title="Self-Staked"><p>${numeral(staker.selfStaked).format("0,0")} FTM</p></div>
+    <div class="cell" data-title="Delegated"><p>${numeral(staker.delegated).format("0,0")} FTM</p></div>
+    <div class="cell available" data-title="Available"><p>${numeral(staker.available).format("0,0")} FTM <span class="font-weight-light">(${numeral(staker.availablePercent).format("0.00")}%)</span></p></div>
+    <div class="cell contact" data-title="Contact">
     ${staker.contact ? `
       <a href="${staker.contact}" target="_blank">
-        <img class="link" src="images/web.png">
+        <i class="fas fa-globe-americas link"></i>
       </a>
     ` : ""}
     </div>
