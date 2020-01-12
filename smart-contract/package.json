@@ -1,7 +1,7 @@
 {
-  "name": "fantom-validator-info",
+  "name": "fantom-staker-info",
   "version": "1.0.0",
-  "description": "Validator info for the Fantom Opera network.",
+  "description": "Staker info for the Fantom Opera network.",
   "main": "truffle-config.js",
   "directories": {
     "test": "test"
