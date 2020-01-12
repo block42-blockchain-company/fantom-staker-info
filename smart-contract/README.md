@@ -40,10 +40,20 @@ Create a config file in `JSON` format that contains the following parameters (yo
 
 ```json
 {
+  "name": "VALIDATOR_NAME",
+  "website": "WEBSITE_URL",
+  "contact": "CONTACT_URL",
+  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY",
+  "logoUrl": "LOGO_URL",
+  "description": "DESCRIPTION_TEXT"
+}
+
+// e.g.:
+{
   "name": "block42",
   "website": "https://block42.tech",
   "contact": "https://t.me/block42_fantom",
-  "keybase": "C57B29418AE33CC0",
+  "keybasePubKey": "C57B29418AE33CC0",
   "logoUrl": "https://s3.amazonaws.com/keybase_processed_uploads/74f5b2d24aa5308993fd7163204eef05_360_360.jpg",
   "description": "We invest into the most promising crypto ecosystems and help them secure their networks. We provide consulting and development services on top of those protocols to bring adoption and use to them."
 }
