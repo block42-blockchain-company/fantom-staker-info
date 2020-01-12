@@ -1,0 +1,20 @@
+{
+  "name": "fantom-validator-info",
+  "version": "1.0.0",
+  "description": "Validator info for the Fantom Opera network.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christian Lanz <christian.lanz@block42.tech>",
+  "license": "MIT",
+  "dependencies": {
+    "truffle-hdwallet-provider": "^1.0.17",
+    "ganache-cli": "^6.8.1",
+    "mocha": "^7.0.0",
+    "web3": "^1.2.4"
+  }
+}
