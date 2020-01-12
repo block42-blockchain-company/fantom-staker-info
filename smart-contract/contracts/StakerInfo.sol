@@ -7,21 +7,21 @@ contract StakersInterface {
 }
 
 contract StakerInfo is Ownable {
-  mapping (uint => string) stakerInfos;
+  mapping (uint => string) public stakerInfos;
 
-  address stakerContractAddress;
+  address internal stakerContractAddress;
 
   constructor(address _stakerContractAddress) public {
     stakerContractAddress = _stakerContractAddress;
   }
 
-  function updateStakerContractAddress(address _stakerContractAddress) public onlyOwner {
+  function updateStakerContractAddress(address _stakerContractAddress) external onlyOwner {
     stakerContractAddress = _stakerContractAddress;
   }
 
   event Updated(uint256 stakerID);
 
-  function update(string memory _configUrl) public {
+  function update(string calldata _configUrl) external {
     StakersInterface stakersInterface = StakersInterface(stakerContractAddress);
 
     // Get staker ID from staker contract
