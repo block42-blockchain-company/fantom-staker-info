@@ -1,0 +1,266 @@
+/* ////////////////////////////////////////////////////////////////// */
+/* Font
+/* ////////////////////////////////////////////////////////////////// */
+@font-face {
+  font-family: "Work Sans";
+  src: url('../fonts/work-sans/WorkSans-Regular.ttf'), url('../fonts/work-sans/WorkSans-Light.ttf'), url('../fonts/work-sans/WorkSans-Bold.ttf');
+}
+
+/* ////////////////////////////////////////////////////////////////// */
+/* General
+/* ////////////////////////////////////////////////////////////////// */
+* {
+	margin: 0px; 
+	padding: 0px; 
+  box-sizing: border-box;
+  font-family: WorkSans-Regular, Helvetica, sans-serif !important;
+}
+
+body {
+  background: #3478ef;
+}
+
+/* ------------------------------------ */
+
+a {
+	margin: 0px;
+	transition: all 0.4s;
+	-webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+}
+
+a:focus {
+	outline: none !important;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+/* ------------------------------------ */
+
+h1,h2,h3,h4,h5,h6 {
+  margin: 0px;
+}
+
+h1 {
+  width: 100%;
+  font-size: 70px;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 70px;
+  margin-bottom: 100px;
+}
+
+p {
+  margin: 0px;
+}
+
+ul, li {
+	margin: 0px;
+	list-style-type: none;
+}
+
+/* ------------------------------------ */
+
+input {
+  display: block;
+	outline: none;
+	border: none !important;
+}
+
+textarea {
+  display: block;
+  outline: none;
+}
+
+textarea:focus, input:focus {
+  border-color: transparent !important;
+}
+
+/* ------------------------------------ */
+
+button {
+	outline: none !important;
+	border: none;
+	background: transparent;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+iframe {
+	border: none !important;
+}
+
+/* ////////////////////////////////////////////////////////////////// */
+/* Table */
+/* ////////////////////////////////////////////////////////////////// */
+
+.wrap-table {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.table {
+  width: 100%;
+  display: table;
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .table {
+    display: block;
+  }
+}
+
+.table .row {
+  display: table-row;
+  background: #fff;
+}
+
+.table .row .cell {
+  vertical-align: middle;
+}
+
+.table .row.header {
+  color: #ffffff;
+  background: #0d44a5;
+}
+
+.table-row img.logo {
+  border-radius: 50%;
+  width: 40px;
+}
+
+.table-row img.link {
+  width: 24px;
+}
+
+.table-row img.check {
+  width: 12px;
+}
+
+@media screen and (max-width: 768px) {
+  .table .row {
+    display: block;
+  }
+
+  .table .row.header {
+    padding: 0;
+    height: 0px;
+  }
+
+  .table .row.header .cell {
+    display: none;
+  }
+
+  .table .row .cell:before {
+    font-family: Poppins-Bold;
+    font-size: 12px;
+    color: #808080;
+    line-height: 1.2;
+    text-transform: uppercase;
+    font-weight: unset !important;
+
+    margin-bottom: 13px;
+    content: attr(data-title);
+    min-width: 98px;
+    display: block;
+  }
+}
+
+.cell {
+  display: table-cell;
+}
+
+@media screen and (max-width: 768px) {
+  .cell {
+    display: block;
+  }
+}
+
+.table .row .cell {
+  font-family: Poppins-Regular;
+  font-size: 15px;
+  color: #666666;
+  line-height: 1.2;
+  font-weight: unset !important;
+  text-align: center;
+
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.table .row.header .cell {
+  font-family: Poppins-Regular;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.2;
+  font-weight: unset !important;
+
+  padding-top: 19px;
+  padding-bottom: 19px;
+}
+
+.table .row .cell:nth-child(1) {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.table .row .cell:last-child {
+  padding-right: 20px;
+}
+
+.table, .row {
+  width: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .row {
+    padding-bottom: 18px;
+    padding-top: 30px;
+    padding-right: 15px;
+    margin: 0;
+  }
+  
+  .row .cell {
+    border: none;
+    padding-left: 30px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .row .cell:nth-child(1) {
+    padding-left: 30px;
+  }
+  
+  .row .cell {
+    font-family: Poppins-Regular;
+    font-size: 18px;
+    color: #555555;
+    line-height: 1.2;
+    font-weight: unset !important;
+  }
+
+  .table, .row, .cell {
+    width: 100% !important;
+  }
+}
+
+/* ////////////////////////////////////////////////////////////////// */
+
+footer {
+  position: absolute;
+  bottom: 0px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.social {
+  width: 40px;
+}
