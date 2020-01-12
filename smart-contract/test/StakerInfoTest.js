@@ -29,8 +29,8 @@ contract('StakerInfo', async () => {
 
   it("should update staker info", async () => {
     const contract = await StakerInfoContract.deployed();
-    await contract.update("https://fantom.b42.tech/config.json");
-    const configUrl = await contract.stakerInfo(1);
+    await contract.updateInfo("https://fantom.b42.tech/config.json");
+    const configUrl = await contract.getInfo(1);
     assert(configUrl == "https://fantom.b42.tech/config.json");
   })
 })
