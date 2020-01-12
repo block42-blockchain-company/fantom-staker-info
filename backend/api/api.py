@@ -5,16 +5,7 @@ from tinydb import TinyDB, Query
 
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
-
-# Create some test data in the form of a list of validators
-'''validators = [
-    {'id': 0,
-     'name': 'fantom'},
-    {'id': 1,
-     'name': 'block42'}
-]'''
-
+app.config["DEBUG"] = False
 
 @app.route('/', methods=['GET'])
 def home():
@@ -26,6 +17,3 @@ def home():
 def api_all():
     db = TinyDB('./../db/db.json')
     return json.dumps(db.all())
-    #return jsonify(validators)
-
-app.run()
