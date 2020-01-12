@@ -92,7 +92,7 @@ If you have any issues updating your validator info do not hesitate to join our 
 
 ## Licence
 
-This project is licensed under the MIT license. For more information see LICENSE.md.
+This project is licensed under the MIT license.
 
 ```
 The MIT License
