@@ -66,12 +66,14 @@ stakerInfo = web3.ftm.contract(abi).at("0x92ffad75b8a942d149621a39502cdd8ad1dd57
 
 ```solidity
 stakerInfo.updateInfo("CONFIG_URL", { from: VALIDATOR_ADDRESS })
+// e.g.: stakerInfo.updateInfo("https://fantom.b42.tech/config.json", { from: 0xa4ddde0afdaea05a3d5a2ec6b5c7f3fc9945020b })
 ```
 
 5. Validate if you updated your info correctly
 
 ```solidity
 stakerInfo.getInfo(VALIDATOR_ID)
+// e.g.: stakerInfo.getInfo(14)
 ```
 
 ## Support
