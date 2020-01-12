@@ -53,7 +53,7 @@ Then host it somewhere so it is publicly accessible!
 
 ### Update your validator info
 
-1. Connect to your validator node via `ssh`
+1. Connect to your validator node
 2. Open up a lachesis console session via `lachesis attach`
 3. Load the StakerInfo contract ABI and instantiate the contract
 
