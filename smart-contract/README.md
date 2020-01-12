@@ -24,7 +24,7 @@ A dApp on the Fantom Opera network to browse info about stakers.
 
 ## How does it work
 
-We created a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each validator to add information (a URL to a `JSON` file) without the involvement of a third party.
+We created a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each Fantom validator to add information (a URL to a `JSON` file) without the involvement of a third party.
 
 ## Usage
 
