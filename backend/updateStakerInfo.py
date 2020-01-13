@@ -70,18 +70,27 @@ for validatorId in range(1, numValidators):
 
     # Get additional info from fantom.network api
     singleStakerAPI = "https://api.fantom.network/api/v1/staker/id/" +str(validatorId) + "?verbosity=2"
-    addinfo = json.loads(urllib.request.urlopen(singleStakerAPI).read().decode())
-    addinfodata = addinfo['data']
+    addInfo = json.loads(urllib.request.urlopen(singleStakerAPI).read().decode())
+    addInfoData = addInfo['data']
 
     isCheater = ""
     missedBlocks = ""
 
-    for key, value in addinfodata.items():
+    for key, value in addInfoData.items():
         if key == 'isCheater':
             isCheater = value
         if key == 'missedBlocks':
             missedBlocks = value
 
+    # Get number of Blocks
+    maxBlockHeight = ""
+    txAPI = "https://api.fantom.network/api/v1/get-transactions"
+    txInfo = addinfo = json.loads(urllib.request.urlopen(txAPI).read().decode())
+    maxBlockHeight = txInfo['data']['maxBlockHeight']
+
+    # Calculate Productivity
+    productivity = ((int(maxBlockHeight) - int(missedBlocks)) / int(maxBlockHeight)) * 100
+    print(productivity)
 
     stakerInfos += [{
         'id': validatorId,
@@ -98,7 +107,8 @@ for validatorId in range(1, numValidators):
         'availableDelegationAmount': availableDelegationAmount,
         'availableDelegationPercent': availableDelegationPercent,
         'isCheater': isCheater,
-        'missedBlocks': missedBlocks
+        'missedBlocks': missedBlocks,
+        'productivity': productivity
     }]
 
 # Bulk update database
