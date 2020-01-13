@@ -47,16 +47,16 @@ Most of the information that is shown is fetched automatically, but there are a 
 
 Create a config file in `JSON` format that contains the following parameters (you can also leave parameters empty):
 
-```json
+```js
 {
-  "name": "STAKER_NAME", // The name of the staker
-  "logoUrl": "LOGO_URL", // The staker logo image
-  "website": "WEBSITE_URL", // The website icon on the right
-  "contact": "CONTACT_URL", // The contact icon on the right
-  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY" // The small verification check mark beside the staker name
+  "name": "STAKER_NAME", /* Name of the staker */
+  "logoUrl": "LOGO_URL", /* Staker logo */
+  "website": "WEBSITE_URL", /* Website icon on the right */
+  "contact": "CONTACT_URL", /* Contact icon on the right */
+  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY" /* Verification check mark beside the staker name */
 }
 
-// This is how it could look like 👇
+/* This is how it could look like 👇 */
 
 {
   "name": "block42",
