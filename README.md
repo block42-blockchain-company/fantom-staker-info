@@ -24,6 +24,8 @@ A dApp on the Fantom Opera network to browse information about its validator nod
 
 ![image](https://user-images.githubusercontent.com/6087393/72284699-ede1e500-3641-11ea-9f0b-a0dd126db1e9.png)
 
+Find the dApp here: https://fantomstaker.info
+
 ## How does it work
 
 We created a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each Fantom validator node to add information (a URL to a `JSON` file) about themselves, so delegators have more insights who they are, without the involvement of a third party.
