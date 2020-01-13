@@ -37,29 +37,33 @@ The smart contract is already deployed and can be found on the Fantom Opera Main
 0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
 ```
 
+### What it looks like
+
+![image](https://user-images.githubusercontent.com/6087393/72285334-30f08800-3643-11ea-9e68-de7dc54190cc.png)
+
+Most of the information that is shown is fetched automatically, but there are a few parameters than can be set by stakers.
+
 ### Config File
 
 Create a config file in `JSON` format that contains the following parameters (you can also leave parameters empty):
 
 ```json
 {
-  "name": "VALIDATOR_NAME",
-  "website": "WEBSITE_URL",
-  "contact": "CONTACT_URL",
-  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY",
-  "logoUrl": "LOGO_URL",
-  "description": "DESCRIPTION_TEXT"
+  "name": "STAKER_NAME", // The name of the staker
+  "logoUrl": "LOGO_URL", // The staker logo image
+  "website": "WEBSITE_URL", // The website icon on the right
+  "contact": "CONTACT_URL", // The contact icon on the right
+  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY" // The small verification check mark beside the staker name
 }
 
 // This is how it could look like 👇
 
 {
   "name": "block42",
+  "logoUrl": "https://files.b42.tech/fantom/block42.png",
   "website": "https://block42.tech",
   "contact": "https://t.me/block42_fantom",
-  "keybasePubKey": "C57B29418AE33CC0",
-  "logoUrl": "https://files.b42.tech/fantom/block42.png",
-  "description": "We invest into the most promising crypto ecosystems and help them secure their networks. We provide consulting and development services on top of those protocols to bring adoption and use to them."
+  "keybasePubKey": "C57B29418AE33CC0"
 }
 ```
 
