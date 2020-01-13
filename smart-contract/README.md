@@ -7,7 +7,7 @@
   <a href="https://explorer.fantom.network/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4">
     <img src="https://img.shields.io/badge/network-fantom-3478ef.svg" alt="Fantom" />
   </a>
-  <a href="">
+  <a href="https://fantomstaker.info">
     <img src="https://img.shields.io/badge/dapp-live-brightgreen.svg" alt="dApp" />
   </a>
   <a href="https://t.me/block42_fantom">
@@ -20,7 +20,7 @@
 
 <br />
 
-A dApp on the Fantom Opera network to browse info about stakers.
+A dApp on the Fantom Opera network to browse info about its validators.
 
 ## How does it work
 
