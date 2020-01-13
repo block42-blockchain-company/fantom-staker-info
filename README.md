@@ -20,4 +20,4 @@
 
 <br />
 
-A dApp on the Fantom Opera network to browse info about stakers.
+A dApp on the Fantom Opera network to browse info about its validators.
