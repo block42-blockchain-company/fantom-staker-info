@@ -48,14 +48,14 @@ Create a config file in `JSON` format that contains the following parameters (yo
   "description": "DESCRIPTION_TEXT"
 }
 
-// This is what it could look like 👇
+// This is how it could look like 👇
 
 {
   "name": "block42",
   "website": "https://block42.tech",
   "contact": "https://t.me/block42_fantom",
   "keybasePubKey": "C57B29418AE33CC0",
-  "logoUrl": "https://s3.amazonaws.com/keybase_processed_uploads/74f5b2d24aa5308993fd7163204eef05_360_360.jpg",
+  "logoUrl": "https://files.b42.tech/fantom/block42.png",
   "description": "We invest into the most promising crypto ecosystems and help them secure their networks. We provide consulting and development services on top of those protocols to bring adoption and use to them."
 }
 ```
@@ -77,7 +77,7 @@ stakerInfoContract = web3.ftm.contract(abi).at("0x92ffad75b8a942d149621a39502cdd
 
 ```solidity
 stakerInfoContract.updateInfo("CONFIG_URL", { from: VALIDATOR_ADDRESS })
-// e.g.: stakerInfoContract.updateInfo("https://fantom.b42.tech/config.json", { from: 0xa4ddde0afdaea05a3d5a2ec6b5c7f3fc9945020b })
+// e.g.: stakerInfoContract.updateInfo("https://files.b42.tech/fantom/config.json", { from: 0xa4ddde0afdaea05a3d5a2ec6b5c7f3fc9945020b })
 ```
 
 5. Validate if you updated your info correctly
