@@ -185,6 +185,10 @@ iframe {
   color: green;
 }
 
+.cell.name .address {
+  font-size: 14px;
+}
+
 .cell.available span {
   font-size: 12px;
 }
@@ -231,6 +235,7 @@ iframe {
 }
 
 .table .row .cell:last-child {
+  padding-left: 20px;
   padding-right: 20px;
 }
 
