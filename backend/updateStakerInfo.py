@@ -68,6 +68,21 @@ for validatorId in range(1, numValidators):
     # Calculate the available delegation amount
     availableDelegationPercent = availableDelegationAmount / (selfStaked * 15)
 
+    # Get additional info from fantom.network api
+    ftmnetworkUrl = "https://api.fantom.network/api/v1/staker/id/" +str(validatorId) + "?verbosity=2"
+    addinfo = json.loads(urllib.request.urlopen(ftmnetworkUrl).read().decode())
+    addinfodata = addinfo['data']
+
+    isCheater = ""
+    missedBlocks = ""
+
+    for key, value in addinfodata.items():
+        if key == 'isCheater':
+            isCheater = value
+        if key == 'missedBlocks':
+            missedBlocks = value
+
+
     stakerInfos += [{
         'id': validatorId,
         'name': name,
@@ -81,7 +96,9 @@ for validatorId in range(1, numValidators):
         'delegated': delegated,
         'totalStaked': totalstaked,
         'availableDelegationAmount': availableDelegationAmount,
-        'availableDelegationPercent': availableDelegationPercent
+        'availableDelegationPercent': availableDelegationPercent,
+        'isCheater': isCheater,
+        'missedBlocks': missedBlocks
     }]
 
 # Bulk update database
