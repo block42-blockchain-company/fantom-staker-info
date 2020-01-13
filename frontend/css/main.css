@@ -165,6 +165,10 @@ iframe {
     display: block;
   }
 
+  .table .row.entry {
+    border-radius: 10px;
+  }
+
   .table .row.header {
     padding: 0;
     height: 0px;
@@ -217,7 +221,7 @@ iframe {
   }
 
   .cell.name .address {
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 3px;
   }
 }
@@ -326,7 +330,7 @@ iframe {
 /* ////////////////////////////////////////////////////////////////// */
 
 footer {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   width: 100%;
 }
 
