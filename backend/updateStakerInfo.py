@@ -69,8 +69,8 @@ for validatorId in range(1, numValidators):
     availableDelegationPercent = availableDelegationAmount / (selfStaked * 15)
 
     # Get additional info from fantom.network api
-    ftmnetworkUrl = "https://api.fantom.network/api/v1/staker/id/" +str(validatorId) + "?verbosity=2"
-    addinfo = json.loads(urllib.request.urlopen(ftmnetworkUrl).read().decode())
+    singleStakerAPI = "https://api.fantom.network/api/v1/staker/id/" +str(validatorId) + "?verbosity=2"
+    addinfo = json.loads(urllib.request.urlopen(singleStakerAPI).read().decode())
     addinfodata = addinfo['data']
 
     isCheater = ""
