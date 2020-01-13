@@ -20,7 +20,7 @@
 
 <br />
 
-A dApp on the Fantom Opera network to browse info about its validators.
+A dApp on the Fantom Opera network to browse information about its validators.
 
 ## How does it work
 
