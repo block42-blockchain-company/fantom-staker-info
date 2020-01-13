@@ -8,13 +8,13 @@
   <meta name="author" content="">
 
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="">
-  <meta property="og:title" content="">
+  <meta property="og:site_name" content="Fantom Staker Info">
+  <meta property="og:title" content="Fantom Staker Info">
   <meta property="og:image" content="">
-  <meta property="og:description" content="">
-  <meta property="og:url" content="">
+  <meta property="og:description" content="A dApp on the Fantom Opera network to browse information about its validators.">
+  <meta property="og:url" content="https://fantomstaker.info">
 
-  <title>Fantom Stakers</title>
+  <title>Fantom Staker Info</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -28,13 +28,31 @@
   <!-- Favicon -->
   <link rel='icon' href="images/favicon.png" type="image/x-icon"/>
 
+  <!-- Google Analytics -->
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-67740934-7', 'auto');
+
+    ga('send', 'pageview');
+  </script>
+
 </head>
 
 <body>
 
   <header class="text-white">
     <div class="container text-center">
-      <h1>Fantom Stakers</h1>
+      <h1>Fantom Staker Info</h1>
     </div>
   </header>
 
@@ -47,9 +65,9 @@
             <div class="cell">ID</div>
             <div class="cell">Name</div>
             <div class="cell">Self-Staked</div>
-            <div class="cell">Delegated</div>
+            <div class="cell">Total Staked</div>
             <div class="cell">Available</div>
-            <div class="cell">Contact</div>
+            <div class="cell">Links</div>
           </div>
           
           <!-- Table Rows -->
