@@ -25,9 +25,9 @@ numValidators = sfcContract.functions.stakersNum().call()
 stakerInfos = []
 
 # Get infos for all validators
-for validatorId in range(1, numValidators):
+for stakerId in range(1, numValidators):
     # Get the validator configUrl
-    configUrl = stakerInfoContract.functions.stakerInfos(validatorId).call()
+    configUrl = stakerInfoContract.functions.stakerInfos(stakerId).call()
 
     name = ""
     website = ""
@@ -55,11 +55,11 @@ for validatorId in range(1, numValidators):
                 description = value
 
     # Get the public variable stakers which includes some validator staking information
-    validatorInfo = sfcContract.functions.stakers(validatorId).call()
+    sfcStakerInfo = sfcContract.functions.stakers(stakerId).call()
 
     # Calculate the total tokens staked to a validator = selfstaked + delegated
-    selfStaked = validatorInfo[5] / 1e18
-    delegated = validatorInfo[7] / 1e18
+    selfStaked = sfcStakerInfo[5] / 1e18
+    delegated = sfcStakerInfo[7] / 1e18
     totalstaked = selfStaked + delegated
 
     # Calculate the available delegation amount for the validator
@@ -69,44 +69,41 @@ for validatorId in range(1, numValidators):
     availableDelegationPercent = availableDelegationAmount / (selfStaked * 15)
 
     # Get additional info from fantom.network api
-    singleStakerAPI = "https://api.fantom.network/api/v1/staker/id/" +str(validatorId) + "?verbosity=2"
-    addInfo = json.loads(urllib.request.urlopen(singleStakerAPI).read().decode())
-    addInfoData = addInfo['data']
+    stakerApiUrl = "https://api.fantom.network/api/v1/staker/id/" + str(stakerId) + "?verbosity=2"
+    response = json.loads(urllib.request.urlopen(stakerApiUrl).read().decode())
+    apiStakerInfo = response['data']
 
-    isCheater = ""
-    missedBlocks = ""
+    isCheater = False
+    missedBlocks = 0
 
-    for key, value in addInfoData.items():
+    for key, value in apiStakerInfo.items():
         if key == 'isCheater':
             isCheater = value
         if key == 'missedBlocks':
-            missedBlocks = value
+            missedBlocks = int(value)
 
-    # Get number of Blocks
-    maxBlockHeight = ""
-    txAPI = "https://api.fantom.network/api/v1/get-transactions"
-    txInfo = addinfo = json.loads(urllib.request.urlopen(txAPI).read().decode())
-    maxBlockHeight = txInfo['data']['maxBlockHeight']
+    # Get block height
+    txApiUrl = "https://api.fantom.network/api/v1/get-transactions"
+    response = json.loads(urllib.request.urlopen(txApiUrl).read().decode())
+    txApiInfo = response['data']
+    blockHeight = txApiInfo['maxBlockHeight']
 
-    # Calculate Productivity
-    productivity = ((int(maxBlockHeight) - int(missedBlocks)) / int(maxBlockHeight)) * 100
+    # Calculate productivity
+    productivity = ((int(blockHeight) - int(missedBlocks)) / int(blockHeight))
 
     stakerInfos += [{
-        'id': validatorId,
+        'id': stakerId,
         'name': name,
         'website': website,
         'contact': contact,
         'keybasePubKey': keybasePubKey,
         'logoUrl': logoUrl,
         'description': description,
-        'address': validatorInfo[8],
+        'address': sfcStakerInfo[8],
         'selfStaked': selfStaked,
-        'delegated': delegated,
         'totalStaked': totalstaked,
         'availableDelegationAmount': availableDelegationAmount,
-        'availableDelegationPercent': availableDelegationPercent,
         'isCheater': isCheater,
-        'missedBlocks': missedBlocks,
         'productivity': productivity
     }]
 
