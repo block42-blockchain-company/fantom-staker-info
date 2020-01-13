@@ -90,7 +90,6 @@ for validatorId in range(1, numValidators):
 
     # Calculate Productivity
     productivity = ((int(maxBlockHeight) - int(missedBlocks)) / int(maxBlockHeight)) * 100
-    print(productivity)
 
     stakerInfos += [{
         'id': validatorId,
