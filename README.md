@@ -20,11 +20,14 @@
 
 <br />
 
-A dApp on the Fantom Opera network to browse information about its validators.
+A dApp on the Fantom Opera network to browse information about its validator nodes.
+
+![image](https://user-images.githubusercontent.com/6087393/72284699-ede1e500-3641-11ea-9f0b-a0dd126db1e9.png)
 
 ## How does it work
 
-We created a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each Fantom validator to add information (a URL to a `JSON` file) about themselves, so delegators have more insights who they are, without the involvement of a third party.
+We created a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each Fantom validator node to add information (a URL to a `JSON` file) about themselves, so delegators have more insights who they are, without the involvement of a third party.
+We also created a small backend application running, which continously fetches the data for all stakers (to take load off the clients) and a frontend application to display it to the users and delegators.
 
 ## Usage
 
@@ -34,35 +37,39 @@ The smart contract is already deployed and can be found on the Fantom Opera Main
 0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
 ```
 
+### What it looks like
+
+![image](https://user-images.githubusercontent.com/6087393/72285334-30f08800-3643-11ea-9e68-de7dc54190cc.png)
+
+Most of the information that is shown is fetched automatically, but there are a few parameters than can be set by stakers.
+
 ### Config File
 
 Create a config file in `JSON` format that contains the following parameters (you can also leave parameters empty):
 
-```json
+```js
 {
-  "name": "VALIDATOR_NAME",
-  "website": "WEBSITE_URL",
-  "contact": "CONTACT_URL",
-  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY",
-  "logoUrl": "LOGO_URL",
-  "description": "DESCRIPTION_TEXT"
+  "name": "STAKER_NAME", /* Name of the staker */
+  "logoUrl": "LOGO_URL", /* Staker logo */
+  "website": "WEBSITE_URL", /* Website icon on the right */
+  "contact": "CONTACT_URL", /* Contact icon on the right */
+  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY" /* Verification check mark beside the staker name */
 }
 
-// This is how it could look like 👇
+/* This is how it could look like 👇 */
 
 {
   "name": "block42",
+  "logoUrl": "https://files.b42.tech/fantom/block42.png",
   "website": "https://block42.tech",
   "contact": "https://t.me/block42_fantom",
-  "keybasePubKey": "C57B29418AE33CC0",
-  "logoUrl": "https://files.b42.tech/fantom/block42.png",
-  "description": "We invest into the most promising crypto ecosystems and help them secure their networks. We provide consulting and development services on top of those protocols to bring adoption and use to them."
+  "keybasePubKey": "C57B29418AE33CC0"
 }
 ```
 
 Then host it somewhere so it is publicly accessible!
 
-### Update your validator info
+### Update your staker info
 
 1. Connect to your validator node
 2. Open up a lachesis console session via `lachesis attach`
@@ -76,20 +83,20 @@ stakerInfoContract = web3.ftm.contract(abi).at("0x92ffad75b8a942d149621a39502cdd
 4. Call the `updateInfo` function of the StakerInfo contract (make sure you have enough FTM on your wallet to cover the transaction fee)
 
 ```solidity
-stakerInfoContract.updateInfo("CONFIG_URL", { from: "VALIDATOR_ADDRESS" })
+stakerInfoContract.updateInfo("CONFIG_URL", { from: "STAKER_ADDRESS" })
 // e.g.: stakerInfoContract.updateInfo("https://files.b42.tech/fantom/config.json", { from: "0xa4ddde0afdaea05a3d5a2ec6b5c7f3fc9945020b" })
 ```
 
 5. Validate if you updated your info correctly
 
 ```solidity
-stakerInfoContract.getInfo(VALIDATOR_ID)
+stakerInfoContract.getInfo(STAKER_ID)
 // e.g.: stakerInfoContract.getInfo(14)
 ```
 
 ## Support
 
-If you have any issues updating your validator info do not hesitate to join our [validator group](https://t.me/block42_fantom) or contact [me](https://t.me/christianlanz) directly.
+If you have any issues updating your staker info do not hesitate to join our [staking group](https://t.me/block42_fantom) or contact [me](https://t.me/christianlanz) directly.
 
 ## Licence
 
