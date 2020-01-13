@@ -26,16 +26,16 @@ A dApp on the Fantom Opera network to browse information about its validator nod
 
 Find the dApp here: https://fantomstaker.info
 
-## Why?
+## Why
 
 Famtom delegators have a hard time finding the right validator node to delegator their FTM to. The community started some efforts to create more transparency and collect more information about validator nodes but nothing was nice and easy to use. There also were issues keeping the data up-to-date because it was maintained in a centralized manner.
 
-## How does it work
+## How
 
-We created a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each Fantom validator node to add information (a URL to a `JSON` file) about themselves, so delegators have more insights who they are, without the involvement of a third party.
-We also created a small backend application running, which continously fetches the data for all stakers (to take load off the clients) and a frontend application to display it to the users and delegators.
+By creating a [smart contract](https://github.com/block42-blockchain-company/fantom-staker-info/blob/master/smart-contract/contracts/StakerInfo.sol) that interacts with the [SFC smart contract](https://github.com/Fantom-foundation/fantom-sfc/blob/master/contracts/sfc/Staker.sol). It allows each Fantom validator node to add and update information (a URL to a `JSON` file) about themselves, so delegators have more insights who they are, without the involvement of a third party.
+A small backend application continously fetches all the stakers data (to take load off the clients) and a frontend application displays it to users and delegators in a nice way.
 
-## Usage
+## What
 
 The smart contract is already deployed and can be found on the Fantom Opera MainNet:
 
