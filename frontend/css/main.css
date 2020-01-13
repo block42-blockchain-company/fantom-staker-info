@@ -230,7 +230,7 @@ iframe {
   font-size: 12px;
 }
 
-.cell.contact .link {
+.cell.links .link {
   font-size: 24px;
   color: #89b0f6;
 }
@@ -242,6 +242,10 @@ iframe {
 @media screen and (max-width: 768px) {
   .cell {
     display: block;
+  }
+
+  .cell.links .link {
+    font-size: 35px;
   }
 }
 

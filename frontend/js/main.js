@@ -17,7 +17,7 @@ function addStaker(staker) {
     <div class="cell" data-title="Total Staked"><p>${numeral(staker.totalStaked).format("0,0")} FTM</p></div>
     <div class="cell available" data-title="Available"><p>${numeral(staker.availableDelegationAmount).format("0,0")} FTM</p></div>
     <div class="cell" data-title="Productivity"><p>${numeral(staker.productivity).format("0.00%")}</p></div>
-    <div class="cell contact" data-title="Links">
+    <div class="cell links" data-title="Links">
     ${staker.website || staker.contact ? `
       ${staker.website ? `
         <a class="mr-1" href="${staker.website}" target="_blank">
