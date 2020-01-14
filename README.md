@@ -22,7 +22,7 @@
 
 A dApp on the Fantom Opera network to browse information about its validator nodes.
 
-![image](https://user-images.githubusercontent.com/6087393/72288647-c68f1600-3649-11ea-8f3b-a4a29edfd344.png)
+![image](https://user-images.githubusercontent.com/6087393/72337163-5d97b480-36c2-11ea-8c6e-5ac44aff0800.png)
 
 Find the dApp here: https://fantomstaker.info
 
