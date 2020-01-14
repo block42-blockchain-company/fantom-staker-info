@@ -1,6 +1,6 @@
 {
   "name": "fantom-staker-info-smart-contract",
-  "version": "1.0.0",
+  "version": "1.0",
   "description": "A dApp on the Fantom Opera network to browse information about its validators.",
   "main": "truffle-config.js",
   "directories": {
