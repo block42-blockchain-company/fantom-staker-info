@@ -28,7 +28,7 @@ Find the dApp here: https://fantomstaker.info
 
 ## Why
 
-Famtom delegators have a hard time finding the right validators to delegator their FTM to. The community started some efforts to create more transparency and collect more information about validators but nothing was nice and easy to use. There also were issues keeping the data up-to-date because it was maintained in a centralized manner.
+Fantom delegators have a hard time finding the right validators to delegator their FTM to. The community started some efforts to create more transparency and collect more information about validators but nothing was nice and easy to use. There also were issues keeping the data up-to-date because it was maintained in a centralized manner.
 
 ## How
 
