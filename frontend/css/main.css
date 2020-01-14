@@ -2,8 +2,21 @@
 /* Font
 /* ////////////////////////////////////////////////////////////////// */
 @font-face {
-  font-family: "Work Sans";
-  src: url('../fonts/WorkSans/WorkSans-Regular.ttf'), url('../fonts/WorkSans/WorkSans-Light.ttf'), url('../fonts/WorkSans/WorkSans-Bold.ttf');
+  font-family: 'Work Sans';
+  src: url('../fonts/Work_Sans/WorkSans-Light.ttf');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url('../fonts/Work_Sans/WorkSans-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: url('../fonts/Work_Sans/WorkSans-Bold.ttf');
+  font-weight: 700;
 }
 
 /* ////////////////////////////////////////////////////////////////// */
@@ -13,11 +26,11 @@
 	margin: 0px; 
 	padding: 0px; 
   box-sizing: border-box;
-  font-family: WorkSans-Regular, Helvetica, sans-serif !important;
 }
 
 body {
   background: #3478ef;
+  font-family: 'Work Sans', sans-serif !important;
 }
 
 /* ------------------------------------ */
@@ -165,6 +178,10 @@ iframe {
     display: block;
   }
 
+  .table .row.entry {
+    border-radius: 10px;
+  }
+
   .table .row.header {
     padding: 0;
     height: 0px;
@@ -217,7 +234,7 @@ iframe {
   }
 
   .cell.name .address {
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 3px;
   }
 }
@@ -226,7 +243,7 @@ iframe {
   font-size: 12px;
 }
 
-.cell.contact .link {
+.cell.links .link {
   font-size: 24px;
   color: #89b0f6;
 }
@@ -238,6 +255,10 @@ iframe {
 @media screen and (max-width: 768px) {
   .cell {
     display: block;
+  }
+
+  .cell.links .link {
+    font-size: 35px;
   }
 }
 
@@ -326,7 +347,7 @@ iframe {
 /* ////////////////////////////////////////////////////////////////// */
 
 footer {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   width: 100%;
 }
 
