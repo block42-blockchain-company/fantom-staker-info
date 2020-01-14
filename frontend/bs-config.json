@@ -1,0 +1,10 @@
+{
+  "server": {
+    "baseDir": [
+      ".",
+      "./css/*.{css}",
+      "./js/*.{js}"
+    ],
+    "open": false
+  }
+}

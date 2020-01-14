@@ -114,6 +114,14 @@ button:hover {
 	cursor: pointer;
 }
 
+.custom-switch {
+  margin-bottom: 50px;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+  background-color: #666666;
+}
+
 iframe {
 	border: none !important;
 }

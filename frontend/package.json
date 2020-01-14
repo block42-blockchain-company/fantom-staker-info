@@ -1,20 +1,14 @@
 {
-  "name": "fantom-staker-info-smart-contract",
+  "name": "fantom-staker-info-frontend",
   "version": "1.0.0",
   "description": "A dApp on the Fantom Opera network to browse information about its validators.",
-  "main": "truffle-config.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
+    "dev": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Christian Lanz <christian.lanz@block42.tech>",
   "license": "MIT",
-  "dependencies": {
-    "truffle-hdwallet-provider": "^1.0.17",
-    "ganache-cli": "^6.8.1",
-    "mocha": "^7.0.0",
-    "web3": "^1.2.4"
+  "devDependencies": {
+    "lite-server": "^2.5.4"
   }
 }
