@@ -37,7 +37,7 @@ A small backend application continously fetches all the stakers data (to take lo
 
 ## What
 
-The smart contract is already deployed and can be found on the Fantom Opera MainNet:
+The smart contract is already deployed and can be found on the Fantom Opera MainNet at the following address:
 
 ```solidity
 0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
