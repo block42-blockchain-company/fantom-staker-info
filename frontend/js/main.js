@@ -9,7 +9,7 @@ function addStaker(staker) {
       `
       }
       <div class="float-lg-left ml-lg-3 mt-sm-2 mt-lg-0">
-        <p class="text-lg-left font-weight-bold name"><span>${staker.name ? staker.name : "Unknown"}${staker.name && staker.keybasePubKey ? ` <i class="fas fa-check-circle verified"></i>` : ""}</span></p>
+        <p class="text-lg-left font-weight-bold name"><span>${staker.name ? staker.name : "Unknown"}${staker.name && staker.isVerified ? ` <i class="fas fa-check-circle verified"></i>` : ""}</span></p>
         <p class="text-lg-left font-weight-light address"><a href="https://explorer.fantom.network/validator/${staker.id}">${staker.address.toLowerCase()}</a></p>
       </div>
     </div>
