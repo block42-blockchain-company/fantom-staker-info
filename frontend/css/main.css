@@ -64,7 +64,21 @@ h1 {
   font-weight: 700;
   text-align: center;
   margin-top: 80px;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
+}
+
+.lead {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.lead.info {
+  margin-bottom: 40px;
+}
+
+.lead.info a {
+  color: white;
+  text-decoration: underline;
 }
 
 @media (max-width: 768px) {
@@ -73,6 +87,11 @@ h1 {
     padding: 30px;
     margin-top: 20px;
     margin-bottom: 20px;
+  }
+
+  .lead {
+    padding-left: 0px;
+    padding-right: 0px;
   }
 }
 
@@ -115,7 +134,7 @@ button:hover {
 }
 
 .custom-switch {
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 .custom-control-input:checked~.custom-control-label::before {
