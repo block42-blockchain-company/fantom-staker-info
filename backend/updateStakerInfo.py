@@ -151,13 +151,13 @@ for stakerId in range(1, numValidators + 1):
             missedBlocks = int(value)
 
     # Get block height
-    txApiUrl = "https://api.fantom.network/api/v1/get-transactions"
-    response = json.loads(urllib.request.urlopen(txApiUrl).read().decode())
-    txApiInfo = response['data']
-    blockHeight = txApiInfo['maxBlockHeight']
+    # txApiUrl = "https://api.fantom.network/api/v1/get-transactions"
+    # response = json.loads(urllib.request.urlopen(txApiUrl).read().decode())
+    # txApiInfo = response['data']
+    # blockHeight = txApiInfo['maxBlockHeight']
 
     # Calculate productivity
-    productivity = ((int(blockHeight) - int(missedBlocks)) / int(blockHeight))
+    # productivity = ((int(blockHeight) - int(missedBlocks)) / int(blockHeight))
 
     stakerInfos += [{
         'id': stakerId,
@@ -172,7 +172,7 @@ for stakerId in range(1, numValidators + 1):
         'totalStaked': totalstaked,
         'availableDelegationAmount': availableDelegationAmount,
         'isCheater': isCheater,
-        'productivity': productivity
+        'missedBlocks': missedBlocks
     }]
 
 # Bulk update database
