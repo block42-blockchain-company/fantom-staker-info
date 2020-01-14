@@ -24,16 +24,11 @@ numValidators = sfcContract.functions.stakersNum().call()
 
 stakerInfos = []
 
-bootstrapMap = {
+bootstrapInfoMap = {
     13: {
         "name": "Fantom Vietnam",
         "website": "https://fantomviet.com",
         "contact": ""
-    },
-    14: {
-        "name": "block42 default",
-        "website": "https://block42.tech",
-        "contact": "https://t.me/block42_fantom"
     },
     15: {
         "name": "Fantom Validator",
@@ -103,11 +98,10 @@ for stakerId in range(1, numValidators + 1):
     keybasePubKey = ""
     logoUrl = ""
     description = ""
-    isVerified = False
+    isVerified = configUrl is not ''
 
     # Get info from config url if available
     if configUrl is not '':
-        isVerified = True
         response = json.loads(urllib.request.urlopen(configUrl).read().decode())
 
         for key, value in response.items():
@@ -122,11 +116,11 @@ for stakerId in range(1, numValidators + 1):
             elif key == 'description':
                 description = value
     else:
-        # no config in Smart Contract found, so use bootstrap values
-        if stakerId in bootstrapMap:
-            name = bootstrapMap[stakerId]['name']
-            website = bootstrapMap[stakerId]['website']
-            contact = bootstrapMap[stakerId]['contact']
+        # No config in smart contract found, so use bootstrap values
+        if stakerId in bootstrapInfoMap:
+            name = bootstrapInfoMap[stakerId]['name']
+            website = bootstrapInfoMap[stakerId]['website']
+            contact = bootstrapInfoMap[stakerId]['contact']
 
     # Get the public variable stakers which includes some validator staking information
     sfcStakerInfo = sfcContract.functions.stakers(stakerId).call()
