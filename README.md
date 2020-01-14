@@ -61,7 +61,7 @@ Create a config file in `JSON` format that contains the following parameters (yo
   "contact": "CONTACT_URL" /* Contact icon on the right */
 }
 
-/* This is how it could look like 👇 */
+/* It could look something like this 👇 */
 
 {
   "name": "block42",
