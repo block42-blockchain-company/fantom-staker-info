@@ -58,8 +58,7 @@ Create a config file in `JSON` format that contains the following parameters (yo
   "name": "STAKER_NAME", /* Name of the staker */
   "logoUrl": "LOGO_URL", /* Staker logo */
   "website": "WEBSITE_URL", /* Website icon on the right */
-  "contact": "CONTACT_URL", /* Contact icon on the right */
-  "keybasePubKey": "KEYBASE_64_BIT_PUBLIC_KEY" /* Verification check mark beside the staker name */
+  "contact": "CONTACT_URL" /* Contact icon on the right */
 }
 
 /* This is how it could look like 👇 */
@@ -68,8 +67,7 @@ Create a config file in `JSON` format that contains the following parameters (yo
   "name": "block42",
   "logoUrl": "https://files.b42.tech/fantom/block42.png",
   "website": "https://block42.tech",
-  "contact": "https://t.me/block42_fantom",
-  "keybasePubKey": "C57B29418AE33CC0"
+  "contact": "https://t.me/block42_fantom"
 }
 ```
 
