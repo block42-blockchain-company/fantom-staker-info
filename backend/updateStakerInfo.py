@@ -25,7 +25,7 @@ numValidators = sfcContract.functions.stakersNum().call()
 stakerInfos = []
 
 # Get infos for all validators
-for validatorId in range(1, numValidators):
+for validatorId in range(1, numValidators + 1):
     # Get the validator configUrl
     configUrl = stakerInfoContract.functions.stakerInfos(validatorId).call()
 
