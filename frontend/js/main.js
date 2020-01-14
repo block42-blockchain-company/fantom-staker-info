@@ -20,7 +20,7 @@ function addValidator(validator) {
     <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStaked).format("0,0")} FTM</p></div>
     <div class="cell" data-title="Total Staked"><p>${numeral(validator.totalStaked).format("0,0")} FTM</p></div>
     <div class="cell available" data-title="Available"><p>${numeral(validator.availableDelegationAmount).format("0,0")} FTM</p></div>
-    <div class="cell" data-title="Productivity"><p>${numeral(validator.productivity).format("0.00%")}</p></div>
+    <div class="cell" data-title="Missed Blocks"><p>${numeral(validator.missedBlocks).format("0,0")}</p></div>
     <div class="cell links" data-title="Links">
     ${validator.website || validator.contact ? `
       ${validator.website ? `
