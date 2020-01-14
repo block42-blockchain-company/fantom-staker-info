@@ -6,7 +6,7 @@ function addValidator(validator) {
         <i class="fas fa-skull float-lg-left icon text-danger"></i>
       ` : `
         ${validator.name ? `
-          ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}">` : `<p class="float-lg-left icon"></p>`}
+          ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}" alt="${validator.name} Logo">` : `<p class="float-lg-left icon"></p>`}
         ` : `
           <i class="fas fa-question float-lg-left icon"></i>
         `}
@@ -24,12 +24,12 @@ function addValidator(validator) {
     <div class="cell links" data-title="Links">
     ${validator.website || validator.contact ? `
       ${validator.website ? `
-        <a class="mr-1" href="${validator.website}" target="_blank">
+        <a class="mr-1" href="${validator.website}" target="_blank" rel="noreferrer>
           <i class="fas fa-globe-americas link"></i>
         </a>
       ` : ""}
       ${validator.contact ? `
-        <a class="ml-1" href="${validator.contact}" target="_blank">
+        <a class="ml-1" href="${validator.contact}" target="_blank" rel="noreferrer>
           <i class="fas fa-headset link"></i>
         </a>
       ` : ""}
