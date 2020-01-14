@@ -20,7 +20,7 @@
 
 <br />
 
-A dApp on the Fantom Opera network to browse information about its validator nodes.
+A dApp on the Fantom Opera network to browse information about its validators.
 
 ![image](https://user-images.githubusercontent.com/6087393/72337163-5d97b480-36c2-11ea-8c6e-5ac44aff0800.png)
 
