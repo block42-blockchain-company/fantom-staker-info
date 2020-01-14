@@ -22,7 +22,7 @@
 
 A dApp on the Fantom Opera network to browse information about its validators.
 
-![image](https://user-images.githubusercontent.com/6087393/72362197-03fbae00-36f3-11ea-8cf7-800da20b4d3d.png)
+![image](https://user-images.githubusercontent.com/6087393/72375162-e4bd4a80-370b-11ea-9d71-eb65472bd1f8.png)
 
 Find the dApp here: https://fantomstaker.info
 
@@ -100,7 +100,7 @@ stakerInfoContract.getInfo(STAKER_ID)
 
 ## Support
 
-If you have any issues updating your validator info do not hesitate to join our [staking group](https://t.me/block42_fantom) or contact [me](https://t.me/christianlanz) directly.
+If you have any issues updating your validator info do not hesitate to join our [validator group](https://t.me/block42_fantom) or contact [me](https://t.me/christianlanz) directly.
 
 ## Licence
 
