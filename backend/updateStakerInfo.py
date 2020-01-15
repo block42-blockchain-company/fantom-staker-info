@@ -4,6 +4,86 @@ import urllib.request
 from tinydb import TinyDB
 from web3 import Web3
 
+bootstrapInfoMap = {
+    13: {
+        "name": "Fantom Vietnam",
+        "website": "https://fantomviet.com",
+    },
+    15: {
+        "name": "Fantom Validator",
+        "website": "https://www.fantomvalidator.com",
+    },
+    16: {
+        "name": "bu1137",
+        "website": "https://keybase.io/nickai",
+    },
+    17: {
+        "name": "GoFantom",
+        "website": "https://gofantom.net",
+    },
+    18: {
+        "name": "GoStake Network",
+        "website": "https://gostake.com",
+    },
+    19: {
+        "name": "Fantom Ukraine",
+        "website": "",
+    },
+    20: {
+        "name": "Binary Fintech Group",
+        "website": "http://binaryfin.com",
+    },
+    21: {
+        "name": "Fantom Global",
+        "website": "https://fantom.global",
+    },
+    22: {
+        "name": "Fantom Russian",
+        "website": "",
+    },
+    24: {
+        "name": "lopalcar",
+        "website": "https://fantomstakers.com",
+    },
+    27: {
+        "name": "Cryptoast.io",
+        "website": "https://cryptoast.io",
+    },
+    28: {
+        "name": "Hyperblocks",
+        "website": "https://hyperblocks.pro",
+    }
+}
+
+stakerInfos = []
+
+
+def parseConfig(configUrl):
+    response = urllib.request.urlopen(configUrl)
+
+    if response.code != 200:
+        return "", "", "", "", False
+
+    config = json.loads(response.read().decode())
+
+    name = ""
+    logoUrl = ""
+    website = ""
+    contact = ""
+
+    for key, value in config.items():
+        if key == 'name':
+            name = value
+        elif key == 'website':
+            website = value
+        elif key == 'contact':
+            contact = value
+        elif key == 'logoUrl':
+            logoUrl = value
+
+    return name, logoUrl, website, contact, True
+
+
 # Init web3
 web3 = Web3(Web3.HTTPProvider("https://rpc.fantom.network"))
 
@@ -22,105 +102,25 @@ stakerInfoContract = web3.eth.contract(address=stakerInfoAddress, abi=stakerInfo
 # Get number of network validators
 numValidators = sfcContract.functions.stakersNum().call()
 
-stakerInfos = []
-
-bootstrapInfoMap = {
-    13: {
-        "name": "Fantom Vietnam",
-        "website": "https://fantomviet.com",
-        "contact": ""
-    },
-    15: {
-        "name": "Fantom Validator",
-        "website": "https://www.fantomvalidator.com",
-        "contact": ""
-    },
-    16: {
-        "name": "bu1137",
-        "website": "https://keybase.io/nickai",
-        "contact": ""
-    },
-    17: {
-        "name": "GoFantom",
-        "website": "https://gofantom.net",
-        "contact": ""
-    },
-    18: {
-        "name": "GoStake Network",
-        "website": "https://gostake.com",
-        "contact": ""
-    },
-    19: {
-        "name": "Fantom Ukraine",
-        "website": "",
-        "contact": ""
-    },
-    20: {
-        "name": "Binary Fintech Group",
-        "website": "http://binaryfin.com",
-        "contact": ""
-    },
-    21: {
-        "name": "Fantom Global",
-        "website": "https://fantom.global",
-        "contact": ""
-    },
-    22: {
-        "name": "Fantom Russian",
-        "website": "",
-        "contact": ""
-    },
-    24: {
-        "name": "lopalcar",
-        "website": "https://fantomstakers.com",
-        "contact": ""
-    },
-    27: {
-        "name": "Cryptoast.io",
-        "website": "https://cryptoast.io",
-        "contact": ""
-    },
-    28: {
-        "name": "Hyperblocks",
-        "website": "https://hyperblocks.pro",
-        "contact": ""
-    }
-}
-
 # Get infos for all validators
 for stakerId in range(1, numValidators + 1):
     # Get the validator configUrl
     configUrl = stakerInfoContract.functions.stakerInfos(stakerId).call()
 
     name = ""
+    logoUrl = ""
     website = ""
     contact = ""
-    keybasePubKey = ""
-    logoUrl = ""
-    description = ""
-    isVerified = configUrl is not ''
+    isVerified = configUrl is not ""
 
-    # Get info from config url if available
-    if configUrl is not '':
-        response = json.loads(urllib.request.urlopen(configUrl).read().decode())
-
-        for key, value in response.items():
-            if key == 'name':
-                name = value
-            elif key == 'website':
-                website = value
-            elif key == 'contact':
-                contact = value
-            elif key == 'logoUrl':
-                logoUrl = value
-            elif key == 'description':
-                description = value
+    if configUrl is not "":
+        # Get info from config url
+        (name, logoUrl, website, contact, isVerified) = parseConfig(configUrl)
     else:
-        # No config in smart contract found, so use bootstrap values
+        # No config in smart contract found, use bootstrap values
         if stakerId in bootstrapInfoMap:
             name = bootstrapInfoMap[stakerId]['name']
             website = bootstrapInfoMap[stakerId]['website']
-            contact = bootstrapInfoMap[stakerId]['contact']
 
     # Get the public variable stakers which includes some validator staking information
     sfcStakerInfo = sfcContract.functions.stakers(stakerId).call()
@@ -160,7 +160,6 @@ for stakerId in range(1, numValidators + 1):
         'contact': contact,
         'isVerified': isVerified,
         'logoUrl': logoUrl,
-        'description': description,
         'address': sfcStakerInfo[8],
         'selfStakeAmount': selfStakeAmount,
         'totalstakedAmount': totalstakedAmount,
