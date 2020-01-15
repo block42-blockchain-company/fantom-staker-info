@@ -52,7 +52,7 @@ function updateValidators() {
   const hideUnknown = window.localStorage.getItem("hideUnknown");
 
   // Fetch validators from backend
-  axios.get("https://fantomstaker.info:44220/api/v1/validators").then((response) => {
+  axios.get("https://fantomstaker.info/api/v1/validators").then((response) => {
     let validators = response.data;
 
     if (hideUnknown == "true") {
