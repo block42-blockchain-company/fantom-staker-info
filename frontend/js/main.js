@@ -17,10 +17,10 @@ function addValidator(validator) {
       <p class="text-lg-left font-weight-light address"><a href="https://explorer.fantom.network/validator/${validator.id}">${validator.address.toLowerCase()}</a></p>
     </div>
   </div>
-  <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStaked).format("0,0")} FTM</p></div>
-  <div class="cell" data-title="Total Staked"><p>${numeral(validator.totalStaked).format("0,0")} FTM</p></div>
+  <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStakeAmount).format("0,0")} FTM</p></div>
+  <div class="cell" data-title="Total Staked"><p>${numeral(validator.totalstakedAmount).format("0,0")} FTM</p></div>
   <div class="cell available" data-title="Available"><p>${numeral(validator.availableDelegationAmount).format("0,0")} FTM</p></div>
-  <div class="cell" data-title="Missed Blocks"><p>${numeral(validator.missedBlocks).format("0,0")}</p></div>
+  <div class="cell in-undelegation" data-title="In Undelegation"><p>${numeral(validator.inUndelegationAmount).format("0,0")} FTM</p></div>
   <div class="cell links" data-title="Links">
   ${validator.website || validator.contact ? `
     ${validator.website ? `

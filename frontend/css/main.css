@@ -274,8 +274,8 @@ iframe {
   }
 }
 
-.cell.available span {
-  font-size: 12px;
+.cell.in-undelegation p {
+  color: darkgray;
 }
 
 .cell.links .link {
