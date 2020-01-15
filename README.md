@@ -56,7 +56,7 @@ Create a config file in `JSON` format that contains the following parameters (yo
 ```js
 {
   "name": "VALIDATOR_NAME", /* Name of the validator */
-  "logoUrl": "LOGO_URL", /* Validator logo (PNG|JPEG) */
+  "logoUrl": "LOGO_URL", /* Validator logo (PNG|JPEG|SVG) - 100px x 100px is enough */
   "website": "WEBSITE_URL", /* Website icon on the right */
   "contact": "CONTACT_URL" /* Contact icon on the right */
 }
