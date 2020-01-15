@@ -22,7 +22,7 @@
 
 A dApp on the Fantom Opera network to browse information about its validators.
 
-![image](https://user-images.githubusercontent.com/6087393/72375162-e4bd4a80-370b-11ea-9d71-eb65472bd1f8.png)
+![image](https://user-images.githubusercontent.com/6087393/72438289-cb1c1180-37a4-11ea-9b7d-a0e0a476a422.png)
 
 Find the dApp here: https://fantomstaker.info
 
@@ -56,7 +56,7 @@ Create a config file in `JSON` format that contains the following parameters (yo
 ```js
 {
   "name": "VALIDATOR_NAME", /* Name of the validator */
-  "logoUrl": "LOGO_URL", /* Validator logo */
+  "logoUrl": "LOGO_URL", /* Validator logo (PNG|JPEG) */
   "website": "WEBSITE_URL", /* Website icon on the right */
   "contact": "CONTACT_URL" /* Contact icon on the right */
 }
