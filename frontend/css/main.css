@@ -274,7 +274,7 @@ iframe {
   }
 }
 
-.cell.in-undelegation p {
+.cell.unbonding p {
   color: darkgray;
 }
 
