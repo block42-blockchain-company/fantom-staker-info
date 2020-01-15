@@ -126,15 +126,15 @@ for stakerId in range(1, numValidators + 1):
     sfcStakerInfo = sfcContract.functions.stakers(stakerId).call()
 
     # Calculate the total tokens staked to a validator = selfstaked + delegated
-    selfStaked = sfcStakerInfo[5] / 1e18
-    delegated = sfcStakerInfo[7] / 1e18
-    totalstaked = selfStaked + delegated
+    selfStakeAmount = sfcStakerInfo[5] / 1e18
+    delegationAmount = sfcStakerInfo[7] / 1e18
+    totalstakedAmount = selfStakeAmount + delegationAmount
 
     # Calculate the available delegation amount for the validator
-    availableDelegationAmount = selfStaked * 15 - delegated
+    availableDelegationAmount = selfStakeAmount * 15 - delegationAmount
 
     # Calculate the available delegation amount
-    availableDelegationPercent = availableDelegationAmount / (selfStaked * 15)
+    availableDelegationPercent = availableDelegationAmount / (selfStakeAmount * 15)
 
     # Get additional info from fantom.network api
     stakerApiUrl = "https://api.fantom.network/api/v1/staker/id/" + str(stakerId) + "?verbosity=2"
@@ -142,28 +142,16 @@ for stakerId in range(1, numValidators + 1):
     apiStakerInfo = response['data']
 
     isCheater = False
-    missedBlocks = 0
-    delegatedMe = 0
+    delegationWithInUndelegationAmount = 0
 
     for key, value in apiStakerInfo.items():
         if key == 'isCheater':
             isCheater = value
-        if key == 'missedBlocks':
-            missedBlocks = int(value)
         if key == 'delegatedMe':
-            delegatedMe = int(value) / 1e18
+            delegationWithInUndelegationAmount = int(value) / 1e18
 
-    # Calculate current withrawn Delegation Amount
-    withdrawnDelegationAmount = delegatedMe - delegated
-
-    # Get block height
-    # txApiUrl = "https://api.fantom.network/api/v1/get-transactions"
-    # response = json.loads(urllib.request.urlopen(txApiUrl).read().decode())
-    # txApiInfo = response['data']
-    # blockHeight = txApiInfo['maxBlockHeight']
-
-    # Calculate productivity
-    # productivity = ((int(blockHeight) - int(missedBlocks)) / int(blockHeight))
+    # Calculate current amount that is in undelegation process
+    inUndelegationAmount = delegationWithInUndelegationAmount - delegationAmount
 
     stakerInfos += [{
         'id': stakerId,
@@ -174,12 +162,11 @@ for stakerId in range(1, numValidators + 1):
         'logoUrl': logoUrl,
         'description': description,
         'address': sfcStakerInfo[8],
-        'selfStaked': selfStaked,
-        'totalStaked': totalstaked,
+        'selfStakeAmount': selfStakeAmount,
+        'totalstakedAmount': totalstakedAmount,
         'availableDelegationAmount': availableDelegationAmount,
         'isCheater': isCheater,
-        'missedBlocks': missedBlocks,
-        'withdrawnDelegationAmount': withdrawnDelegationAmount
+        'inUndelegationAmount': inUndelegationAmount
     }]
 
 # Bulk update database
