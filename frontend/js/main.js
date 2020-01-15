@@ -3,7 +3,7 @@ function addValidator(validator) {
   <div class="cell" data-title="ID"><p>${validator.id}</p></div>
   <div class="cell name" data-title="Name">
     ${validator.isCheater ? `
-      <i class="fas fa-skull float-lg-left icon text-danger" title="Cheater!"></i>
+      <i class="fas fa-skull float-lg-left icon text-danger"></i>
     ` : `
       ${validator.name ? `
         ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}" alt="${validator.name} Logo">` : `<p class="float-lg-left icon"></p>`}
@@ -42,6 +42,7 @@ function addValidator(validator) {
 
     const child = document.createElement("div");
     child.className = `row entry ${validator.isCheater ? 'cheater' : ''}`;
+    child.title = `${validator.isCheater ? 'Cheater' : ''}`
     child.innerHTML = markup;
 
     document.querySelector(".table").appendChild(child);
