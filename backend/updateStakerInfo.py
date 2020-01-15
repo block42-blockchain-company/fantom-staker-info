@@ -143,12 +143,18 @@ for stakerId in range(1, numValidators + 1):
 
     isCheater = False
     missedBlocks = 0
+    delegatedMe = 0
 
     for key, value in apiStakerInfo.items():
         if key == 'isCheater':
             isCheater = value
         if key == 'missedBlocks':
             missedBlocks = int(value)
+        if key == 'delegatedMe':
+            delegatedMe = int(value) / 1e18
+
+    # Calculate current withrawn Delegation Amount
+    withdrawnDelegationAmount = delegatedMe - delegated
 
     # Get block height
     # txApiUrl = "https://api.fantom.network/api/v1/get-transactions"
@@ -172,7 +178,8 @@ for stakerId in range(1, numValidators + 1):
         'totalStaked': totalstaked,
         'availableDelegationAmount': availableDelegationAmount,
         'isCheater': isCheater,
-        'missedBlocks': missedBlocks
+        'missedBlocks': missedBlocks,
+        'withdrawnDelegationAmount': withdrawnDelegationAmount
     }]
 
 # Bulk update database
