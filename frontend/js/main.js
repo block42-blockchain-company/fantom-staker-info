@@ -1,47 +1,47 @@
 function addValidator(validator) {
-    const markup = `
-    <div class="cell" data-title="ID"><p>${validator.id}</p></div>
-    <div class="cell name" data-title="Name">
-      ${validator.isCheater ? `
-        <i class="fas fa-skull float-lg-left icon text-danger" title="Cheater!"></i>
-      ` : `
-        ${validator.name ? `
-          ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}" alt="${validator.name} Logo">` : `<p class="float-lg-left icon"></p>`}
-        ` : `
-          <i class="fas fa-question float-lg-left icon"></i>
-        `}
-      `
-      }
-      <div class="float-lg-left ml-lg-3 mt-sm-2 mt-lg-0">
-        <p class="text-lg-left ${validator.name ? "font-weight-bold" : ""} name"><span>${validator.name ? validator.name : "unknown"}${validator.name && validator.isVerified ? ` <i class="fas fa-check-circle verified" title="Verified via Blockchain"></i>` : ""}</span></p>
-        <p class="text-lg-left font-weight-light address"><a href="https://explorer.fantom.network/validator/${validator.id}">${validator.address.toLowerCase()}</a></p>
-      </div>
-    </div>
-    <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStaked).format("0,0")} FTM</p></div>
-    <div class="cell" data-title="Total Staked"><p>${numeral(validator.totalStaked).format("0,0")} FTM</p></div>
-    <div class="cell available" data-title="Available"><p>${numeral(validator.availableDelegationAmount).format("0,0")} FTM</p></div>
-    <div class="cell" data-title="Missed Blocks"><p>${numeral(validator.missedBlocks).format("0,0")}</p></div>
-    <div class="cell links" data-title="Links">
-    ${validator.website || validator.contact ? `
-      ${validator.website ? `
-        <a class="mr-1" href="${validator.website}" target="_blank" rel="noreferrer">
-          <i class="fas fa-globe-americas link"></i>
-        </a>
-      ` : ""}
-      ${validator.contact ? `
-        <a class="ml-1" href="${validator.contact}" target="_blank" rel="noreferrer">
-          <i class="fas fa-headset link"></i>
-        </a>
-      ` : ""}
+  const markup = `
+  <div class="cell" data-title="ID"><p>${validator.id}</p></div>
+  <div class="cell name" data-title="Name">
+    ${validator.isCheater ? `
+      <i class="fas fa-skull float-lg-left icon text-danger" title="Cheater!"></i>
     ` : `
-      <p>-</p>
+      ${validator.name ? `
+        ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}" alt="${validator.name} Logo">` : `<p class="float-lg-left icon"></p>`}
+      ` : `
+        <i class="fas fa-question float-lg-left icon"></i>
+      `}
     `
     }
+    <div class="float-lg-left ml-lg-3 mt-sm-2 mt-lg-0">
+      <p class="text-lg-left ${validator.name ? "font-weight-bold" : ""} name"><span>${validator.name ? validator.name : "unknown"}${validator.name && validator.isVerified ? ` <i class="fas fa-check-circle verified" title="Verified via Blockchain"></i>` : ""}</span></p>
+      <p class="text-lg-left font-weight-light address"><a href="https://explorer.fantom.network/validator/${validator.id}">${validator.address.toLowerCase()}</a></p>
     </div>
-    `;
+  </div>
+  <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStaked).format("0,0")} FTM</p></div>
+  <div class="cell" data-title="Total Staked"><p>${numeral(validator.totalStaked).format("0,0")} FTM</p></div>
+  <div class="cell available" data-title="Available"><p>${numeral(validator.availableDelegationAmount).format("0,0")} FTM</p></div>
+  <div class="cell" data-title="Missed Blocks"><p>${numeral(validator.missedBlocks).format("0,0")}</p></div>
+  <div class="cell links" data-title="Links">
+  ${validator.website || validator.contact ? `
+    ${validator.website ? `
+      <a class="mr-1" href="${validator.website}" target="_blank" rel="noreferrer">
+        <i class="fas fa-globe-americas link"></i>
+      </a>
+    ` : ""}
+    ${validator.contact ? `
+      <a class="ml-1" href="${validator.contact}" target="_blank" rel="noreferrer">
+        <i class="fas fa-headset link"></i>
+      </a>
+    ` : ""}
+  ` : `
+    <p>-</p>
+  `
+  }
+  </div>
+  `;
 
     const child = document.createElement("div");
-    child.className = "row entry";
+    child.className = `row entry ${validator.isCheater ? 'cheater' : ''}`;
     child.innerHTML = markup;
 
     document.querySelector(".table").appendChild(child);

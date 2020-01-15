@@ -200,6 +200,10 @@ iframe {
   font-size: 8px;
 }
 
+.table .row.entry.cheater {
+  background: salmon;
+}
+
 @media screen and (max-width: 768px) {
   .table .row {
     display: block;
