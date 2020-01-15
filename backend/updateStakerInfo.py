@@ -142,16 +142,16 @@ for stakerId in range(1, numValidators + 1):
     apiStakerInfo = response['data']
 
     isCheater = False
-    delegationWithInUndelegationAmount = 0
+    delegationWithUnbondingAmount = 0
 
     for key, value in apiStakerInfo.items():
         if key == 'isCheater':
             isCheater = value
         if key == 'delegatedMe':
-            delegationWithInUndelegationAmount = int(value) / 1e18
+            delegationWithUnbondingAmount = int(value) / 1e18
 
-    # Calculate current amount that is in undelegation process
-    inUndelegationAmount = delegationWithInUndelegationAmount - delegationAmount
+    # Calculate current unbonding amount
+    unbondingAmount = delegationWithUnbondingAmount - delegationAmount
 
     stakerInfos += [{
         'id': stakerId,
@@ -165,7 +165,7 @@ for stakerId in range(1, numValidators + 1):
         'totalstakedAmount': totalstakedAmount,
         'availableDelegationAmount': availableDelegationAmount,
         'isCheater': isCheater,
-        'inUndelegationAmount': inUndelegationAmount
+        'unbondingAmount': unbondingAmount
     }]
 
 # Bulk update database
