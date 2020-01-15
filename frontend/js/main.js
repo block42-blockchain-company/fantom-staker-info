@@ -3,7 +3,7 @@ function addValidator(validator) {
     <div class="cell" data-title="ID"><p>${validator.id}</p></div>
     <div class="cell name" data-title="Name">
       ${validator.isCheater ? `
-        <i class="fas fa-skull float-lg-left icon text-danger"></i>
+        <i class="fas fa-skull float-lg-left icon text-danger" title="Cheater!"></i>
       ` : `
         ${validator.name ? `
           ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}" alt="${validator.name} Logo">` : `<p class="float-lg-left icon"></p>`}
