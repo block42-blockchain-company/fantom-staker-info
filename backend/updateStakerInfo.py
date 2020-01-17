@@ -102,6 +102,22 @@ stakerInfoContract = web3.eth.contract(address=stakerInfoAddress, abi=stakerInfo
 # Get number of network validators
 numValidators = sfcContract.functions.stakersNum().call()
 
+# Calculate reward unlock date
+unbondingStartDate = sfcContract.functions.unbondingStartDate().call()
+unbondingUnlockPeriod = sfcContract.functions.unbondingUnlockPeriod().call()
+rewardUnlockDate = unbondingStartDate + unbondingUnlockPeriod
+
+# Get circulating supply from Etherscan API
+etherscanAPI = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x4e15361fd6b4bb609fa63c81a2be19d873717870"
+etherscanResponse = json.loads(urllib.request.urlopen(etherscanAPI).read().decode())
+circulatingSupply = int(etherscanResponse['result'])/ 1e18
+
+# Initiate total variables
+totalSelfStakedSum = 0
+totalStakedSum = 0
+totalDelegationSum = 0
+totalUnbonding = 0
+
 # Get infos for all validators
 for stakerId in range(1, numValidators + 1):
     # Get the validator configUrl
@@ -128,13 +144,24 @@ for stakerId in range(1, numValidators + 1):
     # Calculate the total tokens staked to a validator = selfstaked + delegated
     selfStakeAmount = sfcStakerInfo[5] / 1e18
     delegationAmount = sfcStakerInfo[7] / 1e18
-    totalstakedAmount = selfStakeAmount + delegationAmount
+    totalStakedAmount = selfStakeAmount + delegationAmount
+
+    totalSelfStakedSum += selfStakeAmount
+    totalStakedSum += totalStakedAmount
+    totalDelegationSum += delegationAmount
+
+    stakingPower = totalStakedAmount / circulatingSupply
 
     # Calculate the available delegation amount for the validator
     availableDelegationAmount = selfStakeAmount * 15 - delegationAmount
 
     # Calculate the available delegation amount
     availableDelegationPercent = availableDelegationAmount / (selfStakeAmount * 15)
+
+    # Get Deactivation Info; if deactivatedTime != 0 then it shows that a Staker has prepared to withdraw the stake
+    isUnstaking = False
+    if sfcStakerInfo[4] != 0:
+        isUnstaking = True
 
     # Get additional info from fantom.network api
     stakerApiUrl = "https://api.fantom.network/api/v1/staker/id/" + str(stakerId) + "?verbosity=2"
@@ -152,6 +179,7 @@ for stakerId in range(1, numValidators + 1):
 
     # Calculate current unbonding amount
     unbondingAmount = delegationWithUnbondingAmount - delegationAmount
+    totalUnbonding += unbondingAmount
 
     stakerInfos += [{
         'id': stakerId,
@@ -162,13 +190,35 @@ for stakerId in range(1, numValidators + 1):
         'logoUrl': logoUrl,
         'address': sfcStakerInfo[8],
         'selfStakeAmount': selfStakeAmount,
-        'totalstakedAmount': totalstakedAmount,
+        'delegationAmount': delegationAmount,
+        'totalStakedAmount': totalStakedAmount,
         'availableDelegationAmount': availableDelegationAmount,
         'isCheater': isCheater,
-        'unbondingAmount': unbondingAmount
+        'unbondingAmount': unbondingAmount,
+        'isUnstaking': isUnstaking,
+        'stakingPower': stakingPower
     }]
 
+
+totalStakedSumPercentage = totalStakedSum / circulatingSupply
+delegationCapacity = totalSelfStakedSum * 15
+delegationCapacityPercentage = totalDelegationSum / delegationCapacity
+
+general = {
+    'circulatingSupply': circulatingSupply,
+    'totalSelfStakedSum': totalSelfStakedSum,
+    'totalDelegationSum': totalDelegationSum,
+    'totalStakedSum': totalStakedSum,
+    'totalStakedSumPercentage': totalStakedSumPercentage,
+    'totalUnbonding': totalUnbonding,
+    'delegationCapacity': delegationCapacity,
+    'delegationCapacityPercentage': delegationCapacityPercentage,
+    'rewardUnlockDate': rewardUnlockDate
+}
+
 # Bulk update database
-db = TinyDB('./db.json')
-db.purge()
-db.insert_multiple(stakerInfos)
+db = TinyDB('./db.json', default_table='general')
+db.purge_tables()
+db.insert(general)
+table = db.table('validators')
+table.insert_multiple(stakerInfos)
