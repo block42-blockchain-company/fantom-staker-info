@@ -3,6 +3,7 @@ import urllib.request
 
 from tinydb import TinyDB
 from web3 import Web3
+from datetime import datetime
 
 bootstrapInfoMap = {
     13: {
@@ -55,8 +56,6 @@ bootstrapInfoMap = {
     }
 }
 
-stakerInfos = []
-
 
 def parseConfig(configUrl):
     response = urllib.request.urlopen(configUrl)
@@ -102,21 +101,13 @@ stakerInfoContract = web3.eth.contract(address=stakerInfoAddress, abi=stakerInfo
 # Get number of network validators
 numValidators = sfcContract.functions.stakersNum().call()
 
-# Calculate reward unlock date
-unbondingStartDate = sfcContract.functions.unbondingStartDate().call()
-unbondingUnlockPeriod = sfcContract.functions.unbondingUnlockPeriod().call()
-rewardUnlockDate = unbondingStartDate + unbondingUnlockPeriod
-
 # Get circulating supply from Etherscan API
 etherscanAPI = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x4e15361fd6b4bb609fa63c81a2be19d873717870"
 etherscanResponse = json.loads(urllib.request.urlopen(etherscanAPI).read().decode())
-circulatingSupply = int(etherscanResponse['result'])/ 1e18
+circulatingSupply = int(etherscanResponse['result']) / 1e18
 
-# Initiate total variables
-totalSelfStakedSum = 0
-totalStakedSum = 0
-totalDelegationSum = 0
-totalUnbonding = 0
+# Init stakers array
+stakers = []
 
 # Get infos for all validators
 for stakerId in range(1, numValidators + 1):
@@ -142,26 +133,21 @@ for stakerId in range(1, numValidators + 1):
     sfcStakerInfo = sfcContract.functions.stakers(stakerId).call()
 
     # Calculate the total tokens staked to a validator = selfstaked + delegated
-    selfStakeAmount = sfcStakerInfo[5] / 1e18
-    delegationAmount = sfcStakerInfo[7] / 1e18
-    totalStakedAmount = selfStakeAmount + delegationAmount
+    selfStakedAmount = sfcStakerInfo[5] / 1e18
+    delegatedAmount = sfcStakerInfo[7] / 1e18
+    totalStakedAmount = selfStakedAmount + delegatedAmount
 
-    totalSelfStakedSum += selfStakeAmount
-    totalStakedSum += totalStakedAmount
-    totalDelegationSum += delegationAmount
-
-    stakingPower = totalStakedAmount / circulatingSupply
+    # Calculate the staking power of the validator
+    stakingPowerPercent = totalStakedAmount / circulatingSupply
 
     # Calculate the available delegation amount for the validator
-    availableDelegationAmount = selfStakeAmount * 15 - delegationAmount
+    availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount
 
     # Calculate the available delegation amount
-    availableDelegationPercent = availableDelegationAmount / (selfStakeAmount * 15)
+    availableDelegationPercent = availableCapacityAmount / (selfStakedAmount * 15)
 
-    # Get Deactivation Info; if deactivatedTime != 0 then it shows that a Staker has prepared to withdraw the stake
-    isUnstaking = False
-    if sfcStakerInfo[4] != 0:
-        isUnstaking = True
+    # Get deactivation info; if deactivatedTime != 0 then a staker has prepared to withdraw his stake
+    isUnstaking = sfcStakerInfo[4] != 0
 
     # Get additional info from fantom.network api
     stakerApiUrl = "https://api.fantom.network/api/v1/staker/id/" + str(stakerId) + "?verbosity=2"
@@ -178,47 +164,65 @@ for stakerId in range(1, numValidators + 1):
             delegationWithUnbondingAmount = int(value) / 1e18
 
     # Calculate current unbonding amount
-    unbondingAmount = delegationWithUnbondingAmount - delegationAmount
-    totalUnbonding += unbondingAmount
+    unbondingAmount = delegationWithUnbondingAmount - delegatedAmount
 
-    stakerInfos += [{
+    stakers += [{
         'id': stakerId,
         'name': name,
-        'website': website,
-        'contact': contact,
-        'isVerified': isVerified,
         'logoUrl': logoUrl,
         'address': sfcStakerInfo[8],
-        'selfStakeAmount': selfStakeAmount,
-        'delegationAmount': delegationAmount,
+        'website': website,
+        'contact': contact,
+        'selfStakedAmount': selfStakedAmount,
+        'delegationAmount': delegatedAmount,
         'totalStakedAmount': totalStakedAmount,
-        'availableDelegationAmount': availableDelegationAmount,
-        'isCheater': isCheater,
+        'availableCapacityAmount': availableCapacityAmount,
         'unbondingAmount': unbondingAmount,
-        'isUnstaking': isUnstaking,
-        'stakingPower': stakingPower
+        'stakingPowerPercent': stakingPowerPercent,
+        'isVerified': isVerified,
+        'isCheater': isCheater,
+        'isUnstaking': isUnstaking
     }]
 
+# Calculate reward unlock date
+unbondingStartDate = sfcContract.functions.unbondingStartDate().call()
+unbondingPeriod = sfcContract.functions.unbondingPeriod().call()
+unbondingUnlockPeriod = sfcContract.functions.unbondingUnlockPeriod().call()
+rewardUnlockDate = unbondingStartDate + unbondingUnlockPeriod
 
-totalStakedSumPercentage = totalStakedSum / circulatingSupply
-delegationCapacity = totalSelfStakedSum * 15
-delegationCapacityPercentage = totalDelegationSum / delegationCapacity
+# Calculate target reward unlock percentage
+passedTime = int(datetime.now().timestamp() - unbondingStartDate)
+passedPercent = passedTime / unbondingPeriod
+rewardUnlockPercent = 0.8 if passedPercent >= 0.8 else 0.8 - passedPercent
+
+# Calculate totals
+totalSelfStakedSum = sum(staker['selfStakedAmount'] for staker in stakers)
+totalDelegatedSum = sum(staker['delegationAmount'] for staker in stakers)
+totalStakedSum = totalSelfStakedSum + totalDelegatedSum
+totalUnbondingSum = sum(staker['unbondingAmount'] for staker in stakers)
+
+# Calculate percentages
+totalSelfStakedPercent = totalSelfStakedSum / circulatingSupply
+totalDelegatedPercent = totalDelegatedSum / circulatingSupply
+totalStakedPercent = totalStakedSum / circulatingSupply
+totalUnbondingPercent = totalUnbondingSum / circulatingSupply
 
 general = {
-    'circulatingSupply': circulatingSupply,
     'totalSelfStakedSum': totalSelfStakedSum,
-    'totalDelegationSum': totalDelegationSum,
+    'totalDelegatedSum': totalDelegatedSum,
     'totalStakedSum': totalStakedSum,
-    'totalStakedSumPercentage': totalStakedSumPercentage,
-    'totalUnbonding': totalUnbonding,
-    'delegationCapacity': delegationCapacity,
-    'delegationCapacityPercentage': delegationCapacityPercentage,
-    'rewardUnlockDate': rewardUnlockDate
+    'totalUnbondingSum': totalUnbondingSum,
+    'totalSelfStakedPercent': totalSelfStakedPercent,
+    'totalDelegatedPercent': totalDelegatedPercent,
+    'totalStakedPercent': totalStakedPercent,
+    'totalUnbondingPercent': totalUnbondingPercent,
+    'circulatingSupply': circulatingSupply,
+    'rewardUnlockDate': rewardUnlockDate,
+    'rewardUnlockPercent': rewardUnlockPercent
 }
 
 # Bulk update database
-db = TinyDB('./db.json', default_table='general')
+db = TinyDB('./db.json')
 db.purge_tables()
-db.insert(general)
-table = db.table('validators')
-table.insert_multiple(stakerInfos)
+db.table('general').insert(general)
+db.table('validators').insert_multiple(stakers)
