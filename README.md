@@ -43,11 +43,13 @@ The smart contract is already deployed and can be found on the Fantom Opera Main
 0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
 ```
 
-### What it looks like
+### How it looks like
 
 ![image](https://user-images.githubusercontent.com/6087393/72285334-30f08800-3643-11ea-9e68-de7dc54190cc.png)
 
 Most of the information that is shown is fetched automatically, but there are a few parameters than can be set by validators.
+
+## Update your validator info
 
 ### Config File
 
@@ -73,7 +75,7 @@ Create a config file in `JSON` format that contains the following parameters (yo
 
 Then host it somewhere so it is publicly accessible!
 
-### Update your validator info
+### Update your info in the smart contract
 
 1. Connect to your validator node
 2. Open up a lachesis console session via `lachesis attach`
