@@ -16,7 +16,7 @@ def home():
 
 @app.route('/api/v1/general', methods=['GET'])
 def validators():
-    return json.dumps(TinyDB('../db.json').table('general').all())
+    return json.dumps(TinyDB('../db.json').table('general').all()[0])
 
 
 @app.route('/api/v1/validators', methods=['GET'])

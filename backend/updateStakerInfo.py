@@ -137,9 +137,6 @@ for stakerId in range(1, numValidators + 1):
     delegatedAmount = sfcStakerInfo[7] / 1e18
     totalStakedAmount = selfStakedAmount + delegatedAmount
 
-    # Calculate the staking power of the validator
-    stakingPowerPercent = totalStakedAmount / circulatingSupply
-
     # Calculate the available delegation amount for the validator
     availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount
 
@@ -174,11 +171,11 @@ for stakerId in range(1, numValidators + 1):
         'website': website,
         'contact': contact,
         'selfStakedAmount': selfStakedAmount,
-        'delegationAmount': delegatedAmount,
+        'delegatedAmount': delegatedAmount,
         'totalStakedAmount': totalStakedAmount,
         'availableCapacityAmount': availableCapacityAmount,
         'unbondingAmount': unbondingAmount,
-        'stakingPowerPercent': stakingPowerPercent,
+        'stakingPowerPercent': 0,
         'isVerified': isVerified,
         'isCheater': isCheater,
         'isUnstaking': isUnstaking
@@ -197,7 +194,7 @@ rewardUnlockPercent = 0.8 if passedPercent >= 0.8 else 0.8 - passedPercent
 
 # Calculate totals
 totalSelfStakedSum = sum(staker['selfStakedAmount'] for staker in stakers)
-totalDelegatedSum = sum(staker['delegationAmount'] for staker in stakers)
+totalDelegatedSum = sum(staker['delegatedAmount'] for staker in stakers)
 totalStakedSum = totalSelfStakedSum + totalDelegatedSum
 totalUnbondingSum = sum(staker['unbondingAmount'] for staker in stakers)
 
@@ -220,6 +217,10 @@ general = {
     'rewardUnlockDate': rewardUnlockDate,
     'rewardUnlockPercent': rewardUnlockPercent
 }
+
+# Calculate staking power percentage for each staker
+for staker in stakers:
+    staker['stakingPowerPercent'] = staker['totalStakedAmount'] / totalStakedSum
 
 # Bulk update database
 db = TinyDB('./db.json')
