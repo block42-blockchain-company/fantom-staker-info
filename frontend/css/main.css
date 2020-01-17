@@ -72,12 +72,55 @@ h1 {
   padding-right: 50px;
 }
 
-.lead.info {
+.lead.note {
   margin-bottom: 40px;
 }
 
-.lead.info a {
+.lead.note a {
   color: white;
+  text-decoration: underline;
+}
+
+.network-info {
+  margin-bottom: 50px;
+}
+
+.network-info .title {
+  font-size: 16px;
+}
+
+.network-info .amount {
+  font-size: 18px;
+}
+
+.network-info .percent {
+  font-size: 16px;
+}
+
+.progress {
+  width: 50%;
+  padding: 0px;
+}
+
+.progress-bar {
+  background-color: #666666;
+}
+
+.progress-info {
+  padding: 0px;
+}
+
+.reward-unlock {
+  width: 100%;
+  margin-bottom: 50px;
+  margin-top: 20px;
+}
+
+.reward-unlock p {
+  width: 100%;
+}
+
+.reward-unlock span {
   text-decoration: underline;
 }
 
@@ -134,7 +177,7 @@ button:hover {
 }
 
 .custom-switch {
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 }
 
 .custom-control-input:checked~.custom-control-label::before {
@@ -148,6 +191,10 @@ iframe {
 /* ////////////////////////////////////////////////////////////////// */
 /* Table */
 /* ////////////////////////////////////////////////////////////////// */
+
+.container {
+  max-width: 80%;
+}
 
 .wrap-table {
   border-radius: 10px;
@@ -344,10 +391,6 @@ iframe {
 .table .row .cell:last-child {
   padding-left: 20px;
   padding-right: 20px;
-}
-
-.table, .row {
-  width: 100% !important;
 }
 
 @media (max-width: 768px) {

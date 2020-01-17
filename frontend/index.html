@@ -54,7 +54,48 @@
     <div class="container text-center">
       <h1>Fantom Staker Info</h1>
       <p class="lead">A dApp on the Fantom Opera network to browse information about its validators.</p>
-      <p class="lead info">Find out what it's all about: <a href="https://medium.com/block42-blockchain-company/fantom-staker-info-9024d1fbc217" target="_blank">Medium</a></p>
+      <p class="lead note">Find out what it's all about: <a href="https://medium.com/block42-blockchain-company/fantom-staker-info-9024d1fbc217" target="_blank">Medium</a></p>
+    </div>
+
+    <div class="container text-center">
+      <div class="row network-info">
+        <div class="col-sm-2 offset-sm-2">
+          <p class="title">Total Self-Staked</p>
+          <p class="amount font-weight-light"><span id="total-self-staked-amount">?</span> FTM</p>
+          <p class="percent font-weight-light"><span id="total-self-staked-percent">-</span></p>
+        </div>
+        <div class="col-sm-2">
+          <p class="title">Total Delegated</p>
+          <p class="amount font-weight-light"><span id="total-delegated-amount">?</span> FTM</p>
+          <p class="percent font-weight-light"><span id="total-delegated-percent">-</span></p>
+        </div>
+        <div class="col-sm-2">
+          <p class="title">Total Staked</p>
+          <p class="amount font-weight-light"><span id="total-staked-amount">?</span> FTM</p>
+          <p class="percent font-weight-light"><span id="total-staked-percent">-</span></p>
+        </div>
+        <div class="col-sm-2">
+          <p class="title">Total Unbonding</p>
+          <p class="amount font-weight-light"><span id="total-unbonding-amount">?</span> FTM</p>
+          <p class="percent font-weight-light"><span id="total-unbonding-percent">-</span></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-8 offset-sm-2 progress">
+          <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <p class="col-sm-8 offset-sm-2 progress-info">
+          <span class="font-weight-light" style="float: left;">0 FTM</span><span class="font-weight-light" style="float: right;"><span id="circulating-supply">?</span> FTM</span>
+        </p>
+      </div>
+
+      <div class="row reward-unlock">
+        <p>Staking rewards are locked until <span id="reward-unlock-date">?</span> or until <span id="reward-unlock-percent">?</span> of the the circulating supply is staked!</p>
+      </div>
     </div>
 
     <div class="custom-control custom-switch text-center">
@@ -72,9 +113,11 @@
             <div class="cell">ID</div>
             <div class="cell">Name</div>
             <div class="cell">Self-Staked</div>
+            <div class="cell">Delegated</div>
             <div class="cell">Total Staked</div>
-            <div class="cell">Available</div>
+            <div class="cell">Available Capacity</div>
             <div class="cell">Unbonding</div>
+            <div class="cell">Staking Power</div>
             <div class="cell">Links</div>
           </div>
           
@@ -86,11 +129,21 @@
 
   <footer>
     <div class="container">
-      <div class="text-center mb-3">
-        <span><a href="https://t.me/block42_fantom" target="_blank"><img class="social mr-1" src="images/telegram.png" alt="Telegram"></a></span>
-        <span><a href="https://github.com/block42-blockchain-company/fantom-staker-info" target="_blank"><img class="social ml-1" src="images/github.png" alt="GitHub"></a></span>
+      <div class="row">
+        <div class="mx-auto mb-3">
+          <span><a href="https://t.me/block42_fantom" target="_blank"><img class="social mr-1" src="images/telegram.png" alt="Telegram"></a></span>
+          <span><a href="https://github.com/block42-blockchain-company/fantom-staker-info" target="_blank"><img class="social ml-1" src="images/github.png" alt="GitHub"></a></span>
+        </div>
       </div>
-      <p class="m-0 text-center text-white">Made with ❤️ in Austria.</p>
+      <div class="row">
+        <p class="mx-auto text-white">Made with ❤️ in Austria.</p>
+      </div>
+      <div class="row mt-3">
+        <p class="mx-auto text-white">Wanna buy us a beer? 🍻</p>
+      </div>
+      <div class="row">
+        <p class="mx-auto text-white">0xa31fc70a7a91fbf6d85fd1ab34717eccd7fdba46</p>
+      </div>
     </div>
   </footer>
 
