@@ -17,12 +17,12 @@ function addValidator(validator) {
       <p class="text-lg-left font-weight-light address"><a href="https://explorer.fantom.network/validator/${validator.id}">${validator.address.toLowerCase()}</a></p>
     </div>
   </div>
-  <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStakeAmount).format("0,0")} FTM</p></div>
+  <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStakedAmount).format("0,0")} FTM</p></div>
   <div class="cell" data-title="Delegated"><p>${numeral(validator.delegatedAmount).format("0,0")} FTM</p></div>
   <div class="cell" data-title="Total Staked"><p>${numeral(validator.totalStakedAmount).format("0,0")} FTM</p></div>
   <div class="cell" data-title="Available Capacity"><p>${numeral(validator.availableCapacityAmount).format("0,0")} FTM</p></div>
-  <div class="cell unbonding" data-title="Unbonding"><p>${numeral(validator.unbondingAmount).format("0,0")} FTM</p></div>
-  <div class="cell" data-title="Staking Power"><p>${numeral(validator.stakingPowerPercent).format("0.00%")}</p></div>
+  <div class="cell text-light" data-title="Unbonding"><p>${numeral(validator.unbondingAmount).format("0,0")} FTM</p></div>
+  <div class="cell text-light" data-title="Staking Power"><p>${numeral(validator.stakingPowerPercent).format("0.00%")}</p></div>
   <div class="cell links" data-title="Links">
   ${validator.website || validator.contact ? `
     ${validator.website ? `
@@ -50,11 +50,39 @@ function addValidator(validator) {
     document.querySelector(".table").appendChild(child);
 }
 
+function updateGeneral() {
+  axios.get("http://localhost:8000/api/v1/general").then((response) => {
+    const general = response.data;
+
+    document.querySelector("#total-self-staked-sum").innerText = numeral(general.totalSelfStakedSum).format("0,0") + " FTM"
+    document.querySelector("#total-self-staked-percent").innerText = numeral(general.totalSelfStakedPercent).format("0.00%")
+    document.querySelector("#total-delegated-sum").innerText = numeral(general.totalDelegatedSum).format("0,0") + " FTM"
+    document.querySelector("#total-delegated-percent").innerText = numeral(general.totalDelegatedPercent).format("0.00%")
+    document.querySelector("#total-staked-sum").innerText = numeral(general.totalStakedSum).format("0,0") + " FTM"
+    document.querySelector("#total-staked-percent").innerText = numeral(general.totalStakedPercent).format("0.00%")
+    document.querySelector("#total-unbonding-sum").innerText = numeral(general.totalUnbondingSum).format("0,0") + " FTM"
+    document.querySelector("#total-unbonding-percent").innerText = numeral(general.totalUnbondingPercent).format("0.00%")
+
+    const totalStakedPercent = numeral(general.totalStakedPercent).format("0.00%")
+    const progressBar = document.querySelector(".progress-bar")
+    progressBar.innerText = totalStakedPercent
+    progressBar.setAttribute("style", `width: ${totalStakedPercent}`)
+    progressBar.setAttribute("aria-valuenow", totalStakedPercent.replace("%", ""))
+    document.querySelector("#circulating-supply").innerText = numeral(general.circulatingSupply).format("0,0")
+
+    const rewardUnlockDate = new Date()
+    rewardUnlockDate.setTime(general.rewardUnlockDate * 1000)
+
+    document.querySelector("#reward-unlock-date").innerText = rewardUnlockDate.toLocaleDateString()
+    document.querySelector("#reward-unlock-percent").innerText = numeral(general.rewardUnlockPercent).format("0.00%")
+  })
+}
+
 function updateValidators() {
   const hideUnknown = window.localStorage.getItem("hideUnknown");
 
   // Fetch validators from backend
-  axios.get("https://fantomstaker.info/api/v1/validators").then((response) => {
+  axios.get("http://localhost:8000/api/v1/validators").then((response) => {
     let validators = response.data;
 
     if (hideUnknown == "true") {
@@ -86,6 +114,7 @@ function updateValidators() {
   // Update switch state
   document.querySelector("#hideUnknown").checked = hideUnknown == "true";
 
-  // Update validators
+  // Update data
+  updateGeneral();
   updateValidators();
 })();
