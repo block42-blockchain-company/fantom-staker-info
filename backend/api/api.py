@@ -24,4 +24,5 @@ def kpis():
     return json.dumps(TinyDB('../db.json').table('validators').all())
 
 
-app.run(host='127.0.0.1', port=8000)
+if app.config["DEBUG"]:
+    app.run(host='127.0.0.1', port=8000)
