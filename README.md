@@ -45,7 +45,7 @@ The smart contract is already deployed and can be found on the Fantom Opera Main
 
 ### How it looks like
 
-![image](https://user-images.githubusercontent.com/6087393/72285334-30f08800-3643-11ea-9e68-de7dc54190cc.png)
+![image](https://user-images.githubusercontent.com/6087393/72661569-d016d600-39db-11ea-88fa-3123649dd8f8.png)
 
 Most of the information that is shown is fetched automatically, but there are a few parameters than can be set by validators.
 
