@@ -135,7 +135,6 @@ for stakerId in range(1, numValidators + 1):
     # Calculate the total tokens staked to a validator = selfstaked + delegated
     selfStakedAmount = sfcStakerInfo[5] / 1e18
     delegatedAmount = sfcStakerInfo[7] / 1e18
-    totalStakedAmount = selfStakedAmount + delegatedAmount
 
     # Calculate the available delegation amount for the validator
     availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount
@@ -152,16 +151,19 @@ for stakerId in range(1, numValidators + 1):
     apiStakerInfo = response['data']
 
     isCheater = False
-    delegationWithUnbondingAmount = 0
+    delegationWithInUndelegationAmount = 0
 
     for key, value in apiStakerInfo.items():
         if key == 'isCheater':
             isCheater = value
         if key == 'delegatedMe':
-            delegationWithUnbondingAmount = int(value) / 1e18
+            delegationWithInUndelegationAmount = int(value) / 1e18
 
-    # Calculate current unbonding amount
-    unbondingAmount = delegationWithUnbondingAmount - delegatedAmount
+    # Calculate current in-undelegation amount
+    inUndelegationAmount = delegationWithInUndelegationAmount - delegatedAmount
+
+    # Calculate total staked amount
+    totalStakedAmount = selfStakedAmount + delegatedAmount + inUndelegationAmount
 
     stakers += [{
         'id': stakerId,
@@ -174,7 +176,7 @@ for stakerId in range(1, numValidators + 1):
         'delegatedAmount': delegatedAmount,
         'totalStakedAmount': totalStakedAmount,
         'availableCapacityAmount': availableCapacityAmount,
-        'unbondingAmount': unbondingAmount,
+        'inUndelegationAmount': inUndelegationAmount,
         'stakingPowerPercent': 0,
         'isVerified': isVerified,
         'isCheater': isCheater,
@@ -195,30 +197,30 @@ rewardUnlockPercent = 0.8 if passedPercent >= 0.8 else 0.8 - passedPercent
 # Calculate totals
 totalSelfStakedSum = sum(staker['selfStakedAmount'] for staker in stakers)
 totalDelegatedSum = sum(staker['delegatedAmount'] for staker in stakers)
-totalStakedSum = totalSelfStakedSum + totalDelegatedSum
-totalUnbondingSum = sum(staker['unbondingAmount'] for staker in stakers)
+totalInUndelegationSum = sum(staker['inUndelegationAmount'] for staker in stakers)
+totalStakedSum = totalSelfStakedSum + totalDelegatedSum + totalInUndelegationSum
 
-# Calculate percentages
+# Calculate total percentages
 totalSelfStakedPercent = totalSelfStakedSum / circulatingSupply
 totalDelegatedPercent = totalDelegatedSum / circulatingSupply
 totalStakedPercent = totalStakedSum / circulatingSupply
-totalUnbondingPercent = totalUnbondingSum / circulatingSupply
+totalInUndelegationPercent = totalInUndelegationSum / circulatingSupply
 
 general = {
     'totalSelfStakedSum': totalSelfStakedSum,
     'totalDelegatedSum': totalDelegatedSum,
     'totalStakedSum': totalStakedSum,
-    'totalUnbondingSum': totalUnbondingSum,
+    'totalInUndelegationSum': totalInUndelegationSum,
     'totalSelfStakedPercent': totalSelfStakedPercent,
     'totalDelegatedPercent': totalDelegatedPercent,
     'totalStakedPercent': totalStakedPercent,
-    'totalUnbondingPercent': totalUnbondingPercent,
+    'totalInUndelegationPercent': totalInUndelegationPercent,
     'circulatingSupply': circulatingSupply,
     'rewardUnlockDate': rewardUnlockDate,
     'rewardUnlockPercent': rewardUnlockPercent
 }
 
-# Calculate staking power percentage for each staker
+# Calculate staking power percentage for each staker based on the total staked
 for staker in stakers:
     staker['stakingPowerPercent'] = staker['totalStakedAmount'] / totalStakedSum
 
