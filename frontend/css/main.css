@@ -97,9 +97,25 @@ h1 {
   font-size: 16px;
 }
 
+@media screen and (max-width: 768px) {
+  .network-info {
+    margin-bottom: 20px;
+  }
+
+  .network-info div {
+    margin-bottom: 15px;
+  }
+}
+
 .progress {
   width: 50%;
   padding: 0px;
+}
+
+@media screen and (max-width: 768px) {
+  .progress {
+    width: 100%;
+  }
 }
 
 .progress-bar {
@@ -114,6 +130,12 @@ h1 {
   width: 100%;
   margin-bottom: 50px;
   margin-top: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .reward-unlock {
+    margin-bottom: 40px;
+  }
 }
 
 .reward-unlock p {
@@ -180,6 +202,12 @@ button:hover {
   margin-bottom: 50px;
 }
 
+@media screen and (max-width: 768px) {
+  .custom-switch {
+    margin-bottom: 40px;
+  }
+}
+
 .custom-control-input:checked~.custom-control-label::before {
   background-color: #666666;
 }
@@ -194,6 +222,12 @@ iframe {
 
 .container {
   max-width: 80%;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    max-width: 100%;
+  } 
 }
 
 .wrap-table {
@@ -395,10 +429,8 @@ iframe {
 
 @media (max-width: 768px) {
   .row {
-    padding-bottom: 18px;
-    padding-top: 30px;
-    padding-right: 15px;
-    margin: 0;
+    margin-left: 0px;
+    margin-right: 0px;
   }
   
   .row .cell {
