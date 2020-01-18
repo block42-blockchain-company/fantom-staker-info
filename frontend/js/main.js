@@ -64,10 +64,19 @@ function updateGeneral() {
     document.querySelector("#total-in-undelegation-percent").innerText = numeral(general.totalInUndelegationPercent).format("0.00%")
 
     const totalStakedPercent = numeral(general.totalStakedPercent).format("0.00%")
-    const progressBar = document.querySelector(".progress-bar")
-    progressBar.innerText = totalStakedPercent
-    progressBar.setAttribute("style", `width: ${totalStakedPercent}`)
-    progressBar.setAttribute("aria-valuenow", totalStakedPercent.replace("%", ""))
+    const totalStakedProgressBar = document.querySelector(".progress-bar-total-staked")
+    totalStakedProgressBar.innerText = totalStakedPercent
+    totalStakedProgressBar.setAttribute("style", `width: ${totalStakedPercent}`)
+    totalStakedProgressBar.setAttribute("aria-valuenow", totalStakedPercent.replace("%", ""))
+
+    let differencePercent = general.rewardUnlockPercent - general.totalStakedPercent
+    differencePercent = differencePercent > 0 ? differencePercent : 0
+    const rewardUnlockPercent = numeral(general.rewardUnlockPercent).format("0.00%")
+    const rewardUnlockProgressBar = document.querySelector(".progress-bar-reward-unlock")
+    rewardUnlockProgressBar.innerText = rewardUnlockPercent
+    rewardUnlockProgressBar.setAttribute("style", `width: ${numeral(differencePercent).format("0.00%")}`)
+    rewardUnlockProgressBar.setAttribute("aria-valuenow", rewardUnlockPercent.replace("%", ""))
+
     document.querySelector("#circulating-supply").innerText = numeral(general.circulatingSupply).format("0,0")
 
     const rewardUnlockDate = new Date()

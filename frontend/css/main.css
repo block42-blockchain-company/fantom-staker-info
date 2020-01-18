@@ -112,6 +112,14 @@ h1 {
   padding: 0px;
 }
 
+.progress-bar-total-staked {
+  background-color: darkslategray;
+}
+
+.progress-bar-reward-unlock {
+  background-color: lightslategray;
+}
+
 @media screen and (max-width: 768px) {
   .progress {
     width: 100%;
@@ -121,10 +129,6 @@ h1 {
     padding-left: 20px;
     padding-right: 20px;
   }
-}
-
-.progress-bar {
-  background-color: #666666;
 }
 
 .progress-info {
@@ -219,7 +223,7 @@ button:hover {
 }
 
 .custom-control-input:checked~.custom-control-label::before {
-  background-color: #666666;
+  background-color: darkslategray;
 }
 
 iframe {
