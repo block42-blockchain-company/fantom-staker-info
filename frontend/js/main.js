@@ -21,7 +21,7 @@ function addValidator(validator) {
   <div class="cell" data-title="Delegated"><p>${numeral(validator.delegatedAmount).format("0,0")} FTM</p></div>
   <div class="cell" data-title="Total Staked"><p>${numeral(validator.totalStakedAmount).format("0,0")} FTM</p></div>
   <div class="cell" data-title="Available Capacity"><p>${numeral(validator.availableCapacityAmount).format("0,0")} FTM</p></div>
-  <div class="cell text-light" data-title="Unbonding"><p>${numeral(validator.unbondingAmount).format("0,0")} FTM</p></div>
+  <div class="cell text-light" data-title="In Undelegation"><p>${numeral(validator.inUndelegationAmount).format("0,0")} FTM</p></div>
   <div class="cell text-light" data-title="Staking Power"><p>${numeral(validator.stakingPowerPercent).format("0.00%")}</p></div>
   <div class="cell links" data-title="Links">
   ${validator.website || validator.contact ? `
@@ -60,8 +60,8 @@ function updateGeneral() {
     document.querySelector("#total-delegated-percent").innerText = numeral(general.totalDelegatedPercent).format("0.00%")
     document.querySelector("#total-staked-sum").innerText = numeral(general.totalStakedSum).format("0,0") + " FTM"
     document.querySelector("#total-staked-percent").innerText = numeral(general.totalStakedPercent).format("0.00%")
-    document.querySelector("#total-unbonding-sum").innerText = numeral(general.totalUnbondingSum).format("0,0") + " FTM"
-    document.querySelector("#total-unbonding-percent").innerText = numeral(general.totalUnbondingPercent).format("0.00%")
+    document.querySelector("#total-in-undelegation-sum").innerText = numeral(general.totalInUndelegationSum).format("0,0") + " FTM"
+    document.querySelector("#total-in-undelegation-percent").innerText = numeral(general.totalInUndelegationPercent).format("0.00%")
 
     const totalStakedPercent = numeral(general.totalStakedPercent).format("0.00%")
     const progressBar = document.querySelector(".progress-bar")
