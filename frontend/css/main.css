@@ -99,7 +99,7 @@ h1 {
 
 @media screen and (max-width: 768px) {
   .network-info {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
   }
 
   .network-info div {
@@ -115,6 +115,11 @@ h1 {
 @media screen and (max-width: 768px) {
   .progress {
     width: 100%;
+  }
+
+  .progress-row {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
@@ -134,6 +139,7 @@ h1 {
 
 @media screen and (max-width: 768px) {
   .reward-unlock {
+    margin-top: 40px;
     margin-bottom: 40px;
   }
 }
@@ -157,6 +163,10 @@ h1 {
   .lead {
     padding-left: 0px;
     padding-right: 0px;
+  }
+
+  .lead.note span {
+    display: block;
   }
 }
 
