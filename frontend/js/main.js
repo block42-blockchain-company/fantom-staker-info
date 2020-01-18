@@ -51,7 +51,7 @@ function addValidator(validator) {
 }
 
 function updateGeneral() {
-  axios.get("http://localhost:8000/api/v1/general").then((response) => {
+  axios.get("https://fantomstaker.info/api/v1/general").then((response) => {
     const general = response.data;
 
     document.querySelector("#total-self-staked-sum").innerText = numeral(general.totalSelfStakedSum).format("0,0") + " FTM"
@@ -82,7 +82,7 @@ function updateValidators() {
   const hideUnknown = window.localStorage.getItem("hideUnknown");
 
   // Fetch validators from backend
-  axios.get("http://localhost:8000/api/v1/validators").then((response) => {
+  axios.get("https://fantomstaker.info/api/v1/validators").then((response) => {
     let validators = response.data;
 
     if (hideUnknown == "true") {
