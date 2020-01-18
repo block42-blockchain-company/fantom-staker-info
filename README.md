@@ -22,7 +22,7 @@
 
 A dApp on the Fantom Opera network to browse information about its validators.
 
-![image](https://user-images.githubusercontent.com/6087393/72661557-b2497100-39db-11ea-8e2f-fbf28969edd7.png)
+![image](https://user-images.githubusercontent.com/6087393/72662223-f0975e00-39e4-11ea-87b1-374b6ff29ba0.png)
 
 Find the dApp here: https://fantomstaker.info
 
@@ -45,7 +45,7 @@ The smart contract is already deployed and can be found on the Fantom Opera Main
 
 ### How it looks like
 
-![image](https://user-images.githubusercontent.com/6087393/72661569-d016d600-39db-11ea-88fa-3123649dd8f8.png)
+![image](https://user-images.githubusercontent.com/6087393/72662226-f7be6c00-39e4-11ea-9a84-3aab9699d695.png)
 
 Most of the information that is shown is fetched automatically, but there are a few parameters than can be set by validators.
 
