@@ -24,7 +24,7 @@
   <script defer src="fonts/fontawesome-free-5.12.0-web/js/all.js"></script>
 
   <!-- Custom styles for this template -->
-  <link href="css/main.css?hash=1579434371" rel="stylesheet">
+  <link href="css/main.css?hash=1579446171" rel="stylesheet">
 
   <!-- Favicon -->
   <link rel='icon' href="images/favicon.png" type="image/x-icon"/>
@@ -129,14 +129,14 @@
         <div class="table">
           
           <div class="row header">
-            <div class="cell">ID</div>
+            <div class="cell"><button class="text-white" sort-key="id" onclick="sort()">ID <span></span></button></div>
             <div class="cell">Name</div>
-            <div class="cell">Self-Staked</div>
-            <div class="cell">Delegated</div>
-            <div class="cell">In Undelegation</div>
-            <div class="cell">Total Staked</div>
-            <div class="cell">Available Capacity</div>
-            <div class="cell">Staking Power</div>
+            <div class="cell"><button class="text-white" sort-key="selfStakedAmount" onclick="sort()">Self-Staked <span></span></button></div>
+            <div class="cell"><button class="text-white" sort-key="delegatedAmount" onclick="sort()">Delegated <span></span></button></div>
+            <div class="cell"><button class="text-white" sort-key="inUndelegationAmount" onclick="sort()">In Undelegation <span></span></button></div>
+            <div class="cell"><button class="text-white" sort-key="totalStakedAmount" onclick="sort()">Total Staked <span></span></button></div>
+            <div class="cell"><button class="text-white" sort-key="availableCapacityAmount" onclick="sort()">Available Capacity <span></span></button></div>
+            <div class="cell"><button class="text-white" sort-key="stakingPowerPercent" onclick="sort()">Staking Power <span></span></button></div>
             <div class="cell">Links</div>
           </div>
           
@@ -178,7 +178,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 
   <!-- Custom JavaScript -->
-  <script src="js/main.js?hash=1579434371"></script>
+  <script src="js/main.js?hash=1579446171"></script>
 
 </body>
 </html>

@@ -89,16 +89,13 @@ function updateGeneral() {
 
 function updateValidators() {
   const hideUnknown = window.localStorage.getItem("hideUnknown");
+  const sortBy = JSON.parse(window.localStorage.getItem("sortBy"));
 
   // Fetch validators from backend
-  axios.get("https://fantomstaker.info/api/v1/validators").then((response) => {
-    let validators = response.data;
+  axios.get("http://127.0.0.1:8000/api/v1/validators?hideUnknown=" + hideUnknown + "&sortKey=" + sortBy.sortKey + "&order=" + sortBy.order).then((response) => {
+    const validators = response.data;
 
-    if (hideUnknown == "true") {
-      validators = validators.filter((validator) => validator.name)
-    }
-
-    // Get all table rows 
+    // Get all table rows
     const tableRows = document.querySelector(".table").children;
     const tableRowCount = tableRows.length;
 
@@ -112,16 +109,53 @@ function updateValidators() {
   })
 }
 
+function sort() {
+  const element = event.srcElement;
+  const sortKey = element.getAttribute("sort-key");
+
+  // Get previous sort
+  const sortBy = JSON.parse(window.localStorage.getItem("sortBy"));
+  const previousSortKey = sortBy.sortKey;
+  const previousOrder = sortBy.order;
+  
+  // Change/Toggle sort order and update sort key
+  sortBy.order = (previousSortKey == sortKey && previousOrder == 'desc') ? 'asc' : 'desc';
+  sortBy.sortKey = sortKey;
+
+  // Update local storage
+  window.localStorage.setItem("sortBy", JSON.stringify(sortBy));
+
+  // Remove sort indicator from previous element
+  document.querySelector("div .row.header .cell svg").parentElement.innerHTML = ""
+
+  // Apply sort indicator to current element
+  element.querySelector("span").innerHTML = `<i class='fas fa-sort-${sortBy.order == 'desc' ? 'down' : 'up'}'></i>`
+
+  // Update data
+  updateValidators();
+}
+
 (function ($) {
   let hideUnknown = window.localStorage.getItem("hideUnknown");
+  let sortBy = JSON.parse(window.localStorage.getItem("sortBy"));
 
+  // Update local storage
   if (hideUnknown === null) {
-    window.localStorage.setItem("hideUnknown", "true");
     hideUnknown = "true";
+    window.localStorage.setItem("hideUnknown", hideUnknown);
+  }
+
+  // Update local storage
+  if (sortBy === null) {
+    sortBy = { sortKey: 'id', order: 'asc' };
+    window.localStorage.setItem("sortBy", JSON.stringify(sortBy));
   }
 
   // Update switch state
   document.querySelector("#hideUnknown").checked = hideUnknown == "true";
+
+  // Update sort indicator
+  document.querySelector(`div .row.header .cell [sort-key='${sortBy.sortKey}'] span`).innerHTML = `<i class='fas fa-sort-${sortBy.order == 'desc' ? 'down' : 'up'}'></i>`
 
   // Update data
   updateGeneral();
