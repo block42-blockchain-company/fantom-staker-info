@@ -67,6 +67,30 @@ h1 {
   margin-bottom: 40px;
 }
 
+.navbar {
+  padding-top: 30px;
+  margin-bottom: 100px;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    margin-bottom: 40px;
+  }
+
+  .navbar-nav {
+    text-align: center;
+  }
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 30px;
+}
+
+.nav-item {
+  font-size: 20px;
+}
+
 .lead {
   padding-left: 50px;
   padding-right: 50px;
