@@ -92,7 +92,7 @@ function updateValidators() {
   const sortBy = JSON.parse(window.localStorage.getItem("sortBy"));
 
   // Fetch validators from backend
-  axios.get("http://127.0.0.1:8000/api/v1/validators?hideUnknown=" + hideUnknown + "&sortKey=" + sortBy.sortKey + "&order=" + sortBy.order).then((response) => {
+  axios.get("https://fantomstaker.info/api/v1/validators?hideUnknown=" + hideUnknown + "&sortKey=" + sortBy.sortKey + "&order=" + sortBy.order).then((response) => {
     const validators = response.data;
 
     // Get all table rows
