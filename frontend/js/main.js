@@ -116,8 +116,8 @@ function updateValidators() {
   let hideUnknown = window.localStorage.getItem("hideUnknown");
 
   if (hideUnknown === null) {
-    window.localStorage.setItem("hideUnknown", "false");
-    hideUnknown = "false";
+    window.localStorage.setItem("hideUnknown", "true");
+    hideUnknown = "true";
   }
 
   // Update switch state
