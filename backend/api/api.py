@@ -26,13 +26,15 @@ def general():
 
 @app.route('/api/v1/validators', methods=['GET'])
 def validators():
+    # TODO@C: Remove 'onlyKnown' (backwards compatibility for now)
+    onlyKnown = request.args.get('onlyKnown', default='false', type=str).lower()
     hideUnknown = request.args.get('hideUnknown', default='false', type=str).lower()
     sortKey = request.args.get('sortKey', default=None, type=str)
     order = request.args.get('order', default='asc', type=str)
 
     validators = TinyDB('../db.json').table('validators')
 
-    if hideUnknown == 'true':
+    if hideUnknown == 'true' or onlyKnown == 'true':
         data = validators.search(Query().name != '')
     else:
         data = validators.all()
