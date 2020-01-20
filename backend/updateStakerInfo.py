@@ -109,6 +109,9 @@ circulatingSupply = int(etherscanResponse["result"]) / 1e18
 # Init stakers array
 stakers = []
 
+# Init delegators array
+delegators = []
+
 # Get infos for all validators
 for stakerId in range(1, numValidators + 1):
     # Get the validator configUrl
@@ -165,6 +168,16 @@ for stakerId in range(1, numValidators + 1):
     # Calculate total staked amount
     totalStakedAmount = selfStakedAmount + delegatedAmount + inUndelegationAmount
 
+    # Get delegation addresses
+    delegatorAPI = "https://api.fantom.network/api/v1/delegator/staker/" + str(stakerId)
+    delegatorResponse = json.loads(urllib.request.urlopen(delegatorAPI).read().decode())
+    delegatorAddresses = delegatorResponse["data"]["delegators"]
+
+    delegators += [{
+        "id": stakerId,
+        "delegators": delegatorAddresses
+    }]
+
     stakers += [{
         "id": stakerId,
         "name": name,
@@ -206,6 +219,15 @@ totalDelegatedPercent = totalDelegatedSum / circulatingSupply
 totalStakedPercent = totalStakedSum / circulatingSupply
 totalInUndelegationPercent = totalInUndelegationSum / circulatingSupply
 
+# Get current timestamp
+lastUpdated = datetime.timestamp(datetime.now())
+
+# Calculate ROI
+currentSealedEpoch = sfcContract.functions.currentSealedEpoch().call()
+epochSnapshot = sfcContract.functions.epochSnapshots(currentSealedEpoch).call()
+# roi = rewards per second / total staked * number of yearly seconds
+roi = (epochSnapshot[5]/1e18) / (epochSnapshot[6]/1e18 + epochSnapshot[7]/1e18) * 31536000
+
 general = {
     "totalSelfStakedSum": totalSelfStakedSum,
     "totalDelegatedSum": totalDelegatedSum,
@@ -217,7 +239,9 @@ general = {
     "totalInUndelegationPercent": totalInUndelegationPercent,
     "circulatingSupply": circulatingSupply,
     "rewardUnlockDate": rewardUnlockDate,
-    "rewardUnlockPercent": rewardUnlockPercent
+    "rewardUnlockPercent": rewardUnlockPercent,
+    "lastUpdated": lastUpdated,
+    "roi": roi
 }
 
 # Calculate staking power percentage for each staker based on the total staked
@@ -229,3 +253,4 @@ db = TinyDB("./db.json")
 db.purge_tables()
 db.table("general").insert(general)
 db.table("validators").insert_multiple(stakers)
+db.table("delegators").insert_multiple(delegators)
