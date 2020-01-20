@@ -219,14 +219,15 @@ totalDelegatedPercent = totalDelegatedSum / circulatingSupply
 totalStakedPercent = totalStakedSum / circulatingSupply
 totalInUndelegationPercent = totalInUndelegationSum / circulatingSupply
 
-# Get current timestamp
-lastUpdated = datetime.timestamp(datetime.now())
-
 # Calculate ROI
 currentSealedEpoch = sfcContract.functions.currentSealedEpoch().call()
 epochSnapshot = sfcContract.functions.epochSnapshots(currentSealedEpoch).call()
-# roi = rewards per second / total staked * number of yearly seconds * (1-validator fees)
-roiDelegator = (epochSnapshot[5]/1e18) / (epochSnapshot[6]/1e18 + epochSnapshot[7]/1e18) * 31536000 * 0.85
+epochBaseRewardPerSecond = epochSnapshot[5] / 1e18
+epochStakeTotalAmount = epochSnapshot[6] / 1e18
+epochDelegationsTotalAmount = epochSnapshot[7] / 1e18
+oneYearInSeconds = 60 * 60 * 24 * 365
+# roi = (epoch rewards per second / epoch total staked) * number seconds in a year * (1 - validator fees)
+roi = (epochBaseRewardPerSecond / (epochStakeTotalAmount + epochDelegationsTotalAmount)) * oneYearInSeconds * 0.85
 
 general = {
     "totalSelfStakedSum": totalSelfStakedSum,
@@ -240,8 +241,8 @@ general = {
     "circulatingSupply": circulatingSupply,
     "rewardUnlockDate": rewardUnlockDate,
     "rewardUnlockPercent": rewardUnlockPercent,
-    "lastUpdated": lastUpdated,
-    "roiDelegator": roiDelegator
+    "roi": roi,
+    "lastUpdated": datetime.timestamp(datetime.now())
 }
 
 # Calculate staking power percentage for each staker based on the total staked
