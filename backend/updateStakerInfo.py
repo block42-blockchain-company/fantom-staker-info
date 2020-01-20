@@ -225,8 +225,8 @@ lastUpdated = datetime.timestamp(datetime.now())
 # Calculate ROI
 currentSealedEpoch = sfcContract.functions.currentSealedEpoch().call()
 epochSnapshot = sfcContract.functions.epochSnapshots(currentSealedEpoch).call()
-# roi = rewards per second / total staked * number of yearly seconds
-roi = (epochSnapshot[5]/1e18) / (epochSnapshot[6]/1e18 + epochSnapshot[7]/1e18) * 31536000
+# roi = rewards per second / total staked * number of yearly seconds * (1-validator fees)
+roiDelegator = (epochSnapshot[5]/1e18) / (epochSnapshot[6]/1e18 + epochSnapshot[7]/1e18) * 31536000 * 0.85
 
 general = {
     "totalSelfStakedSum": totalSelfStakedSum,
@@ -241,7 +241,7 @@ general = {
     "rewardUnlockDate": rewardUnlockDate,
     "rewardUnlockPercent": rewardUnlockPercent,
     "lastUpdated": lastUpdated,
-    "roi": roi
+    "roiDelegator": roiDelegator
 }
 
 # Calculate staking power percentage for each staker based on the total staked
