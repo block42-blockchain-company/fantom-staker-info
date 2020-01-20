@@ -242,7 +242,7 @@ general = {
     "rewardUnlockDate": rewardUnlockDate,
     "rewardUnlockPercent": rewardUnlockPercent,
     "roi": roi,
-    "lastUpdated": datetime.timestamp(datetime.now())
+    "lastUpdated": int(datetime.now().timestamp())
 }
 
 # Calculate staking power percentage for each staker based on the total staked
