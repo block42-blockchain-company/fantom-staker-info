@@ -1,90 +1,6 @@
 import json
-import urllib.request
-
 from tinydb import TinyDB
 from web3 import Web3
-from datetime import datetime
-
-bootstrapInfoMap = {
-    13: {
-        "name": "Fantom Vietnam",
-        "website": "https://fantomviet.com",
-    },
-    15: {
-        "name": "Fantom Validator",
-        "website": "https://www.fantomvalidator.com",
-    },
-    16: {
-        "name": "bu1137",
-        "website": "https://keybase.io/nickai",
-    },
-    17: {
-        "name": "GoFantom",
-        "website": "https://gofantom.net",
-    },
-    18: {
-        "name": "GoStake Network",
-        "website": "https://gostake.com",
-    },
-    19: {
-        "name": "Fantom Ukraine",
-        "website": "",
-    },
-    20: {
-        "name": "Binary Fintech Group",
-        "website": "http://binaryfin.com",
-    },
-    21: {
-        "name": "Fantom Global",
-        "website": "https://fantom.global",
-    },
-    22: {
-        "name": "Fantom Russian",
-        "website": "",
-    },
-    24: {
-        "name": "lopalcar",
-        "website": "https://fantomstakers.com",
-    },
-    27: {
-        "name": "Cryptoast.io",
-        "website": "https://cryptoast.io",
-    },
-    28: {
-        "name": "Hyperblocks",
-        "website": "https://hyperblocks.pro",
-    }
-}
-
-
-def parseConfig(configUrl):
-    response = urllib.request.urlopen(configUrl)
-
-    if response.code != 200:
-        return "", "", "", "", False
-
-    try:
-        config = json.loads(response.read().decode())
-    except json.decoder.JSONDecodeError:
-        return "", "", "", "", False
-
-    name = ""
-    logoUrl = ""
-    website = ""
-    contact = ""
-
-    for key, value in config.items():
-        if key == "name":
-            name = value
-        elif key == "website":
-            website = value
-        elif key == "contact":
-            contact = value
-        elif key == "logoUrl":
-            logoUrl = value
-
-    return name, logoUrl, website, contact, True
-
 
 # Init web3
 web3 = Web3(Web3.HTTPProvider("https://rpc.fantom.network"))
@@ -95,205 +11,30 @@ sfcABI = json.loads(
 sfcAddress = web3.toChecksumAddress("0xfc00face00000000000000000000000000000000")
 sfcContract = web3.eth.contract(address=sfcAddress, abi=sfcABI)
 
-# StakerInfo Smart Contract
-stakerInfoABI = json.loads(
-    '[{"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"stakerID","type":"uint256"}],"name":"InfoUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"stakerInfos","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"name":"updateStakerContractAddress","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"string","name":"_configUrl","type":"string"}],"name":"updateInfo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_stakerID","type":"uint256"}],"name":"getInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}]')
-stakerInfoAddress = web3.toChecksumAddress("0x92ffad75b8a942d149621a39502cdd8ad1dd57b4")
-stakerInfoContract = web3.eth.contract(address=stakerInfoAddress, abi=stakerInfoABI)
-
-# Get number of network validators
-numValidators = sfcContract.functions.stakersNum().call()
-
-# Get circulating supply from Etherscan API
-etherscanAPI = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x4e15361fd6b4bb609fa63c81a2be19d873717870"
-etherscanResponse = json.loads(urllib.request.urlopen(etherscanAPI).read().decode())
-circulatingSupply = int(etherscanResponse["result"]) / 1e18
-
-# Init stakers array
-stakers = []
-
-# Init delegators array
-delegators = []
-
-# open Database
 db = TinyDB("./db.json")
+table = db.table("delegators")
 
-validatorsextendedTable = db.table("validatorsextended")
-validatorsextended = validatorsextendedTable.all()
+numDelegations = 0
+amountInUndelegation = 0
+amountInDelegation = 0
+validatorsextended = []
 
-# Get infos for all validators
-for stakerId in range(1, numValidators + 1):
-    # Get the validator configUrl
-    configUrl = stakerInfoContract.functions.stakerInfos(stakerId).call()
-
-    name = ""
-    logoUrl = ""
-    website = ""
-    contact = ""
-    isVerified = configUrl is not ""
-
-    if configUrl is not "":
-        # Get info from config url
-        (name, logoUrl, website, contact, isVerified) = parseConfig(configUrl)
-    elif stakerId in bootstrapInfoMap:
-        # No config in smart contract found, use bootstrap values
-        name = bootstrapInfoMap[stakerId]["name"]
-        website = bootstrapInfoMap[stakerId]["website"]
-
-    # Get the public variable stakers which includes some validator staking information
-    sfcStakerInfo = sfcContract.functions.stakers(stakerId).call()
-
-    # Calculate the total tokens staked to a validator = selfstaked + delegated
-    selfStakedAmount = sfcStakerInfo[5] / 1e18
-    delegatedAmount = sfcStakerInfo[7] / 1e18
-
-    # Calculate the available delegation amount for the validator
-    availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount
-
-    # Calculate the available delegation amount
-    availableDelegationPercent = availableCapacityAmount / (selfStakedAmount * 15)
-
-    # Get deactivation info; if deactivatedTime != 0 then a staker has prepared to withdraw his stake
-    isUnstaking = sfcStakerInfo[4] != 0
-
-    # Get additional info from fantom.network api
-    stakerApiUrl = "https://api.fantom.network/api/v1/staker/id/" + str(stakerId) + "?verbosity=2"
-    response = json.loads(urllib.request.urlopen(stakerApiUrl).read().decode())
-    apiStakerInfo = response["data"]
-
-    isCheater = False
-    delegationWithInUndelegationAmount = 0
-
-    for key, value in apiStakerInfo.items():
-        if key == "isCheater":
-            isCheater = value
-        if key == "delegatedMe":
-            delegationWithInUndelegationAmount = int(value) / 1e18
-
-    # Calculate current in-undelegation amount
-    #wrong info from API
-    inUndelegationAmount = delegationWithInUndelegationAmount - delegatedAmount
-
-    #correct info from Smart Contract
-    for validator in validatorsextended:
-        vid = validator["validatorID"]
-        if vid == stakerId:
-            inUndelegationAmount = int(validator["inUndelegation"]) / 1e18
-            break
-
-    # Calculate total staked amount
-    totalStakedAmount = selfStakedAmount + delegatedAmount + inUndelegationAmount
-
-    stakers += [{
-        "id": stakerId,
-        "name": name,
-        "logoUrl": logoUrl,
-        "address": sfcStakerInfo[8],
-        "website": website,
-        "contact": contact,
-        "selfStakedAmount": selfStakedAmount,
-        "delegatedAmount": delegatedAmount,
-        "totalStakedAmount": totalStakedAmount,
-        "availableCapacityAmount": availableCapacityAmount,
-        "inUndelegationAmount": inUndelegationAmount,
-        "stakingPowerPercent": 0,
-        "isVerified": isVerified,
-        "isCheater": isCheater,
-        "isUnstaking": isUnstaking
+for validator in table.all():
+    validatorID = validator["id"]
+    for delegator in validator["delegators"]:
+        numDelegations += 1
+        delegation = sfcContract.functions.delegations(delegator).call()
+        deactivatedTime = delegation[3]
+        amount = delegation[4]
+        if deactivatedTime != 0:
+            amountInUndelegation += amount
+        else:
+            amountInDelegation += amount
+    validatorsextended += [{
+        "validatorID": validatorID,
+        "inUndelegation": amountInUndelegation,
+        "inDelegation": amountInDelegation
     }]
 
-    # Get delegation addresses
-    delegatorAPI = "https://api.fantom.network/api/v1/delegator/staker/" + str(stakerId)
-    delegatorResponse = json.loads(urllib.request.urlopen(delegatorAPI).read().decode())
-    delegatorAddresses = delegatorResponse["data"]["delegators"]
-
-    delegators += [{
-        "id": stakerId,
-        "delegators": delegatorAddresses
-    }]
-
-# Calculate reward unlock date
-unbondingStartDate = sfcContract.functions.unbondingStartDate().call()
-unbondingPeriod = sfcContract.functions.unbondingPeriod().call()
-unbondingUnlockPeriod = sfcContract.functions.unbondingUnlockPeriod().call()
-rewardUnlockDate = unbondingStartDate + unbondingUnlockPeriod
-
-# Calculate target reward unlock percentage
-passedTime = int(datetime.now().timestamp() - unbondingStartDate)
-passedPercent = passedTime / unbondingPeriod
-rewardUnlockPercent = 0.8 if passedPercent >= 0.8 else 0.8 - passedPercent
-
-# Calculate totals
-totalSelfStakedSum = sum(staker["selfStakedAmount"] for staker in stakers)
-totalDelegatedSum = sum(staker["delegatedAmount"] for staker in stakers)
-totalInUndelegationSum = sum(staker["inUndelegationAmount"] for staker in stakers)
-totalStakedSum = totalSelfStakedSum + totalDelegatedSum + totalInUndelegationSum
-
-# Calculate total percentages
-totalSelfStakedPercent = totalSelfStakedSum / circulatingSupply
-totalDelegatedPercent = totalDelegatedSum / circulatingSupply
-totalStakedPercent = totalStakedSum / circulatingSupply
-totalInUndelegationPercent = totalInUndelegationSum / circulatingSupply
-
-# Calculate ROI
-currentSealedEpoch = sfcContract.functions.currentSealedEpoch().call()
-epochSnapshot = sfcContract.functions.epochSnapshots(currentSealedEpoch).call()
-epochBaseRewardPerSecond = epochSnapshot[5] / 1e18
-epochStakeTotalAmount = epochSnapshot[6] / 1e18
-epochDelegationsTotalAmount = epochSnapshot[7] / 1e18
-oneYearInSeconds = 60 * 60 * 24 * 365
-# roi = (epoch rewards per second / epoch total staked) * number seconds in a year * (1 - validator fees)
-roi = (epochBaseRewardPerSecond / (epochStakeTotalAmount + epochDelegationsTotalAmount)) * oneYearInSeconds * 0.85
-
-general = {
-    "totalSelfStakedSum": totalSelfStakedSum,
-    "totalDelegatedSum": totalDelegatedSum,
-    "totalStakedSum": totalStakedSum,
-    "totalInUndelegationSum": totalInUndelegationSum,
-    "totalSelfStakedPercent": totalSelfStakedPercent,
-    "totalDelegatedPercent": totalDelegatedPercent,
-    "totalStakedPercent": totalStakedPercent,
-    "totalInUndelegationPercent": totalInUndelegationPercent,
-    "circulatingSupply": circulatingSupply,
-    "rewardUnlockDate": rewardUnlockDate,
-    "rewardUnlockPercent": rewardUnlockPercent,
-    "roi": roi,
-    "lastUpdated": int(datetime.now().timestamp())
-}
-
-# Calculate staking power percentage for each staker based on the total staked
-for staker in stakers:
-    staker["stakingPowerPercent"] = staker["totalStakedAmount"] / totalStakedSum
-
-# get latest epoch
-latestEpoch = sfcContract.functions.currentSealedEpoch().call()
-
-# check stored epoch data and get max stored epoch
-maxEpoch = 0
-epochTable = db.table("epochs")
-for epoch in epochTable.all():
-    curEpochID = epoch["epochID"]
-    if maxEpoch < curEpochID:
-        maxEpoch = curEpochID
-
-# Add new epochs
-epochs = []
-if maxEpoch < latestEpoch:
-    for epochID in range(maxEpoch + 1, latestEpoch + 1):
-        epochSnapshot = sfcContract.functions.epochSnapshots(epochID).call()
-        epochs += [{
-            "epochID": epochID,
-            "endTime": epochSnapshot[0],
-            "duration": epochSnapshot[1],
-            "baseRewardPerSecond": epochSnapshot[5]
-        }]
-
-# Bulk update database
-db.purge_table("general")
-db.purge_table("validators")
-db.purge_table("delegators")
-
-db.table("general").insert(general)
-db.table("validators").insert_multiple(stakers)
-db.table("delegators").insert_multiple(delegators)
-db.table("epochs").insert_multiple(epochs)
+db.purge_table("validatorsextended")
+db.table("validatorsextended").insert_multiple(validatorsextended)
