@@ -168,16 +168,6 @@ for stakerId in range(1, numValidators + 1):
     # Calculate total staked amount
     totalStakedAmount = selfStakedAmount + delegatedAmount + inUndelegationAmount
 
-    # Get delegation addresses
-    delegatorAPI = "https://api.fantom.network/api/v1/delegator/staker/" + str(stakerId)
-    delegatorResponse = json.loads(urllib.request.urlopen(delegatorAPI).read().decode())
-    delegatorAddresses = delegatorResponse["data"]["delegators"]
-
-    delegators += [{
-        "id": stakerId,
-        "delegators": delegatorAddresses
-    }]
-
     stakers += [{
         "id": stakerId,
         "name": name,
@@ -194,6 +184,16 @@ for stakerId in range(1, numValidators + 1):
         "isVerified": isVerified,
         "isCheater": isCheater,
         "isUnstaking": isUnstaking
+    }]
+
+    # Get delegation addresses
+    delegatorAPI = "https://api.fantom.network/api/v1/delegator/staker/" + str(stakerId)
+    delegatorResponse = json.loads(urllib.request.urlopen(delegatorAPI).read().decode())
+    delegatorAddresses = delegatorResponse["data"]["delegators"]
+
+    delegators += [{
+        "id": stakerId,
+        "delegators": delegatorAddresses
     }]
 
 # Calculate reward unlock date
@@ -249,9 +249,39 @@ general = {
 for staker in stakers:
     staker["stakingPowerPercent"] = staker["totalStakedAmount"] / totalStakedSum
 
-# Bulk update database
+# open Database
 db = TinyDB("./db.json")
-db.purge_tables()
+
+# get latest epoch
+latestEpoch = sfcContract.functions.currentSealedEpoch().call()
+
+# check stored epoch data and get max stored epoch
+maxEpoch = 0
+epochTable = db.table("epochs")
+for epoch in epochTable.all():
+    curEpochID = epoch["epochID"]
+    if maxEpoch < curEpochID:
+        maxEpoch = curEpochID
+
+# Add new epochs
+if maxEpoch < latestEpoch:
+    epochs = []
+    for epochID in range(maxEpoch + 1, latestEpoch + 1):
+        epochSnapshot = sfcContract.functions.epochSnapshots(epochID).call()
+        epochs += [{
+            "epochID": epochID,
+            "endTime": epochSnapshot[0],
+            "duration": epochSnapshot[1],
+            "baseRewardPerSecond": epochSnapshot[5]
+        }]
+
+
+# Bulk update database
+db.purge_table("general")
+db.purge_table("validators")
+db.purge_table("delegators")
+
 db.table("general").insert(general)
 db.table("validators").insert_multiple(stakers)
 db.table("delegators").insert_multiple(delegators)
+db.table("epochs").insert_multiple(epochs)
