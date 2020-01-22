@@ -63,7 +63,10 @@ def parseConfig(configUrl):
     if response.code != 200:
         return "", "", "", "", False
 
-    config = json.loads(response.read().decode())
+    try:
+        config = json.loads(response.read().decode())
+    except json.decoder.JSONDecodeError:
+        return "", "", "", "", False
 
     name = ""
     logoUrl = ""
@@ -126,11 +129,10 @@ for stakerId in range(1, numValidators + 1):
     if configUrl is not "":
         # Get info from config url
         (name, logoUrl, website, contact, isVerified) = parseConfig(configUrl)
-    else:
+    elif stakerId in bootstrapInfoMap:
         # No config in smart contract found, use bootstrap values
-        if stakerId in bootstrapInfoMap:
-            name = bootstrapInfoMap[stakerId]["name"]
-            website = bootstrapInfoMap[stakerId]["website"]
+        name = bootstrapInfoMap[stakerId]["name"]
+        website = bootstrapInfoMap[stakerId]["website"]
 
     # Get the public variable stakers which includes some validator staking information
     sfcStakerInfo = sfcContract.functions.stakers(stakerId).call()
@@ -274,7 +276,6 @@ if maxEpoch < latestEpoch:
             "duration": epochSnapshot[1],
             "baseRewardPerSecond": epochSnapshot[5]
         }]
-
 
 # Bulk update database
 db.purge_table("general")
