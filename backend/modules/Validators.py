@@ -16,7 +16,7 @@ class Validators:
     def getAll(self):
         return self.__list
 
-    def add(self, validatorId):
+    def add(self, validatorId, deactivatedDelegations):
         # Get the config url from smart contract
         configUrl = self.__stakerInfo.getConfigUrl(validatorId)
 
@@ -72,7 +72,7 @@ class Validators:
             "delegatedAmount": delegatedAmount,
             "totalStakedAmount": totalStakedAmount,
             "availableCapacityAmount": availableCapacityAmount,
-            "inUndelegationAmount": 0,
+            "inUndelegationAmount": sum(map(lambda address: address["delegation"][4], deactivatedDelegations)),
             "isVerified": isVerified,
             "isCheater": isCheater,
             "isUnstaking": isUnstaking

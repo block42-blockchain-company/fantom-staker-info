@@ -1,6 +1,8 @@
 from queue import Queue
 from threading import Thread
 
+from tinydb import where
+
 
 class Delegations:
     __list = []
@@ -21,9 +23,6 @@ class Delegations:
 
             addressQueue.task_done()
 
-    def getAll(self):
-        return self.__list
-
     def update(self, delegatorAddresses):
         addressQueue = Queue()
 
@@ -41,3 +40,18 @@ class Delegations:
 
         # Update delegations
         self.__db.table("delegations").insert_multiple(self.__list)
+
+    def getAll(self):
+        return self.__list
+
+    def getAllActivate(self):
+        return self.__db.table("delegations").search((where("delegation")[3] == 0))
+
+    def getActivate(self, validatorId):
+        return self.__db.table("delegations").search((where("delegation")[3] == 0) & (where("delegation")[6] == validatorId))
+
+    def getAllDeactivated(self):
+        return self.__db.table("delegations").search((where("delegation")[3] != 0))
+
+    def getDeactivated(self, validatorId):
+        return self.__db.table("delegations").search((where("delegation")[3] != 0) & (where("delegation")[6] == validatorId))

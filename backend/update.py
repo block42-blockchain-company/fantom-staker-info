@@ -20,10 +20,18 @@ stakerInfoContract = StakerInfoContract(web3=web3)
 validators = Validators(sfc=sfcContract, stakerInfo=stakerInfoContract, db=database)
 delegators = Delegators(db=database)
 
-# Update validators and delegators
+# Update delegators
 for validatorId in range(1, sfcContract.getValidatorCount() + 1):
-    validators.add(validatorId)
     delegators.add(validatorId)
+
+# Update delegations
+delegatorAddresses = sum([validator["delegators"] for validator in delegators.getAll()], [])
+delegations = Delegations(sfc=sfcContract, db=database)
+delegations.update(delegatorAddresses)
+
+# Update validators
+for validatorId in range(1, sfcContract.getValidatorCount() + 1):
+    validators.add(validatorId, deactivatedDelegations=delegations.getDeactivated(validatorId))
 
 # Calculate totals
 totalSelfStakedSum = sum(validator["selfStakedAmount"] for validator in validators.getAll())
@@ -37,6 +45,10 @@ totalSelfStakedPercent = totalSelfStakedSum / totalSupply
 totalDelegatedPercent = totalDelegatedSum / totalSupply
 totalInUndelegationPercent = totalInUndelegationSum / totalSupply
 totalStakedPercent = totalStakedSum / totalSupply
+
+# Update epochs
+epochs = Epochs(sfc=sfcContract, db=database)
+epochs.update()
 
 # Update general info
 database.table("general").insert({
@@ -54,12 +66,3 @@ database.table("general").insert({
     "roi": sfcContract.getRoi(),
     "lastUpdated": int(datetime.now().timestamp())
 })
-
-# Update delegations
-delegatorAddresses = sum([validator["delegators"] for validator in delegators.getAll()], [])
-delegations = Delegations(sfc=sfcContract, db=database)
-delegations.update(delegatorAddresses)
-
-# Update epochs
-epochs = Epochs(sfc=sfcContract, db=database)
-epochs.update()
