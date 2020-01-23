@@ -33,7 +33,7 @@ def validators():
 
     validators = TinyDB("../db.json").table("validators")
 
-    if hideUnknown == "true" or onlyKnown == "true":
+    if hideUnknown == "true":
         data = validators.search(where("name") != "")
     else:
         data = validators.all()
