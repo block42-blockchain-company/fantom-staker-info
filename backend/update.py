@@ -67,7 +67,7 @@ database.table("general").insert({
     "rewardUnlockDate": sfcContract.getRewardUnlockDate(),
     "rewardUnlockPercent": sfcContract.getRewardUnlockPercentage(),
     "roi": sfcContract.getRoi(),
-    "lastUpdated": int(datetime.now().timestamp())
+    "lastUpdated": int(datetime.now().timestamp() * 1000)  # in ms
 })
 
 # Update
