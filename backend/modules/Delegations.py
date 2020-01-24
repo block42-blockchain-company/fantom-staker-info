@@ -5,25 +5,24 @@ from tinydb import where
 
 
 class Delegations:
-    __list = []
-
     def __init__(self, sfc, db):
         self.__sfc = sfc
         self.__db = db
+        self.__data = []
 
     def __fetchDelegation(self, addressQueue):
         while True:
             address = addressQueue.get()
             delegation = self.__sfc.getDelegations(address)
 
-            self.__list += [{
+            self.__data += [{
                 "address": address,
                 "delegation": delegation
             }]
 
             addressQueue.task_done()
 
-    def update(self, delegatorAddresses):
+    def sync(self, delegatorAddresses):
         addressQueue = Queue()
 
         # Add addresses to queue
@@ -38,20 +37,23 @@ class Delegations:
         # Wait for all workers to finish
         addressQueue.join()
 
-        # Update delegations
-        self.__db.table("delegations").insert_multiple(self.__list)
+        return self
+
+    def save(self):
+        self.__db.purge_table("delegations")
+        self.__db.table("delegations").insert_multiple(self.__data)
 
     def getAll(self):
-        return self.__list
+        return self.__data
 
     def getAllActivate(self):
-        return self.__db.table("delegations").search((where("delegation")[3] == 0))
+        return filter(lambda address: address["delegation"][3] == 0, self.__data)
 
     def getActivate(self, validatorId):
-        return self.__db.table("delegations").search((where("delegation")[3] == 0) & (where("delegation")[6] == validatorId))
+        return filter(lambda address: address["delegation"][3] == 0 and address["delegation"][6] == validatorId, self.__data)
 
     def getAllDeactivated(self):
-        return self.__db.table("delegations").search((where("delegation")[3] != 0))
+        return filter(lambda address: address["delegation"][3] != 0, self.__data)
 
     def getDeactivated(self, validatorId):
-        return self.__db.table("delegations").search((where("delegation")[3] != 0) & (where("delegation")[6] == validatorId))
+        return filter(lambda address: address["delegation"][3] != 0 and address["delegation"][6] == validatorId, self.__data)

@@ -8,8 +8,9 @@ from modules.StakerInfoContract import StakerInfoContract
 
 from modules.Validators import Validators
 from modules.Delegators import Delegators
-from modules.Epochs import Epochs
 from modules.Delegations import Delegations
+from modules.Epochs import Epochs
+
 
 web3 = Web3().instance()
 database = Database().instance()
@@ -20,24 +21,26 @@ stakerInfoContract = StakerInfoContract(web3=web3)
 validators = Validators(sfc=sfcContract, stakerInfo=stakerInfoContract, db=database)
 delegators = Delegators(db=database)
 
-# Update delegators
+# Sync delegators
 for validatorId in range(1, sfcContract.getValidatorCount() + 1):
-    delegators.add(validatorId)
+    delegators.sync(validatorId=validatorId)
 
-# Update delegations
-delegatorAddresses = sum([validator["delegators"] for validator in delegators.getAll()], [])
-delegations = Delegations(sfc=sfcContract, db=database)
-delegations.update(delegatorAddresses)
+# Sync delegations
+delegatorAddresses = sum([validator["delegators"] for validator in delegators.getAll()], [])  # Flat map
+delegations = Delegations(sfc=sfcContract, db=database).sync(delegatorAddresses=delegatorAddresses)
 
-# Update validators
+# Sync validators
 for validatorId in range(1, sfcContract.getValidatorCount() + 1):
-    validators.add(validatorId, deactivatedDelegations=delegations.getDeactivated(validatorId))
+    validators.sync(validatorId=validatorId, deactivatedDelegations=delegations.getDeactivated(validatorId=validatorId))
 
 # Calculate totals
 totalSelfStakedSum = sum(validator["selfStakedAmount"] for validator in validators.getAll())
 totalDelegatedSum = sum(validator["delegatedAmount"] for validator in validators.getAll())
 totalInUndelegationSum = sum(validator["inUndelegationAmount"] for validator in validators.getAll())
 totalStakedSum = totalSelfStakedSum + totalDelegatedSum + totalInUndelegationSum
+
+# Set staking power
+validators.setStakingPower(totalStakedSum=totalStakedSum)
 
 # Calculate total percentages
 totalSupply = sfcContract.getTotalSupply()
@@ -46,11 +49,11 @@ totalDelegatedPercent = totalDelegatedSum / totalSupply
 totalInUndelegationPercent = totalInUndelegationSum / totalSupply
 totalStakedPercent = totalStakedSum / totalSupply
 
-# Update epochs
-epochs = Epochs(sfc=sfcContract, db=database)
-epochs.update()
+# Sync epochs
+epochs = Epochs(sfc=sfcContract, db=database).sync()
 
-# Update general info
+# Update
+database.purge_table("general")
 database.table("general").insert({
     "totalSelfStakedSum": totalSelfStakedSum,
     "totalDelegatedSum": totalDelegatedSum,
@@ -66,3 +69,9 @@ database.table("general").insert({
     "roi": sfcContract.getRoi(),
     "lastUpdated": int(datetime.now().timestamp())
 })
+
+# Update
+validators.save()
+delegators.save()
+delegations.save()
+epochs.save()

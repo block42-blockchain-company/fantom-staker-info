@@ -2,6 +2,7 @@ class Epochs:
     def __init__(self, sfc, db):
         self.__sfc = sfc
         self.__db = db
+        self.__data = []
 
     def __getLatestSyncedEpochId(self):
         epochs = self.__db.table("epochs")
@@ -15,21 +16,22 @@ class Epochs:
         return latestSyncedEpochId
 
     def getAll(self):
-        return db.table("epochs").all()
+        return self.__data
 
-    def update(self):
+    def sync(self):
         latestSyncedEpochId = self.__getLatestSyncedEpochId()
         latestSealedEpochId = self.__sfc.getCurrentSealedEpochId()
-
-        epochs = []
 
         # Get all new epochs
         for epochId in range(latestSyncedEpochId + 1, latestSealedEpochId + 1):
             epoch = self.__sfc.getEpochSnapshot(epochId)
-            epochs += [{
+
+            self.__data += [{
                 "id": epochId,
                 "epoch": epoch
             }]
 
-        # Update epochs
-        self.__db.table("epochs").insert_multiple(epochs)
+        return self
+
+    def save(self):
+        self.__db.table("epochs").insert_multiple(self.__data)
