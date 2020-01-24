@@ -273,7 +273,7 @@ iframe {
   overflow: hidden;
   margin-left: 0px;
   margin-right: 0px;
-  margin-bottom: 60px;
+  margin-bottom: 45px;
 }
 
 @media screen and (max-width: 768px) {
@@ -498,6 +498,10 @@ iframe {
 footer {
   margin-bottom: 40px;
   width: 100%;
+}
+
+footer .container .row:nth-child(1) {
+  margin-bottom: 45px;
 }
 
 .social {

@@ -63,7 +63,7 @@ database.table("general").insert({
     "totalDelegatedPercent": totalDelegatedPercent,
     "totalInUndelegationPercent": totalInUndelegationPercent,
     "totalStakedPercent": totalStakedPercent,
-    "circulatingSupply": totalSupply,
+    "totalSupply": totalSupply,
     "rewardUnlockDate": sfcContract.getRewardUnlockDate(),
     "rewardUnlockPercent": sfcContract.getRewardUnlockPercentage(),
     "roi": sfcContract.getRoi(),

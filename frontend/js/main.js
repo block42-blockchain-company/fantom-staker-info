@@ -63,12 +63,14 @@ function updateGeneral() {
     document.querySelector("#total-in-undelegation-sum").innerText = numeral(general.totalInUndelegationSum).format("0,0") + " FTM"
     document.querySelector("#total-in-undelegation-percent").innerText = numeral(general.totalInUndelegationPercent).format("0.00%")
 
+    // Total staked progress
     const totalStakedPercent = numeral(general.totalStakedPercent).format("0.00%")
     const totalStakedProgressBar = document.querySelector(".progress-bar-total-staked")
     totalStakedProgressBar.innerText = totalStakedPercent
     totalStakedProgressBar.setAttribute("style", `width: ${totalStakedPercent}`)
     totalStakedProgressBar.setAttribute("aria-valuenow", totalStakedPercent.replace("%", ""))
 
+    // Reward unlock progress
     let differencePercent = general.rewardUnlockPercent - general.totalStakedPercent
     differencePercent = differencePercent > 0 ? differencePercent : 0
     const rewardUnlockPercent = numeral(general.rewardUnlockPercent).format("0.00%")
@@ -77,13 +79,19 @@ function updateGeneral() {
     rewardUnlockProgressBar.setAttribute("style", `width: ${numeral(differencePercent).format("0.00%")}`)
     rewardUnlockProgressBar.setAttribute("aria-valuenow", rewardUnlockPercent.replace("%", ""))
 
-    document.querySelector("#circulating-supply").innerText = numeral(general.circulatingSupply).format("0,0")
+    // Total supply
+    document.querySelector("#total-supply").innerText = numeral(general.totalSupply).format("0,0")
 
+    // Reward unlock
     const rewardUnlockDate = new Date()
     rewardUnlockDate.setTime(general.rewardUnlockDate * 1000)
-
     document.querySelector("#reward-unlock-date").innerText = rewardUnlockDate.toLocaleDateString()
     document.querySelector("#reward-unlock-percent").innerText = numeral(general.rewardUnlockPercent).format("0.00%")
+
+    // Last updated
+    const lastUpdated = new Date()
+    lastUpdated.setTime(general.lastUpdated * 1000)
+    document.querySelector("#last-updated").innerText = lastUpdated.toLocaleString([], { dateStyle: "short", timeStyle: "short" })
   })
 }
 
