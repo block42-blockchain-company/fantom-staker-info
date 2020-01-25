@@ -20,9 +20,9 @@
 
 <br />
 
-A dApp on the Fantom Opera network to browse information about its validators.
+A dapp on Fantom Opera to browse information about the network and its validators.
 
-![image](https://user-images.githubusercontent.com/6087393/72680439-278b7380-3aba-11ea-98df-6655b5232036.png)
+![image](https://user-images.githubusercontent.com/6087393/73124496-5911ac80-3f9c-11ea-897a-4c60e70917f1.png)
 
 Find the dApp here: https://fantomstaker.info
 
