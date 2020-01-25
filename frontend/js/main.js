@@ -58,11 +58,13 @@ function updateGeneral() {
     document.querySelector("#total-self-staked-percent").innerText = numeral(general.totalSelfStakedPercent).format("0.00%")
     document.querySelector("#total-delegated-sum").innerText = numeral(general.totalDelegatedSum).format("0,0") + " FTM"
     document.querySelector("#total-delegated-percent").innerText = numeral(general.totalDelegatedPercent).format("0.00%")
-    document.querySelector("#total-staked-sum").innerText = numeral(general.totalStakedSum).format("0,0") + " FTM"
-    document.querySelector("#total-staked-percent").innerText = numeral(general.totalStakedPercent).format("0.00%")
     document.querySelector("#total-in-undelegation-sum").innerText = numeral(general.totalInUndelegationSum).format("0,0") + " FTM"
     document.querySelector("#total-in-undelegation-percent").innerText = numeral(general.totalInUndelegationPercent).format("0.00%")
-
+    document.querySelector("#total-staked-sum").innerText = numeral(general.totalStakedSum).format("0,0") + " FTM"
+    document.querySelector("#total-staked-percent").innerText = numeral(general.totalStakedPercent).format("0.00%")
+    document.querySelector("#total-burned-rewards-sum").innerText = numeral(general.totalBurnedRewardSum).format("0,0") + " FTM"
+    document.querySelector("#total-burned-rewards-percent").innerText = numeral(general.totalBurnedRewardPercent).format("0.00%")
+    
     // Total staked progress
     const totalStakedPercent = numeral(general.totalStakedPercent).format("0.00%")
     const totalStakedProgressBar = document.querySelector(".progress-bar-total-staked")
