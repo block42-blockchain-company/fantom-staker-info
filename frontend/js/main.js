@@ -5,13 +5,16 @@ function addValidator(validator) {
     ${validator.isCheater ? `
       <i class="fas fa-skull float-lg-left icon text-danger"></i>
     ` : `
-      ${validator.name ? `
-        ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}" alt="${validator.name} Logo">` : `<p class="float-lg-left icon"></p>`}
+      ${validator.isUnstaking ? `
+        <i class="fas fa-exclamation-triangle float-lg-left icon text-warning"></i>
       ` : `
-        <i class="fas fa-question float-lg-left icon"></i>
+        ${validator.name ? `
+          ${validator.logoUrl ? `<img class="float-lg-left" src="${validator.logoUrl}" alt="${validator.name} Logo">` : `<p class="float-lg-left icon"></p>`}
+        ` : `
+          <i class="fas fa-question float-lg-left icon"></i>
+        `}
       `}
-    `
-    }
+    `}
     <div class="float-lg-left ml-lg-3 mt-sm-2 mt-lg-0">
       <p class="text-lg-left ${validator.name ? "font-weight-bold" : ""} name"><span>${validator.name ? validator.name : "unknown"}${validator.name && validator.isVerified ? ` <i class="fas fa-check-circle verified" title="Verified via Blockchain"></i>` : ""}</span></p>
       <p class="text-lg-left font-weight-light address"><a href="https://explorer.fantom.network/validator/${validator.id}">${validator.address.toLowerCase()}</a></p>
@@ -43,8 +46,8 @@ function addValidator(validator) {
   `;
 
     const child = document.createElement("div");
-    child.className = `row entry ${validator.isCheater ? 'cheater' : ''}`;
-    child.title = `${validator.isCheater ? 'Cheater' : ''}`
+    child.className = `row entry ${validator.isCheater ? 'cheater' : validator.isUnstaking ? 'unstaking' : ''}`;
+    child.title = `${validator.isCheater ? 'Cheater' : validator.isUnstaking ? 'Unstaking' : ''}`
     child.innerHTML = markup;
 
     document.querySelector(".table").appendChild(child);

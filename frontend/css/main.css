@@ -319,7 +319,11 @@ iframe {
 }
 
 .table .row.entry.cheater {
-  background: salmon;
+  background: lightcoral;
+}
+
+.table .row.entry.unstaking {
+  background: lightyellow;
 }
 
 @media screen and (max-width: 768px) {
