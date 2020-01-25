@@ -59,7 +59,7 @@ totalSelfStakedPercent = totalSelfStakedSum / totalSupply
 totalDelegatedPercent = totalDelegatedSum / totalSupply
 totalInUndelegationPercent = totalInUndelegationSum / totalSupply
 totalStakedPercent = totalStakedSum / totalSupply
-totalBurnedRewarPercent = totalBurnedRewardSum / totalSupply
+totalBurnedRewardPercent = totalBurnedRewardSum / totalSupply
 
 # Set staking power
 validators.setStakingPower(totalStakedSum=totalStakedSum)
@@ -76,7 +76,7 @@ database.table("general").insert({
     "totalStakedSum": totalStakedSum,
     "totalStakedPercent": totalStakedPercent,
     "totalBurnedRewardSum": totalBurnedRewardSum,
-    "totalBurnedRewarPercent": totalBurnedRewarPercent,
+    "totalBurnedRewardPercent": totalBurnedRewardPercent,
     "totalSupply": totalSupply,
     "rewardUnlockDate": sfcContract.getRewardUnlockDate(),
     "rewardUnlockPercent": sfcContract.getRewardUnlockPercentage(),
