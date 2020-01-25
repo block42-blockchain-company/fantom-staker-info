@@ -56,7 +56,7 @@ class Validators:
         # Calculate staking metrics
         selfStakedAmount = validatorInfo[5] / 1e18
         delegatedAmount = validatorInfo[7] / 1e18
-        inUndelegationAmount = sum(map(lambda address: address["delegation"][4] / 1e18, deactivatedDelegations))
+        inUndelegationAmount = sum(map(lambda delegation: delegation["data"][4] / 1e18, deactivatedDelegations))
         totalStakedAmount = selfStakedAmount + delegatedAmount + inUndelegationAmount
 
         # Calculate the available delegation capacity

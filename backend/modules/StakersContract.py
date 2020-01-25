@@ -5,10 +5,17 @@ from datetime import datetime
 
 class StakersContract:
     def __init__(self, web3):
+        self.__address = "0xfc00face00000000000000000000000000000000"
         self.__instance = web3.eth.contract(
-            address=web3.toChecksumAddress("0xfc00face00000000000000000000000000000000"),
+            address=web3.toChecksumAddress(self.__address),
             abi=json.loads(open("interfaces/Stakers.abi.json", "r").read())
         )
+
+    def instance(self):
+        return self.__instance
+
+    def getAddress(self):
+        return self.__address
 
     def getValidatorCount(self):
         return self.__instance.functions.stakersNum().call()
@@ -24,6 +31,9 @@ class StakersContract:
 
     def getEpochSnapshot(self, epochId):
         return self.__instance.functions.epochSnapshots(epochId).call()
+
+    def getEpochValidator(self, epochId, validatorId):
+        return self.__instance.functions.epochValidator(epochId, validatorId).call()
 
     def getRoi(self):
         currentSealedEpoch = self.__instance.functions.currentSealedEpoch().call()

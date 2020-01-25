@@ -4,31 +4,29 @@ class Epochs:
         self.__db = db
         self.__data = []
 
-    def __getLatestSyncedEpochId(self):
-        epochs = self.__db.table("epochs")
-        documents = epochs.all()
-
-        if len(documents) != 0:
-            latestSyncedEpochId = max(documents, key=lambda document: document["id"])["id"]
-        else:
-            latestSyncedEpochId = 0
-
-        return latestSyncedEpochId
-
     def getAll(self):
-        return self.__data
+        return self.__data + self.__db.table("epochs").all() if len(self.__data) != 0 else self.__db.table("epochs").all()
 
     def sync(self):
-        latestSyncedEpochId = self.__getLatestSyncedEpochId()
+        latestSyncedEpochId = 0 if len(self.getAll()) == 0 else max(self.getAll(), key=lambda epoch: epoch["id"])["id"]
         latestSealedEpochId = self.__sfc.getCurrentSealedEpochId()
 
         # Get all new epochs
         for epochId in range(latestSyncedEpochId + 1, latestSealedEpochId + 1):
             epoch = self.__sfc.getEpochSnapshot(epochId)
 
+            validators = []
+
+            for validatorId in range(1, self.__sfc.getValidatorCount()):
+                validators += [{
+                    "id": validatorId,
+                    "data": self.__sfc.getEpochValidator(epochId, validatorId)
+                }]
+
             self.__data += [{
                 "id": epochId,
-                "epoch": epoch
+                "data": epoch,
+                "validators": validators
             }]
 
         return self
