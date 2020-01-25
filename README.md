@@ -24,7 +24,7 @@ A dapp on Fantom Opera to browse information about the network and its validator
 
 ![image](https://user-images.githubusercontent.com/6087393/73124496-5911ac80-3f9c-11ea-897a-4c60e70917f1.png)
 
-Find the dApp here: https://fantomstaker.info
+Find the dapp here: https://fantomstaker.info
 
 ## Why
 
