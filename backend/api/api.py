@@ -1,14 +1,17 @@
+import os
 import json
 import flask
 
 from flask import request
 from flask_cors import CORS
 
-from tinydb import TinyDB
-from tinydb import where
+from modules.Database import Database
+
+
+database = Database()
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = bool(os.environ["DEBUG"]) if "DEBUG" in os.environ.keys() else False
 CORS(app)
 
 
@@ -19,28 +22,18 @@ def home():
 
 @app.route("/api/v1/general", methods=["GET"])
 def general():
-    general = TinyDB("../db.json").table("general")
-    data = general.all()[0]
-
+    data = database.instance().general.find_one()
+    del data["_id"]  # Remove mongo _id
     return json.dumps(data)
 
 
 @app.route("/api/v1/validators", methods=["GET"])
 def validators():
     hideUnknown = request.args.get("hideUnknown", default="false", type=str).lower()
-    sortKey = request.args.get("sortKey", default=None, type=str)
-    order = request.args.get("order", default="asc", type=str)
+    sortKey = request.args.get("sortKey", default="_id", type=str)
+    sortOrder = request.args.get("order", default="asc", type=str)
 
-    validators = TinyDB("../db.json").table("validators")
-
-    if hideUnknown == "true":
-        data = validators.search(where("name") != "")
-    else:
-        data = validators.all()
-
-    if sortKey is not None:
-        data = sorted(data, key=lambda validator: validator[sortKey], reverse=(order == "desc"))
-
+    data = database.getValidators(hideUnknown=hideUnknown, sortKey=sortKey, sortOrder=sortOrder)
     return json.dumps(data)
 
 
