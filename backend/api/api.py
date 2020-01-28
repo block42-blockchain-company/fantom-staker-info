@@ -5,6 +5,10 @@ import flask
 from flask import request
 from flask_cors import CORS
 
+# Add project path to we can import the database
+import sys
+sys.path.append("../")
+
 from modules.Database import Database
 
 
