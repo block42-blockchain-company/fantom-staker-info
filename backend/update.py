@@ -6,52 +6,52 @@ from modules.Web3Client import Web3Client as Web3
 from modules.StakersContract import StakersContract
 from modules.StakerInfoContract import StakerInfoContract
 
-from modules.Validators import Validators
-from modules.Delegators import Delegators
-from modules.Delegations import Delegations
+from modules.Blocks import Blocks
 from modules.Epochs import Epochs
-from modules.EpochRewards import EpochRewards
+from modules.Validators import Validators
+from modules.Delegations import Delegations
+from modules.Rewards import Rewards
 
 
-web3 = Web3().instance()
-database = Database().instance()
+web3 = Web3()
+database = Database()
 
 sfcContract = StakersContract(web3=web3)
 stakerInfoContract = StakerInfoContract(web3=web3)
 
-validators = Validators(sfc=sfcContract, stakerInfo=stakerInfoContract, db=database)
-delegators = Delegators(db=database)
+# Sync epochs
+print("Syncing epochs ...")
+epochs = Epochs(sfcContract=sfcContract, database=database).sync()
+epochs.save()
 
-# Sync delegators
-for validatorId in range(1, sfcContract.getValidatorCount() + 1):
-    delegators.sync(validatorId=validatorId)
+# Sync blocks
+print("Syncing blocks ...")
+blocks = Blocks(web3=web3, database=database).sync()
+blocks.save()
 
 # Sync delegations
-delegatorAddresses = sum([validator["delegators"] for validator in delegators.getAll()], [])
-delegations = Delegations(sfc=sfcContract, db=database).sync(delegatorAddresses=delegatorAddresses)
+print("Syncing delegations ...")
+delegations = Delegations(sfcContract=sfcContract, database=database).sync()
+delegations.save()
 
 # Sync validators
+validators = Validators(sfcContract=sfcContract, stakerInfoContract=stakerInfoContract, database=database)
+print("Syncing validators ...")
 for validatorId in range(1, sfcContract.getValidatorCount() + 1):
-    validators.sync(validatorId=validatorId, deactivatedDelegations=delegations.getDeactivated(validatorId=validatorId))
-
-# Sync epochs
-epochs = Epochs(sfc=sfcContract, db=database).sync()
+    print("Syncing validator #" + str(validatorId) + " ...")
+    validators.sync(validatorId=validatorId)
 
 # Sync epoch rewards
-epochRewards = EpochRewards(sfc=sfcContract, db=database, epochs=epochs.getAll(), delegations=delegations.getAll()).sync()
+print("Syncing epoch rewards ...")
+rewards = Rewards(sfcContract=sfcContract, database=database).sync()
+rewards.save()
 
 # Calculate totals
 totalSelfStakedSum = sum(validator["selfStakedAmount"] for validator in validators.getAll())
 totalDelegatedSum = sum(validator["delegatedAmount"] for validator in validators.getAll())
 totalInUndelegationSum = sum(validator["inUndelegationAmount"] for validator in validators.getAll())
 totalStakedSum = totalSelfStakedSum + totalDelegatedSum + totalInUndelegationSum
-
-# Calculate total rewards
-totalDelegationRewardSum = sum(map(lambda epochReward: epochReward["delegationReward"], epochRewards.getAll()))
-totalValidatorRewardSum = sum(map(lambda epochReward: epochReward["validationReward"], epochRewards.getAll()))
-totalContractCommissionSum = sum(map(lambda epochReward: epochReward["contractCommission"], epochRewards.getAll()))
-totalRewardSum = Web3().getBalance(address=sfcContract.getAddress()) - totalStakedSum
-totalBurnedRewardSum = totalRewardSum - (totalDelegationRewardSum + totalValidatorRewardSum + totalContractCommissionSum)
+totalBurnedRewardSum = database.getBurnedRewardAmount()
 
 # Calculate total percentages
 totalSupply = sfcContract.getTotalSupply()
@@ -63,10 +63,11 @@ totalBurnedRewardPercent = totalBurnedRewardSum / totalSupply
 
 # Set staking power
 validators.setStakingPower(totalStakedSum=totalStakedSum)
+validators.save()
 
 # Update
-database.purge_table("general")
-database.table("general").insert({
+database.instance().general.drop()
+database.instance().general.insert_one({
     "totalSelfStakedSum": totalSelfStakedSum,
     "totalSelfStakedPercent": totalSelfStakedPercent,
     "totalDelegatedSum": totalDelegatedSum,
@@ -83,10 +84,3 @@ database.table("general").insert({
     "roi": sfcContract.getRoi(),
     "lastUpdated": datetime.now().timestamp()
 })
-
-# Update
-validators.save()
-delegators.save()
-delegations.save()
-epochs.save()
-epochRewards.save()

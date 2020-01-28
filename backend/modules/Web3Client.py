@@ -10,3 +10,12 @@ class Web3Client:
 
     def getBalance(self, address):
         return self.instance().eth.getBalance(self.instance().toChecksumAddress(address)) / 1e18
+
+    def getBlockTimestamp(self, blockNumber):
+        return self.instance().eth.getBlock(blockNumber).timestamp
+
+    def getLatestBlockNumber(self):
+        return self.instance().eth.blockNumber
+
+    def getBlock(self, blockNumber):
+        return self.instance().eth.getBlock(blockNumber)

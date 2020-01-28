@@ -6,8 +6,8 @@ from datetime import datetime
 class StakersContract:
     def __init__(self, web3):
         self.__address = "0xfc00face00000000000000000000000000000000"
-        self.__instance = web3.eth.contract(
-            address=web3.toChecksumAddress(self.__address),
+        self.__instance = web3.instance().eth.contract(
+            address=web3.instance().toChecksumAddress(self.__address),
             abi=json.loads(open("interfaces/Stakers.abi.json", "r").read())
         )
 
@@ -17,10 +17,14 @@ class StakersContract:
     def getAddress(self):
         return self.__address
 
+    def getEvents(self, eventName, options=None):
+        args = {} if options is None else options
+        return self.__instance.events[eventName].createFilter(fromBlock=0, toBlock="latest", argument_filters=args).get_all_entries()
+
     def getValidatorCount(self):
         return self.__instance.functions.stakersNum().call()
 
-    def getValidatorInfo(self, validatorId):
+    def getValidationStake(self, validatorId):
         return self.__instance.functions.stakers(validatorId).call()
 
     def getDelegations(self, address):
