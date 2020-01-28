@@ -1,6 +1,6 @@
 function addValidator(validator) {
   const markup = `
-  <div class="cell" data-title="ID"><p>${validator.id}</p></div>
+  <div class="cell" data-title="ID"><p>${validator._id}</p></div>
   <div class="cell name" data-title="Name">
     ${validator.isCheater ? `
       <i class="fas fa-skull float-lg-left icon text-danger"></i>
