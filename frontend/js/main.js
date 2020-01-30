@@ -161,7 +161,13 @@ function sort() {
 
   // Update local storage
   if (sortBy === null) {
-    sortBy = { sortKey: 'id', order: 'asc' };
+    sortBy = { sortKey: '_id', order: 'asc' };
+    window.localStorage.setItem("sortBy", JSON.stringify(sortBy));
+  }
+
+  // TODO @C: Temporary migration, remove in the future
+  if (sortBy != null && sortBy.sortKey == 'id') {
+    sortBy = { sortKey: '_id', order: 'asc' };
     window.localStorage.setItem("sortBy", JSON.stringify(sortBy));
   }
 
