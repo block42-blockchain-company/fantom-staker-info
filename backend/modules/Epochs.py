@@ -27,27 +27,23 @@ class Epochs:
 
                 validators += [{
                     "id": validatorId,
-                    "data": {
-                        "stakeAmount": data[0] / 1e18,
-                        "delegatedMe": data[1] / 1e18,
-                        "baseRewardWeight": data[2] / 1e18,
-                        "txRewardWeight": data[3] / 1e18
-                    }
+                    "stakeAmount": data[0] / 1e18,
+                    "delegatedMe": data[1] / 1e18,
+                    "baseRewardWeight": data[2] / 1e18,
+                    "txRewardWeight": data[3] / 1e18
                 }]
 
             self.__data += [{
                 "_id": epochId,
-                "data": {
-                    "endTime": epoch[0],
-                    "duration": epoch[1],
-                    "epochFee": epoch[2] / 1e18,
-                    "totalBaseRewardWeight": epoch[3] / 1e18,
-                    "totalTxRewardWeight": epoch[4] / 1e18,
-                    "baseRewardPerSecond": epoch[5] / 1e18,
-                    "stakeTotalAmount": epoch[6] / 1e18,
-                    "delegationsTotalAmount": epoch[7] / 1e18,
-                    "totalSupply": epoch[8] / 1e18
-                },
+                "endTime": epoch[0],
+                "duration": epoch[1],
+                "epochFee": epoch[2] / 1e18,
+                "totalBaseRewardWeight": epoch[3] / 1e18,
+                "totalTxRewardWeight": epoch[4] / 1e18,
+                "baseRewardPerSecond": epoch[5] / 1e18,
+                "stakeTotalAmount": epoch[6] / 1e18,
+                "delegationsTotalAmount": epoch[7] / 1e18,
+                "totalSupply": epoch[8] / 1e18,
                 "validators": validators
             }]
 

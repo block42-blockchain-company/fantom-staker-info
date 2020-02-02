@@ -10,7 +10,7 @@ class Blocks:
         self.__data = []
 
     def __getEpochForTimestamp(self, timestamp):
-        epochs = list(filter(lambda epoch: epoch["data"]["endTime"] >= timestamp >= epoch["data"]["endTime"] - epoch["data"]["duration"], self.__epochs))
+        epochs = list(filter(lambda epoch: epoch["endTime"] >= timestamp >= epoch["endTime"] - epoch["duration"], self.__epochs))
         return epochs[0] if len(epochs) > 0 else None
 
     def __doWork(self, blockQueue):
@@ -26,8 +26,10 @@ class Blocks:
             print("Syncing block #" + str(blockNumber) + " (epoch #" + str(epoch["_id"]) + ") ...")
 
             self.__data += [{
-                "_id": blockNumber,
-                "epoch": epoch["_id"]
+                "_id": block["number"],
+                "epoch": epoch["_id"],
+                "timestamp": block["timestamp"],
+                "transactions": list(map(lambda transaction: transaction.hex(), block["transactions"]))
             }]
 
             blockQueue.task_done()

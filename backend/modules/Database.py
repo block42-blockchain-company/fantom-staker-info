@@ -9,6 +9,16 @@ class Database:
     def instance(self):
         return self.__instance
 
+    def dropAll(self):
+        self.instance().epochs.drop()
+        self.instance().events.drop()
+        self.instance().blocks.drop()
+        self.instance().transactions.drop()
+        self.instance().delegations.drop()
+        self.instance().validators.drop()
+        self.instance().rewards.drop()
+        self.instance().general.drop()
+
     """
     ### Epochs
     """
@@ -22,6 +32,20 @@ class Database:
 
     def insertEpochs(self, epochs):
         self.instance().epochs.insert_many(epochs)
+
+    """
+    ### Events
+    """
+
+    def getLastSyncedEventEpochId(self, defaultValue):
+        lastSyncedEventEpoch = self.instance().events.find_one(sort=[("epoch", pymongo.DESCENDING)])
+        return defaultValue if lastSyncedEventEpoch is None else lastSyncedEventEpoch["epoch"]
+
+    def getAllEvents(self):
+        return list(self.instance().events.find())
+
+    def insertEvents(self, events):
+        self.instance().events.insert_many(events)
 
     """
     ### Blocks
@@ -38,12 +62,26 @@ class Database:
         self.instance().blocks.insert_many(blocks)
 
     """
+    ### Transactions
+    """
+
+    def getLastSyncedTransactionBlockNumber(self, defaultValue):
+        lastSyncedTransactionBlock = self.instance().transactions.find_one(sort=[("block", pymongo.DESCENDING)])
+        return defaultValue if lastSyncedTransactionBlock is None else lastSyncedTransactionBlock["block"]
+
+    def getAllTransactions(self):
+        return list(self.instance().transactions.find())
+
+    def insertTransactions(self, transactions):
+        self.instance().transactions.insert_many(transactions)
+
+    """
     ### Delegations
     """
 
     def getLastSyncedDelegationBlockNumber(self, defaultValue):
-        lastSyncedDelegation = self.instance().delegations.find_one(sort=[("blockNumber", pymongo.DESCENDING)])
-        return defaultValue if lastSyncedDelegation is None else lastSyncedDelegation["blockNumber"]
+        lastSyncedDelegation = self.instance().delegations.find_one(sort=[("block", pymongo.DESCENDING)])
+        return defaultValue if lastSyncedDelegation is None else lastSyncedDelegation["block"]
 
     def getInUndelegationAmount(self, validatorId):
         query = list(self.instance().delegations.aggregate([

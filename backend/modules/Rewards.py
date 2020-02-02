@@ -12,13 +12,13 @@ class Rewards:
         for epoch in epochs:
             epochId = epoch["_id"]
 
-            print("Calculating epoch #" + str(epochId) + " rewards ...")
+            print("Calculating rewards (epoch #" + str(epochId) + ") ...")
 
-            duration = epoch["data"]["duration"]
-            epochFee = epoch["data"]["epochFee"]
-            totalBaseRewardWeight = epoch["data"]["totalBaseRewardWeight"]
-            totalTxRewardWeight = epoch["data"]["totalTxRewardWeight"]
-            baseRewardPerSecond = epoch["data"]["baseRewardPerSecond"]
+            duration = epoch["duration"]
+            epochFee = epoch["epochFee"]
+            totalBaseRewardWeight = epoch["totalBaseRewardWeight"]
+            totalTxRewardWeight = epoch["totalTxRewardWeight"]
+            baseRewardPerSecond = epoch["baseRewardPerSecond"]
 
             # Get epoch delegations
             activeEpochDelegations = self.__database.getAllActiveEpochDelegations(epochId=epochId)
@@ -32,8 +32,8 @@ class Rewards:
             for validator in epoch["validators"]:
                 validatorId = validator["id"]
 
-                baseRewardWeight = validator["data"]["baseRewardWeight"]
-                txRewardWeight = validator["data"]["txRewardWeight"]
+                baseRewardWeight = validator["baseRewardWeight"]
+                txRewardWeight = validator["txRewardWeight"]
 
                 # Calculate epoch reward
                 baseReward = duration * baseRewardPerSecond * (baseRewardWeight / totalBaseRewardWeight)
@@ -41,8 +41,8 @@ class Rewards:
                 totalReward = baseReward + txReward
 
                 # Calculate epoch validation reward
-                validatorStake = validator["data"]["stakeAmount"]
-                validatorDelegated = validator["data"]["delegatedMe"]
+                validatorStake = validator["stakeAmount"]
+                validatorDelegated = validator["delegatedMe"]
                 validatorTotalStaked = validatorStake + validatorDelegated
                 weightedValidatorStake = validatorStake + validatorDelegated * 0.15  # Add 15% validation fee
                 epochValidationReward += 0 if validatorTotalStaked == 0 else (totalReward * (weightedValidatorStake / validatorTotalStaked))

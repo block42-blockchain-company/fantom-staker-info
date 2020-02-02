@@ -24,20 +24,20 @@ class Delegations:
             "address": event["args"]["from"],
             "validatorId": event["args"]["toStakerID"],
             "amount": event["args"]["amount"],
-            "blockNumber": event["blockNumber"],
+            "block": event["blockNumber"],
             "type": event["event"]
         }, createdDelegationEvents))
         events += list(map(lambda event: {
             "address": event["args"]["from"],
             "validatorId": event["args"]["stakerID"],
-            "blockNumber": event["blockNumber"],
+            "block": event["blockNumber"],
             "type": event["event"]
         }, preparedToWithdrawDelegationEvents))
         events += list(map(lambda event: {
             "address": event["args"]["from"],
             "validatorId": event["args"]["stakerID"],
             "penalty": event["args"]["penalty"],
-            "blockNumber": event["blockNumber"],
+            "block": event["blockNumber"],
             "type": event["event"]
         }, withdrawnDelegationEvents))
 
@@ -45,28 +45,27 @@ class Delegations:
         lastSyncedDelegationBlockNumber = self.__database.getLastSyncedDelegationBlockNumber(defaultValue=-1)
 
         # Sort relevant events ascending by block number
-        events = filter(lambda event: event["blockNumber"] > lastSyncedDelegationBlockNumber, events)
-        events = sorted(events, key=lambda event: event["blockNumber"], reverse=False)
+        events = filter(lambda event: event["block"] > lastSyncedDelegationBlockNumber, events)
+        events = sorted(events, key=lambda event: event["block"], reverse=False)
 
         # Get all delegations as they might get updated (prepare to withdraw or withdraw)
         self.__data = self.__database.getAllDelegations()
 
         for event in events:
-            blockNumber = event["blockNumber"]
-            block = self.__getBlockByNumber(blockNumber)
+            block = self.__getBlockByNumber(blockNumber=event["block"])
 
             # Might be None if epoch has not been sealed yet
             if block is None:
                 continue
 
-            print("Syncing delegation (block #" + str(blockNumber) + ") ...")
+            print("Syncing delegation (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
 
             if event["type"] == "CreatedDelegation":
                 self.__data += [{
                     "address": event["address"],
                     "validatorId": event["validatorId"],
                     "amount": event["amount"] / 1e18,
-                    "blockNumber": blockNumber,
+                    "block": block["_id"],
                     "startEpoch": block["epoch"],
                     "endEpoch": 0,
                     "withdrawn": False
@@ -74,13 +73,13 @@ class Delegations:
             elif event["type"] == "PreparedToWithdrawDelegation":
                 delegation = sorted(
                     filter(lambda delegation: delegation["address"] == event["address"], self.__data),
-                    key=lambda delegation: delegation["blockNumber"], reverse=True
+                    key=lambda delegation: delegation["block"], reverse=True
                 )[0]
                 delegation["endEpoch"] = block["epoch"]
             elif event["type"] == "WithdrawnDelegation":
                 delegation = sorted(
                     filter(lambda delegation: delegation["address"] == event["address"], self.__data),
-                    key=lambda delegation: delegation["blockNumber"], reverse=True
+                    key=lambda delegation: delegation["block"], reverse=True
                 )[0]
                 delegation["withdrawn"] = True
 

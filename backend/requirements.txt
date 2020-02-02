@@ -2,3 +2,4 @@ flask
 web3
 pymongo
 dnspython
+requests
