@@ -26,7 +26,7 @@ def home():
 
 @app.route("/api/v1/general", methods=["GET"])
 def general():
-    data = database.instance().general.find_one()
+    data = database.instance().general.find_one({}, {"_id": 0})
     del data["_id"]  # Remove mongo _id
     return json.dumps(data)
 
