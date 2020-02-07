@@ -23,28 +23,23 @@ stakerInfoContract = StakerInfoContract(fantomApi=fantomApi)
 
 # Sync epochs
 print("Syncing epochs ...")
-epochs = Epochs(sfcContract=sfcContract, database=database).sync()
-epochs.save()
+Epochs(sfcContract=sfcContract, database=database).sync()
 
 # Sync events
 print("Syncing events ...")
-events = Events(fantomApi=fantomApi, database=database).sync()
-events.save()
+Events(fantomApi=fantomApi, database=database).sync()
 
 # Sync blocks
 print("Syncing blocks ...")
-blocks = Blocks(fantomApi=fantomApi, database=database).sync()
-blocks.save()
+Blocks(fantomApi=fantomApi, database=database).sync()
 
 # Sync transactions
 print("Syncing transactions ...")
-transactions = Transactions(fantomApi=fantomApi, database=database).sync()
-transactions.save()
+Transactions(fantomApi=fantomApi, database=database).sync()
 
 # Sync delegations
 print("Syncing delegations ...")
-delegations = Delegations(sfcContract=sfcContract, database=database).sync()
-delegations.save()
+Delegations(sfcContract=sfcContract, database=database).sync()
 
 # Sync validators
 validators = Validators(sfcContract=sfcContract, stakerInfoContract=stakerInfoContract, database=database)
@@ -55,8 +50,7 @@ for validatorId in range(1, sfcContract.getValidatorCount() + 1):
 
 # Sync epoch rewards
 print("Syncing epoch rewards ...")
-rewards = Rewards(sfcContract=sfcContract, database=database).sync()
-rewards.save()
+Rewards(sfcContract=sfcContract, database=database).sync()
 
 # Calculate totals
 totalSelfStakedSum = sum(validator["selfStakedAmount"] for validator in validators.getAll())

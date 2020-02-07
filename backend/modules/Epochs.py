@@ -55,10 +55,6 @@ class Epochs:
 
         epochQueue = Queue()
 
-        # Add all epoch ids that need to be synced to the queue
-        for epochId in range(lastSyncedEpochId + 1, latestSealedEpochId + 1):
-            epochQueue.put(epochId)
-
         # Get the validator count so the workers do not need to query it
         validatorCount = self.__sfcContract.getValidatorCount()
 
@@ -67,14 +63,26 @@ class Epochs:
             worker.setDaemon(True)
             worker.start()
 
-        # Wait for workers to finish
-        epochQueue.join()
+        batchCount = 0
 
-        # Sort ascending (workers added it in whatever order)
-        self.__data = sorted(self.__data, key=lambda epoch: epoch["_id"], reverse=False)
+        # Add all epoch ids that need to be synced to the queue
+        for epochId in range(lastSyncedEpochId + 1, latestSealedEpochId + 1):
+            # Add work to queue
+            epochQueue.put(epochId)
+
+            batchCount += 1
+
+            # Batch work into size of 1k
+            if batchCount == 1000 or epochId == latestSealedEpochId:
+                # Wait for batch to finish
+                epochQueue.join()
+
+                # Save batch to database
+                if len(self.__data) != 0:
+                    self.__database.insertEpochs(epochs=self.__data)
+
+                # Reset batch
+                batchCount = 0
+                self.__data = []
 
         return self
-
-    def save(self):
-        if len(self.__data) != 0:
-            self.__database.insertEpochs(epochs=self.__data)

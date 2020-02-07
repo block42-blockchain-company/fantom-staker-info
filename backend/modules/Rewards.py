@@ -70,8 +70,8 @@ class Rewards:
                 "contractCommission": epochContractCommission
             }]
 
-        return self
-
-    def save(self):
+        # Save to database
         if len(self.__data) != 0:
             self.__database.insertRewards(rewards=self.__data)
+
+        return self

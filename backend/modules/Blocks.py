@@ -40,23 +40,31 @@ class Blocks:
 
         blockQueue = Queue()
 
-        # Add all block numbers that need to be synced to the queue
-        for blockNumber in range(lastSyncedBlockNumber + 1, latestBlockNumber + 1):
-            blockQueue.put(blockNumber)
-
         for i in range(10):
             worker = Thread(target=self.__doWork, args=(blockQueue,))
             worker.setDaemon(True)
             worker.start()
 
-        # Wait for workers to finish
-        blockQueue.join()
+        batchCount = 0
 
-        # Sort ascending (workers added it in whatever order)
-        self.__data = sorted(self.__data, key=lambda block: block["_id"], reverse=False)
+        # Add all block numbers that need to be synced to the queue
+        for blockNumber in range(lastSyncedBlockNumber + 1, latestBlockNumber + 1):
+            # Add work to queue
+            blockQueue.put(blockNumber)
+
+            batchCount += 1
+
+            # Batch work into size of 1k
+            if batchCount == 1000 or blockNumber == latestBlockNumber:
+                # Wait for batch to finish
+                blockQueue.join()
+
+                # Save batch to database
+                if len(self.__data) != 0:
+                    self.__database.insertBlocks(blocks=self.__data)
+
+                # Reset batch
+                batchCount = 0
+                self.__data = []
 
         return self
-
-    def save(self):
-        if len(self.__data) != 0:
-            self.__database.insertBlocks(blocks=self.__data)

@@ -79,8 +79,8 @@ class Delegations:
                 )[0]
                 delegation["withdrawn"] = True
 
-        return self
-
-    def save(self):
+        # Save to database
         if len(self.__data) != 0:
             self.__database.insertOrUpdateDelegations(delegations=self.__data)
+
+        return self

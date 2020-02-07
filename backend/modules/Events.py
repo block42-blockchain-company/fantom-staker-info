@@ -29,23 +29,31 @@ class Events:
 
         epochQueue = Queue()
 
-        # Add all epoch ids that need to be synced to the queue
-        for epochId in range(lastSyncedEventEpochId + 1, lastSyncedEpochId + 1):
-            epochQueue.put(epochId)
-
         for i in range(10):
             worker = Thread(target=self.__doWork, args=(epochQueue,))
             worker.setDaemon(True)
             worker.start()
 
-        # Wait for workers to finish
-        epochQueue.join()
+        batchCount = 0
 
-        # Sort ascending (workers added it in whatever order)
-        self.__data = sorted(self.__data, key=lambda event: event["epoch"], reverse=False)
+        # Add all epoch ids that need to be synced to the queue
+        for epochId in range(lastSyncedEventEpochId + 1, lastSyncedEpochId + 1):
+            # Add work to queue
+            epochQueue.put(epochId)
+
+            batchCount += 1
+
+            # Batch work into size of 1k
+            if batchCount == 1000 or epochId == lastSyncedEpochId:
+                # Wait for batch to finish
+                epochQueue.join()
+
+                # Save batch to database
+                if len(self.__data) != 0:
+                    self.__database.insertEvents(events=self.__data)
+
+                # Reset batch
+                batchCount = 0
+                self.__data = []
 
         return self
-
-    def save(self):
-        if len(self.__data) != 0:
-            self.__database.insertEvents(events=self.__data)
