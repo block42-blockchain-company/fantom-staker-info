@@ -8,7 +8,7 @@ class StakersContract:
         self.__address = "0xfc00face00000000000000000000000000000000"
         self.__instance = fantomApi.web3().eth.contract(
             address=fantomApi.web3().toChecksumAddress(self.__address),
-            abi=json.loads(open("interfaces/Stakers.abi.json", "r").read())
+            abi=json.loads(open("abi/Stakers.abi.json", "r").read())
         )
 
     def instance(self):
