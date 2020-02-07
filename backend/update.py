@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from modules.Database import Database
-from modules.FantomRPC import FantomRPC
-from modules.Web3Client import Web3Client as Web3
+from modules.FantomApi import FantomApi
 
 from modules.StakersContract import StakersContract
 from modules.StakerInfoContract import StakerInfoContract
@@ -16,12 +15,11 @@ from modules.Validators import Validators
 from modules.Rewards import Rewards
 
 
-web3 = Web3()
-rpc = FantomRPC()
 database = Database()
+fantomApi = FantomApi()
 
-sfcContract = StakersContract(web3=web3)
-stakerInfoContract = StakerInfoContract(web3=web3)
+sfcContract = StakersContract(fantomApi=fantomApi)
+stakerInfoContract = StakerInfoContract(fantomApi=fantomApi)
 
 # Sync epochs
 print("Syncing epochs ...")
@@ -30,17 +28,17 @@ epochs.save()
 
 # Sync events
 print("Syncing events ...")
-events = Events(rpc=rpc, database=database).sync()
+events = Events(fantomApi=fantomApi, database=database).sync()
 events.save()
 
 # Sync blocks
 print("Syncing blocks ...")
-blocks = Blocks(web3=web3, database=database).sync()
+blocks = Blocks(fantomApi=fantomApi, database=database).sync()
 blocks.save()
 
 # Sync transactions
 print("Syncing transactions ...")
-transactions = Transactions(web3=web3, database=database).sync()
+transactions = Transactions(fantomApi=fantomApi, database=database).sync()
 transactions.save()
 
 # Sync delegations

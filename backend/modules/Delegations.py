@@ -1,9 +1,5 @@
-from modules.Web3Client import Web3Client as Web3
-
-
 class Delegations:
     def __init__(self, sfcContract, database):
-        self.__web3 = Web3()
         self.__sfcContract = sfcContract
         self.__database = database
         self.__blocks = self.__database.getAllBlocks()

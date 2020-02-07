@@ -3,8 +3,8 @@ from threading import Thread
 
 
 class Blocks:
-    def __init__(self, web3, database):
-        self.__web3 = web3
+    def __init__(self, fantomApi, database):
+        self.__fantomApi = fantomApi
         self.__database = database
         self.__epochs = self.__database.getAllEpochs()
         self.__data = []
@@ -16,7 +16,7 @@ class Blocks:
     def __doWork(self, blockQueue):
         while True:
             blockNumber = blockQueue.get()
-            block = self.__web3.getBlock(blockNumber)
+            block = self.__fantomApi.getBlock(blockNumber)
             epoch = self.__getEpochForTimestamp(timestamp=block["timestamp"])
 
             if epoch is None:
@@ -36,7 +36,7 @@ class Blocks:
 
     def sync(self):
         lastSyncedBlockNumber = self.__database.getLastSyncedBlockNumber(defaultValue=-1)
-        latestBlockNumber = self.__web3.getLatestBlockNumber()
+        latestBlockNumber = self.__fantomApi.getLatestBlockNumber()
 
         blockQueue = Queue()
 

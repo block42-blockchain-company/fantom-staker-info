@@ -3,8 +3,8 @@ from threading import Thread
 
 
 class Events:
-    def __init__(self, rpc, database):
-        self.__rpc = rpc
+    def __init__(self, fantomApi, database):
+        self.__fantomApi = fantomApi
         self.__database = database
         self.__data = []
 
@@ -14,10 +14,10 @@ class Events:
 
             print("Syncing events (epoch #" + str(epochId) + ") ...")
 
-            eventIds = self.__rpc.getAllEpochEvents(epochId=epochId)
+            eventIds = self.__fantomApi.getAllEpochEvents(epochId=epochId)
 
             for eventId in eventIds:
-                event = self.__rpc.getEpochEvent(eventId=eventId)
+                event = self.__fantomApi.getEpochEvent(eventId=eventId)
                 event["_id"] = event.pop("hash")
                 self.__data += [event]
 

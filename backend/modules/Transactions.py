@@ -3,8 +3,8 @@ from threading import Thread
 
 
 class Transactions:
-    def __init__(self, web3, database):
-        self.__web3 = web3
+    def __init__(self, fantomApi, database):
+        self.__fantomApi = fantomApi
         self.__database = database
         self.__blocks = self.__database.getAllBlocks()
         self.__data = []
@@ -16,7 +16,7 @@ class Transactions:
             for transactionId in block["transactions"]:
                 print("Syncing transaction " + transactionId + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
 
-                transaction = self.__web3.getTransaction(transactionId)
+                transaction = self.__fantomApi.getTransaction(transactionId)
 
                 self.__data += [{
                     "_id": transaction["hash"].hex(),
@@ -31,8 +31,8 @@ class Transactions:
             blockQueue.task_done()
 
     def sync(self):
-        lastSyncedTransactionBlockNumber = self.__database.getLastSyncedTransactionBlockNumber(defaultValue=0)
-        self.__blocks = self.__blocks[lastSyncedTransactionBlockNumber:]
+        lastSyncedTransactionBlockNumber = self.__database.getLastSyncedTransactionBlockNumber(defaultValue=-1)
+        self.__blocks = self.__blocks[(lastSyncedTransactionBlockNumber + 1):]
 
         blockQueue = Queue()
 

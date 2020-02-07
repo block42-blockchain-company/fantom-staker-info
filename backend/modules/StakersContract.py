@@ -4,10 +4,10 @@ from datetime import datetime
 
 
 class StakersContract:
-    def __init__(self, web3):
+    def __init__(self, fantomApi):
         self.__address = "0xfc00face00000000000000000000000000000000"
-        self.__instance = web3.instance().eth.contract(
-            address=web3.instance().toChecksumAddress(self.__address),
+        self.__instance = fantomApi.web3().eth.contract(
+            address=fantomApi.web3().toChecksumAddress(self.__address),
             abi=json.loads(open("interfaces/Stakers.abi.json", "r").read())
         )
 
