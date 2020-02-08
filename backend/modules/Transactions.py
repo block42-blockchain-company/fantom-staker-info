@@ -6,7 +6,6 @@ class Transactions:
     def __init__(self, fantomApi, database):
         self.__fantomApi = fantomApi
         self.__database = database
-        self.__blocks = self.__database.getAllBlocks()
         self.__data = []
 
     def __doWork(self, blockQueue):
@@ -32,7 +31,9 @@ class Transactions:
 
     def sync(self):
         lastSyncedTransactionBlockNumber = self.__database.getLastSyncedTransactionBlockNumber(defaultValue=-1)
-        self.__blocks = self.__blocks[(lastSyncedTransactionBlockNumber + 1):]
+        lastSyncedBlockNumber = self.__database.getLastSyncedBlockNumber(defaultValue=0)
+
+        blocks = self.__database.getAllBlocks()[(lastSyncedTransactionBlockNumber + 1):]
 
         blockQueue = Queue()
 
@@ -44,14 +45,14 @@ class Transactions:
         batchCount = 0
 
         # Add all block numbers that need to be synced to the queue
-        for block in self.__blocks:
+        for block in blocks:
             # Add work to queue
             blockQueue.put(block)
 
             batchCount += 1
 
             # Batch work into size of 1k
-            if batchCount == 1000 or block["_id"] == lastSyncedTransactionBlockNumber:
+            if batchCount == 1000 or block["_id"] == lastSyncedBlockNumber:
                 # Wait for batch to finish
                 blockQueue.join()
 
