@@ -17,7 +17,7 @@ function addValidator(validator) {
     `}
     <div class="float-lg-left ml-lg-3 mt-sm-2 mt-lg-0">
       <p class="text-lg-left ${validator.name ? "font-weight-bold" : ""} name"><span>${validator.name ? validator.name : "unknown"}${validator.name && validator.isVerified ? ` <i class="fas fa-check-circle verified" title="Verified via Blockchain"></i>` : ""}</span></p>
-      <p class="text-lg-left font-weight-light address"><a href="https://explorer.fantom.network/validator/${validator.id}">${validator.address.toLowerCase()}</a></p>
+      <p class="text-lg-left font-weight-light text-truncate address"><a href="https://explorer.fantom.network/validator/${validator._id}">${validator.address.toLowerCase()}</a></p>
     </div>
   </div>
   <div class="cell" data-title="Self-Staked"><p>${numeral(validator.selfStakedAmount).format("0,0")} FTM</p></div>
