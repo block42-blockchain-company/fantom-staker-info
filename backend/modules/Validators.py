@@ -54,7 +54,7 @@ class Validators:
         totalStakedAmount = selfStakedAmount + delegatedAmount + inUndelegationAmount
 
         # Calculate the available delegation capacity
-        availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount
+        availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount + inUndelegationAmount
 
         # Check status
         isUnstaking = sfcValidationStake[4] != 0
