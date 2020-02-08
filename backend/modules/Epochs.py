@@ -8,9 +8,9 @@ class Epochs:
         self.__database = database
         self.__data = []
 
-    def __doWork(self, epochQueue, validatorCount):
+    def __doWork(self, queue, validatorCount):
         while True:
-            epochId = epochQueue.get()
+            epochId = queue.get()
             epoch = self.__sfcContract.getEpochSnapshot(epochId)
 
             print("Syncing epoch #" + str(epochId) + " ...")
@@ -47,19 +47,19 @@ class Epochs:
                 "validators": validators
             }]
 
-            epochQueue.task_done()
+            queue.task_done()
 
     def sync(self):
         lastSyncedEpochId = self.__database.getLastSyncedEpochId(defaultValue=0)
         latestSealedEpochId = self.__sfcContract.getCurrentSealedEpochId()
 
-        epochQueue = Queue()
+        queue = Queue()
 
         # Get the validator count so the workers do not need to query it
         validatorCount = self.__sfcContract.getValidatorCount()
 
         for i in range(10):
-            worker = Thread(target=self.__doWork, args=(epochQueue, validatorCount,))
+            worker = Thread(target=self.__doWork, args=(queue, validatorCount,))
             worker.setDaemon(True)
             worker.start()
 
@@ -68,14 +68,14 @@ class Epochs:
         # Add all epoch ids that need to be synced to the queue
         for epochId in range(lastSyncedEpochId + 1, latestSealedEpochId + 1):
             # Add work to queue
-            epochQueue.put(epochId)
+            queue.put(epochId)
 
             batchCount += 1
 
             # Batch work into size of 1k
             if batchCount == 1000 or epochId == latestSealedEpochId:
                 # Wait for batch to finish
-                epochQueue.join()
+                queue.join()
 
                 # Save batch to database
                 if len(self.__data) != 0:

@@ -51,7 +51,7 @@ class Database:
     ### Blocks
     """
 
-    def getLastSyncedBlockNumber(self, defaultValue):
+    def getLastSyncedBlockHeight(self, defaultValue):
         lastSyncedBlock = self.instance().blocks.find_one(sort=[("_id", pymongo.DESCENDING)])
         return defaultValue if lastSyncedBlock is None else lastSyncedBlock["_id"]
 
@@ -65,7 +65,7 @@ class Database:
     ### Transactions
     """
 
-    def getLastSyncedTransactionBlockNumber(self, defaultValue):
+    def getLastSyncedTransactionBlockHeight(self, defaultValue):
         lastSyncedTransactionBlock = self.instance().transactions.find_one(sort=[("block", pymongo.DESCENDING)])
         return defaultValue if lastSyncedTransactionBlock is None else lastSyncedTransactionBlock["block"]
 
@@ -79,7 +79,7 @@ class Database:
     ### Delegations
     """
 
-    def getLastSyncedDelegationBlockNumber(self, defaultValue):
+    def getLastSyncedDelegationBlockHeight(self, defaultValue):
         lastSyncedDelegation = self.instance().delegations.find_one(sort=[("block", pymongo.DESCENDING)])
         return defaultValue if lastSyncedDelegation is None else lastSyncedDelegation["block"]
 

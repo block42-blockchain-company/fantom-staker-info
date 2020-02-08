@@ -8,53 +8,61 @@ class Transactions:
         self.__database = database
         self.__data = []
 
-    def __doWork(self, blockQueue):
+    def __doWork(self, queue):
         while True:
-            block = blockQueue.get()
+            block = queue.get()
 
-            for transactionId in block["transactions"]:
-                print("Syncing transaction " + transactionId + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
+            for txHash in block["transactions"]:
+                print("Syncing transaction " + txHash + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
 
-                transaction = self.__fantomApi.getTransaction(transactionId)
+                transaction = self.__fantomApi.getTransaction(txHash=txHash)
+                transactionReceipt = self.__fantomApi.getTransactionReceipt(txHash=txHash)
 
                 self.__data += [{
                     "_id": transaction["hash"].hex(),
                     "from": transaction["from"],
                     "to": transaction["to"],
                     "value": transaction["value"] / 1e18,
-                    "input": transaction["input"],
+                    "gas": transaction["gas"],
+                    "gasPrice": transaction["gasPrice"],
+                    "input": transaction["input"] if transaction["input"] != "0x" else "",
                     "block": transaction["blockNumber"],
-                    "epoch": block["epoch"]
+                    "epoch": block["epoch"],
+                    "receipt": {
+                        "cumulativeGasUsed": transactionReceipt["cumulativeGasUsed"],
+                        "gasUsed": transactionReceipt["gasUsed"],
+                        "status": transactionReceipt["status"]
+                    }
                 }]
 
-            blockQueue.task_done()
+            queue.task_done()
 
     def sync(self):
-        lastSyncedTransactionBlockNumber = self.__database.getLastSyncedTransactionBlockNumber(defaultValue=-1)
-        lastSyncedBlockNumber = self.__database.getLastSyncedBlockNumber(defaultValue=0)
+        lastSyncedTransactionBlockHeight = self.__database.getLastSyncedTransactionBlockHeight(defaultValue=-1)
+        lastSyncedBlockHeight = self.__database.getLastSyncedBlockHeight(defaultValue=0)
 
-        blocks = self.__database.getAllBlocks()[(lastSyncedTransactionBlockNumber + 1):]
+        blocks = self.__database.getAllBlocks()[(lastSyncedTransactionBlockHeight + 1):]
 
-        blockQueue = Queue()
+        queue = Queue()
 
         for i in range(10):
-            worker = Thread(target=self.__doWork, args=(blockQueue,))
+            worker = Thread(target=self.__doWork, args=(queue,))
             worker.setDaemon(True)
             worker.start()
 
         batchCount = 0
 
-        # Add all block numbers that need to be synced to the queue
+        # Add all block heights that need to be synced to the queue
         for block in blocks:
             # Add work to queue
-            blockQueue.put(block)
+            queue.put(block)
 
             batchCount += 1
 
             # Batch work into size of 1k
-            if batchCount == 1000 or block["_id"] == lastSyncedBlockNumber:
+            if batchCount == 1000 or block["_id"] == lastSyncedBlockHeight:
                 # Wait for batch to finish
-                blockQueue.join()
+                queue.join()
 
                 # Save batch to database
                 if len(self.__data) != 0:

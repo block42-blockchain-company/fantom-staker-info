@@ -5,8 +5,8 @@ class Delegations:
         self.__blocks = self.__database.getAllBlocks()
         self.__data = []
 
-    def __getBlockByNumber(self, blockNumber):
-        blocks = list(filter(lambda block: block["_id"] == blockNumber, self.__blocks))
+    def __getBlockByHeight(self, blockHeight):
+        blocks = list(filter(lambda block: block["_id"] == blockHeight, self.__blocks))
         return blocks[0] if len(blocks) > 0 else None
 
     def sync(self):
@@ -38,17 +38,17 @@ class Delegations:
         }, withdrawnDelegationEvents))
 
         # Get last synced block number of all delegations
-        lastSyncedDelegationBlockNumber = self.__database.getLastSyncedDelegationBlockNumber(defaultValue=-1)
+        lastSyncedDelegationBlockHeight = self.__database.getLastSyncedDelegationBlockHeight(defaultValue=-1)
 
         # Sort relevant events ascending by block number
-        events = filter(lambda event: event["block"] > lastSyncedDelegationBlockNumber, events)
+        events = filter(lambda event: event["block"] > lastSyncedDelegationBlockHeight, events)
         events = sorted(events, key=lambda event: event["block"], reverse=False)
 
         # Get all delegations as they might get updated (prepare to withdraw or withdraw)
         self.__data = self.__database.getAllDelegations()
 
         for event in events:
-            block = self.__getBlockByNumber(blockNumber=event["block"])
+            block = self.__getBlockByHeight(blockHeight=event["block"])
 
             # Might be None if epoch has not been sealed yet
             if block is None:

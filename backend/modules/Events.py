@@ -8,9 +8,9 @@ class Events:
         self.__database = database
         self.__data = []
 
-    def __doWork(self, epochQueue):
+    def __doWork(self, queue):
         while True:
-            epochId = epochQueue.get()
+            epochId = queue.get()
 
             print("Syncing events (epoch #" + str(epochId) + ") ...")
 
@@ -21,16 +21,16 @@ class Events:
                 event["_id"] = event.pop("hash")
                 self.__data += [event]
 
-            epochQueue.task_done()
+            queue.task_done()
 
     def sync(self):
         lastSyncedEventEpochId = self.__database.getLastSyncedEventEpochId(defaultValue=0)
         lastSyncedEpochId = self.__database.getLastSyncedEpochId(defaultValue=0)
 
-        epochQueue = Queue()
+        queue = Queue()
 
         for i in range(10):
-            worker = Thread(target=self.__doWork, args=(epochQueue,))
+            worker = Thread(target=self.__doWork, args=(queue,))
             worker.setDaemon(True)
             worker.start()
 
@@ -39,14 +39,14 @@ class Events:
         # Add all epoch ids that need to be synced to the queue
         for epochId in range(lastSyncedEventEpochId + 1, lastSyncedEpochId + 1):
             # Add work to queue
-            epochQueue.put(epochId)
+            queue.put(epochId)
 
             batchCount += 1
 
             # Batch work into size of 1k
             if batchCount == 1000 or epochId == lastSyncedEpochId:
                 # Wait for batch to finish
-                epochQueue.join()
+                queue.join()
 
                 # Save batch to database
                 if len(self.__data) != 0:

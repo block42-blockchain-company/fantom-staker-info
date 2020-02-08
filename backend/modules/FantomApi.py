@@ -17,11 +17,14 @@ class FantomApi:
     def getLatestBlockNumber(self):
         return self.web3().eth.blockNumber
 
-    def getBlock(self, blockNumber):
-        return self.web3().eth.getBlock(blockNumber)
+    def getBlock(self, height):
+        return self.web3().eth.getBlock(height)
 
-    def getTransaction(self, transactionId):
-        return self.web3().eth.getTransaction(transactionId)
+    def getTransaction(self, txHash):
+        return self.web3().eth.getTransaction(txHash)
+
+    def getTransactionReceipt(self, txHash):
+        return self.web3().eth.getTransactionReceipt(txHash)
 
     def getAllEpochEvents(self, epochId):
         return requests.post(url=self.__url, json={
