@@ -1,8 +1,6 @@
 import json
 import urllib.request
 
-from modules.DefaultConfig import DefaultConfig
-
 
 class Validators:
     def __init__(self, sfcContract, stakerInfoContract, database):
@@ -39,10 +37,6 @@ class Validators:
                 isVerified = True
             except json.decoder.JSONDecodeError:
                 pass
-        elif DefaultConfig.containsInfoForValidator(validatorId):
-            # No config in smart contract found, use bootstrap values
-            name = DefaultConfig.getInfoForValidator(validatorId)["name"]
-            website = DefaultConfig.getInfoForValidator(validatorId)["website"]
 
         # Get validator info from the sfc smart contract
         sfcValidationStake = self.__sfcContract.getValidationStake(validatorId=validatorId)
