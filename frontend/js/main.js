@@ -29,12 +29,12 @@ function addValidator(validator) {
   <div class="cell links" data-title="Links">
   ${validator.website || validator.contact ? `
     ${validator.website ? `
-      <a class="mr-1" href="${validator.website}" target="_blank" rel="noreferrer">
+      <a class="mr-1" href="${validator.website}" rel="nofollow" target="_blank">
         <i class="fas fa-globe-americas link"></i>
       </a>
     ` : ""}
     ${validator.contact ? `
-      <a class="ml-1" href="${validator.contact}" target="_blank" rel="noreferrer">
+      <a class="ml-1" href="${validator.contact}" rel="nofollow" target="_blank">
         <i class="fas fa-headset link"></i>
       </a>
     ` : ""}
