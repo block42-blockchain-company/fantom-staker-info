@@ -46,7 +46,7 @@ class Delegations:
         events = sorted(events, key=lambda event: event["block"], reverse=False)
 
         # Get all delegations as they might get updated (prepare to withdraw or withdraw)
-        self.__data = self.__database.getAllDelegations(sort=1)
+        self.__data = self.__database.getAllDelegations(sort=-1)
 
         for event in events:
             block = self.__getBlockByHeight(blockHeight=event["block"])
