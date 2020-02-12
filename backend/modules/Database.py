@@ -27,8 +27,8 @@ class Database:
         lastSyncedEpoch = self.instance().epochs.find_one(sort=[("_id", pymongo.DESCENDING)])
         return defaultValue if lastSyncedEpoch is None else lastSyncedEpoch["_id"]
 
-    def getAllEpochs(self):
-        return list(self.instance().epochs.find())
+    def getAllEpochs(self, sort=1, skip=0):
+        return list(self.instance().epochs.find(sort=[("_id", sort)], skip=skip))
 
     def insertEpochs(self, epochs):
         self.instance().epochs.insert_many(epochs)
@@ -41,9 +41,6 @@ class Database:
         lastSyncedEventEpoch = self.instance().events.find_one(sort=[("epoch", pymongo.DESCENDING)])
         return defaultValue if lastSyncedEventEpoch is None else lastSyncedEventEpoch["epoch"]
 
-    def getAllEvents(self):
-        return list(self.instance().events.find())
-
     def insertEvents(self, events):
         self.instance().events.insert_many(events)
 
@@ -55,8 +52,8 @@ class Database:
         lastSyncedBlock = self.instance().blocks.find_one(sort=[("_id", pymongo.DESCENDING)])
         return defaultValue if lastSyncedBlock is None else lastSyncedBlock["_id"]
 
-    def getAllBlocks(self):
-        return list(self.instance().blocks.find())
+    def getAllBlocks(self, sort=1, skip=0):
+        return list(self.instance().blocks.find(sort=[("_id", sort)], skip=skip))
 
     def insertBlocks(self, blocks):
         self.instance().blocks.insert_many(blocks)
@@ -68,9 +65,6 @@ class Database:
     def getLastSyncedTransactionBlockHeight(self, defaultValue):
         lastSyncedTransactionBlock = self.instance().transactions.find_one(sort=[("block", pymongo.DESCENDING)])
         return defaultValue if lastSyncedTransactionBlock is None else lastSyncedTransactionBlock["block"]
-
-    def getAllTransactions(self):
-        return list(self.instance().transactions.find())
 
     def insertTransactions(self, transactions):
         self.instance().transactions.insert_many(transactions)
@@ -90,8 +84,8 @@ class Database:
         ]))
         return 0 if len(query) == 0 else query[0]["amount"]
 
-    def getAllDelegations(self):
-        return list(self.instance().delegations.find())
+    def getAllDelegations(self, sort=1, skip=0):
+        return list(self.instance().delegations.find(sort=[("_id", sort)], skip=skip))
 
     def getAllActiveEpochDelegations(self, epochId):
         return list(self.instance().delegations.find({
@@ -133,6 +127,17 @@ class Database:
 
     def insertRewards(self, rewards):
         self.instance().rewards.insert_many(rewards)
+
+    """
+    ### Swaps
+    """
+
+    def getLastSyncedSwapTimestamp(self, defaultValue):
+        lastSyncedSwap = self.instance().swaps.find_one(sort=[("timestamp", pymongo.DESCENDING)])
+        return defaultValue if lastSyncedSwap is None else lastSyncedSwap["timestamp"]
+
+    def insertSwaps(self, swaps):
+        self.instance().swaps.insert_many(swaps)
 
     ##################################################################################################################################################
 

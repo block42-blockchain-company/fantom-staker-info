@@ -41,7 +41,7 @@ class Transactions:
         lastSyncedTransactionBlockHeight = self.__database.getLastSyncedTransactionBlockHeight(defaultValue=-1)
         lastSyncedBlockHeight = self.__database.getLastSyncedBlockHeight(defaultValue=0)
 
-        blocks = self.__database.getAllBlocks()[(lastSyncedTransactionBlockHeight + 1):]
+        blocks = self.__database.getAllBlocks(sort=1, skip=lastSyncedTransactionBlockHeight + 1)
 
         queue = Queue()
 

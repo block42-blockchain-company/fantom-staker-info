@@ -3,3 +3,6 @@ web3
 pymongo
 dnspython
 requests
+moment
+mnemonic
+pycryptodome

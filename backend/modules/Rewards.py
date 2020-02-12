@@ -6,8 +6,7 @@ class Rewards:
 
     def sync(self):
         latestSyncedRewardEpochId = self.__database.getLastSyncedRewardEpochId(defaultValue=0)
-        epochs = self.__database.getAllEpochs()
-        epochs = sorted(epochs, key=lambda epoch: epoch["_id"], reverse=False)[latestSyncedRewardEpochId:]
+        epochs = self.__database.getAllEpochs(sort=1, skip=latestSyncedRewardEpochId)
 
         for epoch in epochs:
             epochId = epoch["_id"]

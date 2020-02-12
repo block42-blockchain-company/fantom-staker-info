@@ -13,6 +13,7 @@ from modules.Transactions import Transactions
 from modules.Delegations import Delegations
 from modules.Validators import Validators
 from modules.Rewards import Rewards
+from modules.Swaps import Swaps
 
 
 database = Database()
@@ -41,16 +42,20 @@ Transactions(fantomApi=fantomApi, database=database).sync()
 print("Syncing delegations ...")
 Delegations(sfcContract=sfcContract, database=database).sync()
 
+# Sync epoch rewards
+print("Syncing epoch rewards ...")
+Rewards(sfcContract=sfcContract, database=database).sync()
+
+# Sync swaps
+#print("Syncing swaps ...")
+#Swaps(database=database).sync()
+
 # Sync validators
 validators = Validators(sfcContract=sfcContract, stakerInfoContract=stakerInfoContract, database=database)
 print("Syncing validators ...")
 for validatorId in range(1, sfcContract.getValidatorCount() + 1):
     print("Syncing validator #" + str(validatorId) + " ...")
     validators.sync(validatorId=validatorId)
-
-# Sync epoch rewards
-print("Syncing epoch rewards ...")
-Rewards(sfcContract=sfcContract, database=database).sync()
 
 # Calculate totals
 totalSelfStakedSum = sum(validator["selfStakedAmount"] for validator in validators.getAll())
@@ -88,5 +93,5 @@ database.instance().general.insert_one({
     "rewardUnlockDate": sfcContract.getRewardUnlockDate(),
     "rewardUnlockPercent": sfcContract.getRewardUnlockPercentage(),
     "roi": sfcContract.getRoi(),
-    "lastUpdated": datetime.now().timestamp()
+    "lastUpdated": int(datetime.now().timestamp())
 })
