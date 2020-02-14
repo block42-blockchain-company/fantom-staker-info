@@ -32,7 +32,7 @@ Events(fantomApi=fantomApi, database=database).sync()
 
 # Sync blocks
 print("Syncing blocks ...")
-Blocks(fantomApi=fantomApi, database=database).sync()
+Blocks(sfcContract=sfcContract, fantomApi=fantomApi, database=database).sync()
 
 # Sync transactions
 print("Syncing transactions ...")

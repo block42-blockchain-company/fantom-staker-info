@@ -3,10 +3,12 @@ from threading import Thread
 
 
 class Blocks:
-    def __init__(self, fantomApi, database):
+    def __init__(self, sfcContract, fantomApi, database):
+        self.__sfcContract = sfcContract
         self.__fantomApi = fantomApi
         self.__database = database
         self.__epochs = self.__database.getAllEpochs()
+        self.__currentEpoch = self.__sfcContract.instance().functions.currentEpoch().call()
         self.__data = []
 
     def __getEpochForTimestamp(self, timestamp):
@@ -19,15 +21,17 @@ class Blocks:
             block = self.__fantomApi.getBlock(blockHeight)
             epoch = self.__getEpochForTimestamp(timestamp=block["timestamp"])
 
+            # Check if block is in current epoch
             if epoch is None:
-                queue.task_done()
-                continue
+                epochId = self.__currentEpoch
+            else:
+                epochId = epoch["_id"]
 
-            print("Syncing block #" + str(blockHeight) + " (epoch #" + str(epoch["_id"]) + ") ...")
+            print("Syncing block #" + str(blockHeight) + " (epoch #" + str(epochId) + ") ...")
 
             self.__data += [{
                 "_id": block["number"],
-                "epoch": epoch["_id"],
+                "epoch": epochId,
                 "timestamp": block["timestamp"],
                 "transactions": list(map(lambda transaction: transaction.hex(), block["transactions"]))
             }]
