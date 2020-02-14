@@ -1,16 +1,12 @@
 import json
-import base64
 import moment
 import requests
-import binascii
 
-from mnemonic import Mnemonic
-
-from Crypto import Random
-from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
-from Crypto.Util import Padding
-from Crypto.Protocol.KDF import PBKDF2
+
+
+def hexEncode(string: str):
+    return ''.join(list(map(lambda character: hex(ord(character))[2:].zfill(4), string)))
 
 
 class Swaps:
@@ -19,70 +15,29 @@ class Swaps:
         self.__data = []
 
     def sync(self):
-        """
-function encrypt(data, url) {
-  const signJson = JSON.stringify(data);
-  const signMnemonic = bip39.generateMnemonic();
-  const cipher = crypto.createCipher('aes-256-cbc', signMnemonic);
-  const signEncrypted =
-    cipher.update(signJson, 'utf8', 'base64') + cipher.final('base64');
-  var signData = {
-    e: signEncrypted.hexEncode(),
-    m: signMnemonic.hexEncode(),
-    u: sha256(url).toUpperCase(),
-    p: sha256(sha256(url).toUpperCase()).toUpperCase(),
-    t: new Date().getTime()
-  };
-  const signSeed = JSON.stringify(signData);
-  const signSignature = sha256(signSeed);
-  signData.s = signSignature;
-  return JSON.stringify(signData);
-}
-        :return:
-        """
-
-        signJson = json.dumps({"token_uuid": "133f21df-9a2c-0a65-b532-d5df78b92c26"})
-
-        signMnemonic = Mnemonic("english").generate()
-
-        salt = Random.get_random_bytes(32)
-        key = PBKDF2(signMnemonic, salt, dkLen=32)
-        iv = Random.new().read(AES.block_size)
-
-        cipher = AES.new(key, AES.MODE_CBC, iv)
-        signEncrypted = base64.b64encode(iv + cipher.encrypt(Padding.pad(signJson.encode(), AES.block_size)))
-
+        mnemonic = "task garage suffer tape salon envelope steak melody neutral comfort design rose"
+        encryptedPayload = "qitcGwcHFk6jhBlZkSXQOVr3Ox6OUBc3P33K0bJpk+JzCP+PKHzslR3AWuAy9YKyoIIs/tRmAcOJSqJdlHtsyg=="
         url = "/api/v1/getTransfers"
 
-        signData = {
-            "e": str(binascii.hexlify(signEncrypted), "utf-8"),
-            "m": str(binascii.hexlify(signMnemonic.encode()), "utf-8"),
+        data = {
+            "e": hexEncode(encryptedPayload),
+            "m": hexEncode(mnemonic),
             "u": SHA256.new(url.encode()).hexdigest().upper(),
-            "t": int(moment.now().datetime.timestamp() * 1000),
-            "p": SHA256.new(SHA256.new(url.encode()).hexdigest().encode()).hexdigest().upper()
+            "p": SHA256.new(SHA256.new(url.encode()).hexdigest().upper().encode()).hexdigest().upper(),
+            "t": int(moment.now().datetime.timestamp() * 1000)
         }
+        data["s"] = SHA256.new(json.dumps(data).replace(" ", "").encode()).hexdigest()
 
-        signSeed = json.dumps(signData)
-        signSignature = SHA256.new(signSeed.encode()).hexdigest()
-        signData["s"] = signSignature
+        lastSyncedSwapTimestamp = self.__database.getLastSyncedSwapTimestamp(defaultValue=0)
 
-        sig = {
-            "e": signData["e"],
-            "m": signData["m"],
-            "u": signData["u"],
-            "t": signData["t"],
-            "p": signData["p"]
-        }
-        seed = json.dumps(sig)
-        signCompare = SHA256.new(seed.encode()).hexdigest()
-
-        transfers = requests.post(url="https://api.bnbridge.exchange/api/v1/getTransfers", json=signData).json()["result"]["transfers"]
+        transfers = requests.post(url="https://api.bnbridge.exchange/api/v1/getTransfers", json=data).json()["result"]["transfers"]
+        transfers = list(filter(lambda transfer: moment.date(transfer["created"]).timezone("utc").datetime.timestamp() > lastSyncedSwapTimestamp, transfers))
 
         for transfer in transfers:
             swap = {
                 "_id": transfer["uuid"],
                 "amount": float(transfer["amount"]),
-                "timestamp": moment.date(transfer["created"]).datetime,
+                "timestamp": moment.date(transfer["created"]).timezone("utc").datetime.timestamp(),
                 "source": self.getTickerFromNetworkString(networkString=transfer["direction"].split("To")[0]),
                 "sourceTxHash": transfer["deposit_transaction_hash"],
                 "sourceFromAddress": transfer["client_from_address"],
@@ -114,6 +69,6 @@ function encrypt(data, url) {
         elif networkString == "Binance":
             ticker = "BNB"
         else:
-            raise ValueError("Unknown network for swap")
+            raise ValueError("Unknown network")
 
         return ticker

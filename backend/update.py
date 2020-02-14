@@ -47,8 +47,8 @@ print("Syncing epoch rewards ...")
 Rewards(sfcContract=sfcContract, database=database).sync()
 
 # Sync swaps
-#print("Syncing swaps ...")
-#Swaps(database=database).sync()
+print("Syncing swaps ...")
+Swaps(database=database).sync()
 
 # Sync validators
 validators = Validators(sfcContract=sfcContract, stakerInfoContract=stakerInfoContract, database=database)

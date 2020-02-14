@@ -4,5 +4,4 @@ pymongo
 dnspython
 requests
 moment
-mnemonic
 pycryptodome
