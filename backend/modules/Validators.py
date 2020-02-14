@@ -51,10 +51,10 @@ class Validators:
         selfStakedAmount = sfcValidationStake[5] / 1e18
         delegatedAmount = sfcValidationStake[7] / 1e18
         inUndelegationAmount = self.__database.getInUndelegationAmount(validatorId=validatorId)
-        totalStakedAmount = selfStakedAmount + delegatedAmount + inUndelegationAmount
+        totalStakedAmount = selfStakedAmount + delegatedAmount
 
         # Calculate the available delegation capacity
-        availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount + inUndelegationAmount
+        availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount
 
         # Check status
         isUnstaking = sfcValidationStake[4] != 0
