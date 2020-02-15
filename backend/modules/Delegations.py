@@ -10,11 +10,13 @@ class Delegations:
         return blocks[0] if len(blocks) > 0 else None
 
     def sync(self):
-        # TODO: Only get latest events
+        # Get last synced block number of all delegations
+        lastSyncedDelegationBlockHeight = self.__database.getLastSyncedDelegationBlockHeight(defaultValue=-1)
+
         # Get smart contract events
-        createdDelegationEvents = self.__sfcContract.getEvents(eventName="CreatedDelegation")
-        preparedToWithdrawDelegationEvents = self.__sfcContract.getEvents(eventName="PreparedToWithdrawDelegation")
-        withdrawnDelegationEvents = self.__sfcContract.getEvents(eventName="WithdrawnDelegation")
+        createdDelegationEvents = self.__sfcContract.getEvents(eventName="CreatedDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
+        preparedToWithdrawDelegationEvents = self.__sfcContract.getEvents(eventName="PreparedToWithdrawDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
+        withdrawnDelegationEvents = self.__sfcContract.getEvents(eventName="WithdrawnDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
 
         events = []
         events += list(map(lambda event: {
@@ -37,9 +39,6 @@ class Delegations:
             "block": event["blockNumber"],
             "type": event["event"]
         }, withdrawnDelegationEvents))
-
-        # Get last synced block number of all delegations
-        lastSyncedDelegationBlockHeight = self.__database.getLastSyncedDelegationBlockHeight(defaultValue=-1)
 
         # Sort relevant events ascending by block number
         events = filter(lambda event: event["block"] > lastSyncedDelegationBlockHeight, events)

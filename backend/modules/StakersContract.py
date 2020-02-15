@@ -17,9 +17,8 @@ class StakersContract:
     def getAddress(self):
         return self.__address
 
-    def getEvents(self, eventName, options=None):
-        args = {} if options is None else options
-        return self.__instance.events[eventName].createFilter(fromBlock=0, toBlock="latest", argument_filters=args).get_all_entries()
+    def getEvents(self, eventName, fromBlock, toBlock="latest"):
+        return self.__instance.events[eventName].createFilter(fromBlock=fromBlock, toBlock=toBlock).get_all_entries()
 
     def getValidatorCount(self):
         return self.__instance.functions.stakersNum().call()
