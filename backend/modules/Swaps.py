@@ -31,13 +31,13 @@ class Swaps:
         lastSyncedSwapTimestamp = self.__database.getLastSyncedSwapTimestamp(defaultValue=0)
 
         transfers = requests.post(url="https://api.bnbridge.exchange/api/v1/getTransfers", json=data).json()["result"]["transfers"]
-        transfers = list(filter(lambda transfer: moment.date(transfer["created"]).timezone("utc").datetime.timestamp() > lastSyncedSwapTimestamp, transfers))
+        transfers = list(filter(lambda transfer: int(moment.date(transfer["created"]).timezone("utc").datetime.timestamp()) > lastSyncedSwapTimestamp, transfers))
 
         for transfer in transfers:
             swap = {
                 "_id": transfer["uuid"],
                 "amount": float(transfer["amount"]),
-                "timestamp": moment.date(transfer["created"]).timezone("utc").datetime.timestamp(),
+                "timestamp": int(moment.date(transfer["created"]).datetime.timestamp()),
                 "source": self.getTickerFromNetworkString(networkString=transfer["direction"].split("To")[0]),
                 "sourceTxHash": transfer["deposit_transaction_hash"],
                 "sourceFromAddress": transfer["client_from_address"],
