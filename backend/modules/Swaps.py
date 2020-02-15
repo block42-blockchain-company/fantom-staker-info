@@ -48,6 +48,9 @@ class Swaps:
                 "destinationToAddress": transfer["server_to_address"]
             }
 
+            # Sanity check (for some reason swap amounts coming from XAR network might be too large by 10e6)
+            swap["amount"] = swap["amount"] / (10 ** 6) if swap["source"] == "XAR" and swap["amount"] > (10 * 10 ** 6) else swap["amount"]
+
             print("Syncing swap " + swap["_id"] + " (" + str(round(swap["amount"], 2)) + " from " + swap["source"] + " to " + swap["destination"] + ") ...")
 
             self.__data += [swap]
