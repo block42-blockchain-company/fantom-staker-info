@@ -159,6 +159,20 @@ class Database:
     def insertERC20Transfers(self, transfers):
         self.instance().erc20_transfers.insert_many(transfers)
 
+    """
+    ### BEP2Transfers
+    """
+
+    def getLastSyncedBEP2TransferTimestamp(self, defaultValue):
+        lastSyncedBEP2Transfer = self.instance().bep2_transfers.find_one(sort=[("timestamp", pymongo.DESCENDING)])
+        return defaultValue if lastSyncedBEP2Transfer is None else lastSyncedBEP2Transfer["timestamp"]
+
+    def getAllBEP2Transfers(self):
+        return list(self.instance().bep2_transfers.find())
+
+    def insertBEP2Transfers(self, transfers):
+        self.instance().bep2_transfers.insert_many(transfers)
+
     ##################################################################################################################################################
 
     """

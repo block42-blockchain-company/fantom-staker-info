@@ -3,6 +3,7 @@ from datetime import datetime
 from modules.Database import Database
 from modules.FantomApi import FantomApi
 from modules.EthereumApi import EthereumApi
+from modules.BinanceApi import BinanceApi
 
 from modules.StakersContract import StakersContract
 from modules.StakerInfoContract import StakerInfoContract
@@ -16,11 +17,13 @@ from modules.Validators import Validators
 from modules.Rewards import Rewards
 from modules.Swaps import Swaps
 from modules.ERC20Transfers import ERC20Transfers
+from modules.BEP2Transfers import BEP2Transfers
 
 
 database = Database()
 fantomApi = FantomApi()
 ethereumApi = EthereumApi()
+binanceApi = BinanceApi()
 
 sfcContract = StakersContract(fantomApi=fantomApi)
 stakerInfoContract = StakerInfoContract(fantomApi=fantomApi)
@@ -52,6 +55,10 @@ Rewards(sfcContract=sfcContract, database=database).sync()
 # Sync ERC20 transfers
 print("Syncing ERC20 transfers ...")
 ERC20Transfers(ethereumApi=ethereumApi, database=database).sync()
+
+# Sync BEP2 transfers
+print("Syncing BEP2 transfers ...")
+BEP2Transfers(binanceApi=binanceApi, database=database).sync()
 
 # Sync swaps
 print("Syncing swaps ...")

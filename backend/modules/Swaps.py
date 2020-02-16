@@ -40,12 +40,12 @@ class Swaps:
                 "timestamp": int(moment.date(transfer["created"]).datetime.timestamp()),
                 "source": self.getTickerFromNetworkString(networkString=transfer["direction"].split("To")[0]),
                 "sourceTxHash": transfer["deposit_transaction_hash"],
-                "sourceFromAddress": transfer["client_from_address"].lower(),
-                "sourceToAddress": transfer["client_to_address"].lower(),
+                "sourceFromAddress": str(transfer["client_from_address"]).lower(),
+                "sourceToAddress": str(transfer["client_to_address"]).lower(),
                 "destination": self.getTickerFromNetworkString(networkString=transfer["direction"].split("To")[1]),
                 "destinationTxHash": transfer["transfer_transaction_hash"],
-                "destinationFromAddress": transfer["server_from_address"].lower(),
-                "destinationToAddress": transfer["server_to_address"].lower()
+                "destinationFromAddress": str(transfer["server_from_address"]).lower(),
+                "destinationToAddress": str(transfer["server_to_address"]).lower()
             }
 
             # Sanity check (for some reason swap amounts coming from XAR network might be too large by 10e6)

@@ -14,7 +14,7 @@ class ERC20Transfers:
 
             transfers = self.__ethereumApi.getTransfers(fromBlock=fromBlock, toBlock=toBlock)
 
-            print("Syncing ERC20 Transfers from block #" + str(fromBlock) + " to block #" + str(toBlock) + " ...")
+            print("Syncing ERC20 Transfers until block #" + str(toBlock) + " ...")
 
             for transfer in transfers:
                 self.__data += [{
