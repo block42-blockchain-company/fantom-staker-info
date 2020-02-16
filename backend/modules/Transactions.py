@@ -20,8 +20,8 @@ class Transactions:
 
                 self.__data += [{
                     "_id": transaction["hash"].hex(),
-                    "from": transaction["from"],
-                    "to": transaction["to"],
+                    "from": transaction["from"].lower(),
+                    "to": transaction["to"].lower(),
                     "value": transaction["value"] / 1e18,
                     "gas": transaction["gas"],
                     "gasPrice": transaction["gasPrice"],

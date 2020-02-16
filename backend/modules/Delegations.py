@@ -20,20 +20,20 @@ class Delegations:
 
         events = []
         events += list(map(lambda event: {
-            "address": event["args"]["from"],
+            "address": event["args"]["from"].lower(),
             "validatorId": event["args"]["toStakerID"],
             "amount": event["args"]["amount"],
             "block": event["blockNumber"],
             "type": event["event"]
         }, createdDelegationEvents))
         events += list(map(lambda event: {
-            "address": event["args"]["from"],
+            "address": event["args"]["from"].lower(),
             "validatorId": event["args"]["stakerID"],
             "block": event["blockNumber"],
             "type": event["event"]
         }, preparedToWithdrawDelegationEvents))
         events += list(map(lambda event: {
-            "address": event["args"]["from"],
+            "address": event["args"]["from"].lower(),
             "validatorId": event["args"]["stakerID"],
             "penalty": event["args"]["penalty"],
             "block": event["blockNumber"],

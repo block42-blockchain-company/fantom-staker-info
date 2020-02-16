@@ -66,6 +66,9 @@ class Database:
         lastSyncedTransactionBlock = self.instance().transactions.find_one(sort=[("block", pymongo.DESCENDING)])
         return defaultValue if lastSyncedTransactionBlock is None else lastSyncedTransactionBlock["block"]
 
+    def getAllTransactions(self):
+        return list(self.instance().transactions.find())
+
     def insertTransactions(self, transactions):
         self.instance().transactions.insert_many(transactions)
 
@@ -136,8 +139,25 @@ class Database:
         lastSyncedSwap = self.instance().swaps.find_one(sort=[("timestamp", pymongo.DESCENDING)])
         return defaultValue if lastSyncedSwap is None else lastSyncedSwap["timestamp"]
 
+    def getAllSwaps(self):
+        return list(self.instance().swaps.find())
+
     def insertSwaps(self, swaps):
         self.instance().swaps.insert_many(swaps)
+
+    """
+    ### ERC20Transfers
+    """
+
+    def getLastSyncedERC20TransferBlockHeight(self, defaultValue):
+        lastSyncedERC20Transfer = self.instance().erc20_transfers.find_one(sort=[("block", pymongo.DESCENDING)])
+        return defaultValue if lastSyncedERC20Transfer is None else lastSyncedERC20Transfer["block"]
+
+    def getAllERC20Transfers(self):
+        return list(self.instance().erc20_transfers.find())
+
+    def insertERC20Transfers(self, transfers):
+        self.instance().erc20_transfers.insert_many(transfers)
 
     ##################################################################################################################################################
 

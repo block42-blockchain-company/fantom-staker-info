@@ -66,7 +66,7 @@ class Validators:
             "logoUrl": logoUrl,
             "website": website,
             "contact": contact,
-            "address": sfcValidationStake[8],
+            "address": sfcValidationStake[8].lower(),
             "selfStakedAmount": selfStakedAmount,
             "delegatedAmount": delegatedAmount,
             "inUndelegationAmount": inUndelegationAmount,
