@@ -30,6 +30,7 @@ class BEP2Transfers:
             queue.task_done()
 
     def sync(self):
+        # BEP2 transfer timestamps are in milli seconds (1556668800000 was the first time of a BEP2 transfer)
         lastSyncedERC20TransferTimestamp = self.__database.getLastSyncedBEP2TransferTimestamp(defaultValue=1556668800000)
         now = int(moment.now().datetime.timestamp()) * 1000
 
@@ -43,14 +44,16 @@ class BEP2Transfers:
         oneWeekInMsSeconds = 7 * 24 * 60 * 60 * 1000
         startTime = lastSyncedERC20TransferTimestamp + 1 * 1000
 
+        # Calculate time periods to sync
         while startTime < now:
             endTime = startTime + oneWeekInMsSeconds if startTime + oneWeekInMsSeconds < now else now
             queue.put((startTime, endTime))
             startTime = endTime + 1 * 1000
 
+        # Wait to finish
         queue.join()
 
-        # Save batch to database
+        # Save to database
         if len(self.__data) != 0:
             self.__database.insertBEP2Transfers(transfers=self.__data)
 

@@ -12,9 +12,9 @@ class ERC20Transfers:
         while True:
             (fromBlock, toBlock) = queue.get()
 
-            transfers = self.__ethereumApi.getTransfers(fromBlock=fromBlock, toBlock=toBlock)
-
             print("Syncing ERC20 Transfers until block #" + str(toBlock) + " ...")
+
+            transfers = self.__ethereumApi.getTransfers(fromBlock=fromBlock, toBlock=toBlock)
 
             for transfer in transfers:
                 self.__data += [{
@@ -28,6 +28,7 @@ class ERC20Transfers:
             queue.task_done()
 
     def sync(self):
+        # Block 5792340 was the first block with a transfer in it
         lastSyncedERC20TransferBlockHeight = self.__database.getLastSyncedERC20TransferBlockHeight(defaultValue=5792340)
         latestBlockHeight = self.__ethereumApi.getLatestBlockHeight()
 
@@ -40,14 +41,16 @@ class ERC20Transfers:
 
         fromBlock = lastSyncedERC20TransferBlockHeight
 
+        # Calculate block periods to sync
         while fromBlock < latestBlockHeight:
             toBlock = fromBlock + 20000 if fromBlock + 20000 < latestBlockHeight else latestBlockHeight
             queue.put((fromBlock, toBlock))
             fromBlock = toBlock + 1
 
+        # Wait to finish
         queue.join()
 
-        # Save batch to database
+        # Save to database
         if len(self.__data) != 0:
             self.__database.insertERC20Transfers(transfers=self.__data)
 
