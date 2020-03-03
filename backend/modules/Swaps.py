@@ -31,10 +31,7 @@ class Swaps:
         lastSyncedSwapTimestamp = self.__database.getLastSyncedSwapTimestamp(defaultValue=0)
 
         transfers = requests.post(url="https://api.bnbridge.exchange/api/v1/getTransfers", json=data).json()["result"]["transfers"]
-        transfers = list(filter(lambda transfer: int(moment.date(transfer["created"]).timezone("utc").datetime.timestamp()) > lastSyncedSwapTimestamp, transfers))
-
-        for transfer in transfers:
-            swap = {
+        transfers = list(map(lambda transfer: {
                 "_id": transfer["uuid"],
                 "amount": float(transfer["amount"]),
                 "timestamp": int(moment.date(transfer["created"]).datetime.timestamp()),
@@ -46,7 +43,12 @@ class Swaps:
                 "destinationTxHash": transfer["transfer_transaction_hash"],
                 "destinationFromAddress": str(transfer["server_from_address"]).lower(),
                 "destinationToAddress": str(transfer["server_to_address"]).lower()
-            }
+            }, transfers))
+
+        transfers = list(filter(lambda transfer: transfer["timestamp"] > lastSyncedSwapTimestamp, transfers))
+
+        for transfer in transfers:
+            swap = transfer
 
             # Sanity check (for some reason swap amounts coming from XAR network might be too large by 10e6)
             swap["amount"] = swap["amount"] / (10 ** 6) if swap["source"] == "XAR" and swap["amount"] > (10 * 10 ** 6) else swap["amount"]
