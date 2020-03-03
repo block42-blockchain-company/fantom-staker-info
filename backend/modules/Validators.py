@@ -1,5 +1,4 @@
-import json
-import urllib.request
+import requests
 
 from modules.DefaultConfig import DefaultConfig
 
@@ -23,22 +22,20 @@ class Validators:
         isVerified = False
 
         if configUrl is not "":
-            try:
-                config = json.loads(urllib.request.urlopen(configUrl).read().decode())
+            requests.packages.urllib3.disable_warnings()
+            config = requests.get(configUrl, verify=False).json()
 
-                for key, value in config.items():
-                    if key == "name":
-                        name = value
-                    elif key == "website":
-                        website = value
-                    elif key == "contact":
-                        contact = value
-                    elif key == "logoUrl":
-                        logoUrl = value
+            for key, value in config.items():
+                if key == "name":
+                    name = value
+                elif key == "website":
+                    website = value
+                elif key == "contact":
+                    contact = value
+                elif key == "logoUrl":
+                    logoUrl = value
 
-                isVerified = True
-            except json.decoder.JSONDecodeError:
-                pass
+            isVerified = True
         elif DefaultConfig.containsInfoForValidator(validatorId):
             # No config in smart contract found, use bootstrap values
             name = DefaultConfig.getInfoForValidator(validatorId)["name"]
