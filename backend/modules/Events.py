@@ -1,5 +1,4 @@
-from queue import Queue
-from threading import Thread
+import concurrent.futures
 
 
 class Events:
@@ -8,52 +7,34 @@ class Events:
         self.__database = database
         self.__data = []
 
-    def __doWork(self, queue):
-        while True:
-            epochId = queue.get()
+    def __getEvents(self, epochId):
+        print("Syncing events (epoch #" + str(epochId) + ") ...")
 
-            print("Syncing events (epoch #" + str(epochId) + ") ...")
+        eventIds = self.__fantomApi.getAllEpochEvents(epochId=epochId)
 
-            eventIds = self.__fantomApi.getAllEpochEvents(epochId=epochId)
+        events = []
 
-            for eventId in eventIds:
-                event = self.__fantomApi.getEpochEvent(eventId=eventId)
-                event["_id"] = event.pop("hash")
-                self.__data += [event]
+        for eventId in eventIds:
+            event = self.__fantomApi.getEpochEvent(eventId=eventId)
+            event["_id"] = event.pop("hash")
+            events += [event]
 
-            queue.task_done()
+        return events
 
     def sync(self):
         lastSyncedEventEpochId = self.__database.getLastSyncedEventEpochId(defaultValue=0)
         lastSyncedEpochId = self.__database.getLastSyncedEpochId(defaultValue=0)
 
-        queue = Queue()
+        eventEpochIdsToSync = range(lastSyncedEventEpochId + 1, lastSyncedEpochId + 1)
 
-        for i in range(10):
-            worker = Thread(target=self.__doWork, args=(queue,))
-            worker.setDaemon(True)
-            worker.start()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+            futureToEpoch = {pool.submit(self.__getEvents, epochId) for epochId in eventEpochIdsToSync}
 
-        batchCount = 0
+            for future in concurrent.futures.as_completed(futureToEpoch):
+                events = future.result()
+                self.__data += events
 
-        # Add all epoch ids that need to be synced to the queue
-        for epochId in range(lastSyncedEventEpochId + 1, lastSyncedEpochId + 1):
-            # Add work to queue
-            queue.put(epochId)
-
-            batchCount += 1
-
-            # Batch work into size of 1k
-            if batchCount == 1000 or epochId == lastSyncedEpochId:
-                # Wait for batch to finish
-                queue.join()
-
-                # Save batch to database
-                if len(self.__data) != 0:
-                    self.__database.insertEvents(events=self.__data)
-
-                # Reset batch
-                batchCount = 0
-                self.__data = []
+        if len(self.__data) != 0:
+            self.__database.insertEvents(events=self.__data)
 
         return self

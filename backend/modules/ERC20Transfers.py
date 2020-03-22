@@ -1,5 +1,4 @@
-from queue import Queue
-from threading import Thread
+import concurrent.futures
 
 
 class ERC20Transfers:
@@ -8,49 +7,48 @@ class ERC20Transfers:
         self.__database = database
         self.__data = []
 
-    def __doWork(self, queue):
-        while True:
-            (fromBlock, toBlock) = queue.get()
+    def __getTransfers(self, blockRange):
+        fromBlock = blockRange["fromBlock"]
+        toBlock = blockRange["toBlock"]
 
-            print("Syncing ERC20 Transfers until block #" + str(toBlock) + " ...")
+        print("Syncing ERC20 Transfers until block #" + str(toBlock) + " ...")
 
-            transfers = self.__ethereumApi.getTransfers(fromBlock=fromBlock, toBlock=toBlock)
+        transfers = self.__ethereumApi.getTransfers(fromBlock=fromBlock, toBlock=toBlock)
 
-            for transfer in transfers:
-                self.__data += [{
-                    "from": ("0x" + transfer["topics"][1][26:]).lower(),
-                    "to": ("0x" + transfer["topics"][2][26:]).lower(),
-                    "amount": int(transfer["data"], 16) / 1e18,
-                    "block": int(transfer["blockNumber"], 16),
-                    "txHash": transfer["transactionHash"]
-                }]
+        data = []
 
-            queue.task_done()
+        for transfer in transfers:
+            data += [{
+                "from": ("0x" + transfer["topics"][1][26:]).lower(),
+                "to": ("0x" + transfer["topics"][2][26:]).lower(),
+                "amount": int(transfer["data"], 16) / 1e18,
+                "block": int(transfer["blockNumber"], 16),
+                "txHash": transfer["transactionHash"]
+            }]
+
+        return data
 
     def sync(self):
         # Block 5792340 was the first block with a transfer in it
         lastSyncedERC20TransferBlockHeight = self.__database.getLastSyncedERC20TransferBlockHeight(defaultValue=5792340)
         latestBlockHeight = self.__ethereumApi.getLatestBlockHeight()
 
-        queue = Queue()
-
-        for i in range(10):
-            worker = Thread(target=self.__doWork, args=(queue,))
-            worker.setDaemon(True)
-            worker.start()
-
         fromBlock = lastSyncedERC20TransferBlockHeight
 
-        # Calculate block periods to sync
+        blockRanges = []
+
         while fromBlock < latestBlockHeight:
             toBlock = fromBlock + 20000 if fromBlock + 20000 < latestBlockHeight else latestBlockHeight
-            queue.put((fromBlock, toBlock))
+            blockRanges += [{"fromBlock": fromBlock, "toBlock": toBlock}]
             fromBlock = toBlock + 1
 
-        # Wait to finish
-        queue.join()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+            futureToEpoch = {pool.submit(self.__getTransfers, blockRange) for blockRange in blockRanges}
 
-        # Save to database
+            for future in concurrent.futures.as_completed(futureToEpoch):
+                transfers = future.result()
+                self.__data += transfers
+
         if len(self.__data) != 0:
             self.__database.insertERC20Transfers(transfers=self.__data)
 

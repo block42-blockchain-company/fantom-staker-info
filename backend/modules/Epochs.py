@@ -1,5 +1,4 @@
-from queue import Queue
-from threading import Thread
+import concurrent.futures
 
 
 class Epochs:
@@ -8,81 +7,62 @@ class Epochs:
         self.__database = database
         self.__data = []
 
-    def __doWork(self, queue, validatorCount):
-        while True:
-            epochId = queue.get()
-            epoch = self.__sfcContract.getEpochSnapshot(epochId)
+    def __getEpochValidator(self, epochId, validatorId):
+        data = self.__sfcContract.getEpochValidator(epochId, validatorId)
 
-            print("Syncing epoch #" + str(epochId) + " ...")
+        # Only add validators that were present in the epoch
+        if sum(data) == 0:
+            return None
 
-            validators = []
+        return {
+            "id": validatorId,
+            "stakeAmount": data[0] / 1e18,
+            "delegatedMe": data[1] / 1e18,
+            "baseRewardWeight": data[2] / 1e18,
+            "txRewardWeight": data[3] / 1e18
+        }
 
-            # Get data for every validator in the epoch
-            for validatorId in range(1, validatorCount + 1):
-                data = self.__sfcContract.getEpochValidator(epochId, validatorId)
+    def __getEpoch(self, epochId, validatorCount):
+        epoch = self.__sfcContract.getEpochSnapshot(epochId)
 
-                # Only add validators that were present in the epoch
-                if sum(data) == 0:
-                    continue
+        print("Syncing epoch #" + str(epochId) + " ...")
 
-                validators += [{
-                    "id": validatorId,
-                    "stakeAmount": data[0] / 1e18,
-                    "delegatedMe": data[1] / 1e18,
-                    "baseRewardWeight": data[2] / 1e18,
-                    "txRewardWeight": data[3] / 1e18
-                }]
+        validators = []
 
-            self.__data += [{
-                "_id": epochId,
-                "endTime": epoch[0],
-                "duration": epoch[1],
-                "epochFee": epoch[2] / 1e18,
-                "totalBaseRewardWeight": epoch[3] / 1e18,
-                "totalTxRewardWeight": epoch[4] / 1e18,
-                "baseRewardPerSecond": epoch[5] / 1e18,
-                "stakeTotalAmount": epoch[6] / 1e18,
-                "delegationsTotalAmount": epoch[7] / 1e18,
-                "totalSupply": epoch[8] / 1e18,
-                "validators": validators
-            }]
+        # Get data for every validator in the epoch
+        for validatorId in range(1, validatorCount + 1):
+            validator = self.__getEpochValidator(epochId, validatorId)
+            validators += [validator] if validator is not None else []
 
-            queue.task_done()
+        return {
+            "_id": epochId,
+            "endTime": epoch[0],
+            "duration": epoch[1],
+            "epochFee": epoch[2] / 1e18,
+            "totalBaseRewardWeight": epoch[3] / 1e18,
+            "totalTxRewardWeight": epoch[4] / 1e18,
+            "baseRewardPerSecond": epoch[5] / 1e18,
+            "stakeTotalAmount": epoch[6] / 1e18,
+            "delegationsTotalAmount": epoch[7] / 1e18,
+            "totalSupply": epoch[8] / 1e18,
+            "validators": validators
+        }
 
     def sync(self):
         lastSyncedEpochId = self.__database.getLastSyncedEpochId(defaultValue=0)
         latestSealedEpochId = self.__sfcContract.getCurrentSealedEpochId()
-
-        queue = Queue()
-
-        # Get the validator count so the workers do not need to query it
         validatorCount = self.__sfcContract.getValidatorCount()
 
-        for i in range(10):
-            worker = Thread(target=self.__doWork, args=(queue, validatorCount,))
-            worker.setDaemon(True)
-            worker.start()
+        epochIds = range(lastSyncedEpochId + 1, latestSealedEpochId + 1)
 
-        batchCount = 0
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+            futureToEpoch = {pool.submit(self.__getEpoch, epochId, validatorCount) for epochId in epochIds}
 
-        # Add all epoch ids that need to be synced to the queue
-        for epochId in range(lastSyncedEpochId + 1, latestSealedEpochId + 1):
-            # Add work to queue
-            queue.put(epochId)
+            for future in concurrent.futures.as_completed(futureToEpoch):
+                epoch = future.result()
+                self.__data += [epoch]
 
-            batchCount += 1
-
-            # Batch work into size of 1k
-            if batchCount == 1000 or epochId == latestSealedEpochId:
-                # Wait for batch to finish
-                queue.join()
-
-                # Save batch to database
-                if len(self.__data) != 0:
-                    self.__database.insertEpochs(epochs=self.__data)
-
-                # Reset batch
-                batchCount = 0
-                self.__data = []
+            if len(self.__data) != 0:
+                self.__database.insertEpochs(epochs=self.__data)
 
         return self

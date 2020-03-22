@@ -1,7 +1,5 @@
 import moment
-
-from queue import Queue
-from threading import Thread
+import concurrent.futures
 
 
 class BEP2Transfers:
@@ -10,50 +8,49 @@ class BEP2Transfers:
         self.__database = database
         self.__data = []
 
-    def __doWork(self, queue):
-        while True:
-            (startTime, endTime) = queue.get()
+    def __getTransfers(self, timeRange):
+        startTime = timeRange["startTime"]
+        endTime = timeRange["endTime"]
 
-            print("Syncing BEP2 Transfers until " + moment.unix(endTime).format("DD.MM.YYYY") + " ...")
+        print("Syncing BEP2 transfers until " + moment.unix(endTime).format("DD.MM.YYYY @ HH:mm") + " ...")
 
-            transfers = self.__binanceApi.getTransfers(startTime=startTime, endTime=endTime)
+        transfers = self.__binanceApi.getTransfers(startTime=startTime, endTime=endTime)
 
-            for transfer in transfers:
-                self.__data += [{
-                    "from": transfer["fromAddr"],
-                    "to": transfer["toAddr"],
-                    "amount": transfer["value"],
-                    "timestamp": transfer["timeStamp"],
-                    "txHash": transfer["txHash"]
-                }]
+        data = []
 
-            queue.task_done()
+        for transfer in transfers:
+            data += [{
+                "from": transfer["fromAddr"],
+                "to": transfer["toAddr"],
+                "amount": transfer["value"],
+                "timestamp": transfer["timeStamp"],
+                "txHash": transfer["txHash"]
+            }]
+
+        return data
 
     def sync(self):
         # BEP2 transfer timestamps are in milli seconds (1556668800000 was the first time of a BEP2 transfer)
         lastSyncedERC20TransferTimestamp = self.__database.getLastSyncedBEP2TransferTimestamp(defaultValue=1556668800000)
         now = int(moment.now().datetime.timestamp()) * 1000
 
-        queue = Queue()
-
-        for i in range(10):
-            worker = Thread(target=self.__doWork, args=(queue,))
-            worker.setDaemon(True)
-            worker.start()
-
         oneWeekInMsSeconds = 7 * 24 * 60 * 60 * 1000
         startTime = lastSyncedERC20TransferTimestamp + 1 * 1000
 
-        # Calculate time periods to sync
+        timeRanges = []
+
         while startTime < now:
             endTime = startTime + oneWeekInMsSeconds if startTime + oneWeekInMsSeconds < now else now
-            queue.put((startTime, endTime))
+            timeRanges += [{"startTime": startTime, "endTime": endTime}]
             startTime = endTime + 1 * 1000
 
-        # Wait to finish
-        queue.join()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+            futureToEpoch = {pool.submit(self.__getTransfers, timeRange) for timeRange in timeRanges}
 
-        # Save to database
+            for future in concurrent.futures.as_completed(futureToEpoch):
+                transfers = future.result()
+                self.__data += transfers
+
         if len(self.__data) != 0:
             self.__database.insertBEP2Transfers(transfers=self.__data)
 
