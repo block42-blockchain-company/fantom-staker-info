@@ -54,8 +54,6 @@ class Delegations:
             if block is None:
                 continue
 
-            print("Syncing delegation (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
-
             if event["type"] == "CreatedDelegation":
                 self.__data += [{
                     "address": event["address"],
@@ -66,18 +64,21 @@ class Delegations:
                     "endEpoch": 0,
                     "withdrawn": False
                 }]
+                print("New delegation: " + str(event["amount"] / 1e18) + " FTM (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
             elif event["type"] == "PreparedToWithdrawDelegation":
                 delegation = sorted(
                     filter(lambda delegation: delegation["address"] == event["address"], self.__data),
                     key=lambda delegation: delegation["block"], reverse=True
                 )[0]
                 delegation["endEpoch"] = block["epoch"]
+                print("PrepareToWithdraw delegation: " + str(delegation["amount"]) + " FTM; Start epoch: #" + str(delegation["startEpoch"]) + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
             elif event["type"] == "WithdrawnDelegation":
                 delegation = sorted(
                     filter(lambda delegation: delegation["address"] == event["address"], self.__data),
                     key=lambda delegation: delegation["block"], reverse=True
                 )[0]
                 delegation["withdrawn"] = True
+                print("Withdraw delegation: " + str(delegation["amount"]) + " FTM; Start epoch: #" + str(delegation["startEpoch"]) + "; End epoch: #" + str(delegation["endEpoch"]) + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
 
         # Save to database
         if len(self.__data) != 0:
