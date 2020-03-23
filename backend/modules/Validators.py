@@ -21,25 +21,28 @@ class Validators:
         contact = ""
         isVerified = False
 
-        if configUrl is not "":
-            requests.packages.urllib3.disable_warnings()
-            config = requests.get(configUrl, verify=False).json()
+        try:
+            if configUrl is not "":
+                requests.packages.urllib3.disable_warnings()
+                config = requests.get(configUrl, verify=False).json()
 
-            for key, value in config.items():
-                if key == "name":
-                    name = value
-                elif key == "website":
-                    website = value
-                elif key == "contact":
-                    contact = value
-                elif key == "logoUrl":
-                    logoUrl = value
+                for key, value in config.items():
+                    if key == "name":
+                        name = value
+                    elif key == "website":
+                        website = value
+                    elif key == "contact":
+                        contact = value
+                    elif key == "logoUrl":
+                        logoUrl = value
 
-            isVerified = True
-        elif DefaultConfig.containsInfoForValidator(validatorId):
-            # No config in smart contract found, use bootstrap values
-            name = DefaultConfig.getInfoForValidator(validatorId)["name"]
-            website = DefaultConfig.getInfoForValidator(validatorId)["website"]
+                isVerified = True
+            elif DefaultConfig.containsInfoForValidator(validatorId):
+                # No config in smart contract found, use bootstrap values
+                name = DefaultConfig.getInfoForValidator(validatorId)["name"]
+                website = DefaultConfig.getInfoForValidator(validatorId)["website"]
+        except JSONDecodeError:
+            pass
 
         # Get validator info from the sfc smart contract
         sfcValidationStake = self.__sfcContract.getValidationStake(validatorId=validatorId)
