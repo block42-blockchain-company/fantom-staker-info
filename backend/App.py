@@ -78,7 +78,7 @@ class App:
         totalSelfStakedSum = sum(validator["selfStakedAmount"] for validator in validators.getAll())
         totalDelegatedSum = sum(validator["delegatedAmount"] for validator in validators.getAll())
         totalInUndelegationSum = sum(validator["inUndelegationAmount"] for validator in validators.getAll())
-        totalStakedSum = totalSelfStakedSum + totalDelegatedSum + totalInUndelegationSum
+        totalStakedSum = totalSelfStakedSum + totalDelegatedSum
         totalBurnedRewardSum = database.getBurnedRewardAmount()
 
         # Calculate total percentages
