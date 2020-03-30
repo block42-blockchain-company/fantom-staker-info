@@ -74,6 +74,6 @@ class Swaps:
         elif networkString == "Binance":
             ticker = "BNB"
         else:
-            raise ValueError("Unknown network")
+            raise ValueError("Unknown network: " + networkString)
 
         return ticker
