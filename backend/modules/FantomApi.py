@@ -5,7 +5,7 @@ from web3 import Web3
 
 class FantomApi:
     def __init__(self):
-        self.__url = "https://rpc.fantom.b42.tech"
+        self.__url = "https://rpc.fantom.network"
         self.__web3 = Web3(Web3.HTTPProvider(self.__url))
 
     def web3(self):
