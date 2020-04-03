@@ -41,7 +41,7 @@ class Validators:
                 # No config in smart contract found, use bootstrap values
                 name = DefaultConfig.getInfoForValidator(validatorId)["name"]
                 website = DefaultConfig.getInfoForValidator(validatorId)["website"]
-        except JSONDecodeError:
+        except Exception:
             pass
 
         # Get validator info from the sfc smart contract
