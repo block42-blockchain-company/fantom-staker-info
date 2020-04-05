@@ -109,6 +109,6 @@ class App:
             "totalSupply": totalSupply,
             "rewardUnlockDate": sfcContract.getRewardUnlockDate(),
             "rewardUnlockPercent": sfcContract.getRewardUnlockPercentage(),
-            "roi": sfcContract.getRoi(),
+            "roi": sfcContract.getRoi(totalStaked=totalSelfStakedSum, totalDelegated=totalDelegatedSum),
             "lastUpdated": int(datetime.now().timestamp())
         })

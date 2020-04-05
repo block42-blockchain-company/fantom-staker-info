@@ -38,17 +38,17 @@ class StakersContract:
     def getEpochValidator(self, epochId, validatorId):
         return self.__instance.functions.epochValidator(epochId, validatorId).call()
 
-    def getRoi(self):
+    def getRoi(self, totalStaked, totalDelegated):
         currentSealedEpoch = self.__instance.functions.currentSealedEpoch().call()
         epochSnapshot = self.__instance.functions.epochSnapshots(currentSealedEpoch).call()
 
         epochBaseRewardPerSecond = epochSnapshot[5] / 1e18
-        epochStakeTotalAmount = epochSnapshot[6] / 1e18
-        epochDelegationsTotalAmount = epochSnapshot[7] / 1e18
+        #epochStakeTotalAmount = epochSnapshot[6] / 1e18
+        #epochDelegationsTotalAmount = epochSnapshot[7] / 1e18
 
         oneYearInSeconds = 60 * 60 * 24 * 365
 
-        return (epochBaseRewardPerSecond / (epochStakeTotalAmount + epochDelegationsTotalAmount)) * oneYearInSeconds * 0.85  # 15% validator fee
+        return (epochBaseRewardPerSecond / (totalStaked + totalDelegated)) * oneYearInSeconds * 0.85  # 15% validator fee
 
     def getRewardUnlockPercentage(self):
         unbondingStartDate = self.__instance.functions.unbondingStartDate().call()
