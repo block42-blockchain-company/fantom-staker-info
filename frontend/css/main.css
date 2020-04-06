@@ -162,12 +162,16 @@ h1 {
 .reward-unlock {
   margin-bottom: 50px;
   margin-top: 20px;
+  padding-left: 100px;
+  padding-right: 100px;
 }
 
 @media screen and (max-width: 768px) {
   .reward-unlock {
     margin-top: 40px;
     margin-bottom: 40px;
+    padding-left: 0px;
+    padding-right: 0px;
   }
 }
 

@@ -91,6 +91,7 @@ function updateGeneral() {
     const rewardUnlockDate = new Date()
     rewardUnlockDate.setTime(general.rewardUnlockDate * 1000)
     document.querySelector("#reward-roi").innerText = numeral(general.roi).format("0.00%")
+    document.querySelector("#reward-validator-roi").innerText = numeral(general.validatorRoi).format("0.00%")
     document.querySelector("#reward-unlock-date").innerText = rewardUnlockDate.toLocaleDateString()
     document.querySelector("#reward-unlock-percent").innerText = numeral(general.rewardUnlockPercent).format("0.00%")
 
