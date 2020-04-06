@@ -58,7 +58,7 @@ class Validators:
 
         # Check status
         isUnstaking = sfcValidationStake[4] != 0
-        isCheater = (sfcValidationStake[0] and 1) != 0
+        isCheater = sfcValidationStake[0] == 1
 
         self.__data += [{
             "_id": validatorId,
