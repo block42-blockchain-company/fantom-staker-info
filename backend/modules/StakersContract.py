@@ -48,7 +48,7 @@ class StakersContract:
 
         oneYearInSeconds = 60 * 60 * 24 * 365
 
-        return (epochBaseRewardPerSecond / (totalStaked + totalDelegated)) * oneYearInSeconds * 0.85  # 15% validator fee
+        return (epochBaseRewardPerSecond / (totalStaked + totalDelegated)) * oneYearInSeconds
 
     def getRewardUnlockPercentage(self):
         unbondingStartDate = self.__instance.functions.unbondingStartDate().call()

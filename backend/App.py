@@ -93,6 +93,9 @@ class App:
         validators.setStakingPower(totalStakedSum=totalStakedSum)
         validators.save()
 
+        # Get staking roi
+        roi = sfcContract.getRoi(totalStaked=totalSelfStakedSum, totalDelegated=totalDelegatedSum)
+
         # Update
         database.instance().general.drop()
         database.instance().general.insert_one({
@@ -109,6 +112,7 @@ class App:
             "totalSupply": totalSupply,
             "rewardUnlockDate": sfcContract.getRewardUnlockDate(),
             "rewardUnlockPercent": sfcContract.getRewardUnlockPercentage(),
-            "roi": sfcContract.getRoi(totalStaked=totalSelfStakedSum, totalDelegated=totalDelegatedSum),
+            "roi": roi * 0.85,  # 15% validator fee
+            "validatorRoi": roi,
             "lastUpdated": int(datetime.now().timestamp())
         })
