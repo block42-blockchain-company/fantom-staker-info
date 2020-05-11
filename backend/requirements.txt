@@ -1,7 +1,7 @@
-flask
-web3
-pymongo
-dnspython
-requests
-moment
-pycryptodome
+flask==1.1.2
+web3==5.9.0
+pymongo==3.10.1
+dnspython==1.16.0
+requests==2.23.0
+moment==0.10
+pycryptodome==3.9.7
