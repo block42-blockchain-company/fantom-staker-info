@@ -118,6 +118,9 @@ class Database:
     ### Rewards
     """
 
+    def getAllRewards(self):
+        return list(self.instance().rewards.find())
+
     def getLastSyncedRewardEpochId(self, defaultValue):
         lastSyncedRewardEpochReward = self.instance().rewards.find_one(sort=[("_id", pymongo.DESCENDING)])
         return defaultValue if lastSyncedRewardEpochReward is None else lastSyncedRewardEpochReward["_id"]
