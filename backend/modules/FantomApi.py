@@ -35,9 +35,19 @@ class FantomApi:
         }).json()["result"]
 
     def getEpochEvent(self, eventId):
-        return requests.post(url=self.__url, json={
+        response = requests.post(url=self.__url, json={
             "jsonrpc": "2.0",
             "method": "ftm_getEvent",
             "params": [eventId, True],
             "id": 1
-        }).json()["result"]
+        }).json()
+
+        result = None
+
+        try:
+            result = response['result']
+        except KeyError:
+            if 'error' in response:
+                print(response["error"]["message"])
+
+        return result

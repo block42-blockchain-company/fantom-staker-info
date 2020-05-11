@@ -16,8 +16,11 @@ class Events:
 
         for eventId in eventIds:
             event = self.__fantomApi.getEpochEvent(eventId=eventId)
-            event["_id"] = event.pop("hash")
-            events += [event]
+
+            # Events might not be found for some reason
+            if event is not None:
+                event["_id"] = event.pop("hash")
+                events += [event]
 
         return events
 
