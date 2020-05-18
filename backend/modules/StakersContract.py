@@ -52,10 +52,10 @@ class StakersContract:
 
     def getRewardUnlockPercentage(self):
         unbondingStartDate = self.__instance.functions.unbondingStartDate().call()
-        unbondingPeriod = self.__instance.functions.unbondingPeriod().call()
+        bondedTargetPeriod = self.__instance.functions.bondedTargetPeriod().call()
 
         passedTime = int(datetime.now().timestamp() - unbondingStartDate)
-        passedPercent = passedTime / unbondingPeriod
+        passedPercent = passedTime / bondedTargetPeriod
 
         return 0.8 if passedPercent >= 0.8 else 0.8 - passedPercent
 
