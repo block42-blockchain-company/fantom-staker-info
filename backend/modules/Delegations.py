@@ -15,7 +15,9 @@ class Delegations:
 
         # Get smart contract events
         createdDelegationEvents = self.__sfcContract.getEvents(eventName="CreatedDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
+        increasedDelegationEvents = self.__sfcContract.getEvents(eventName="IncreasedDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
         preparedToWithdrawDelegationEvents = self.__sfcContract.getEvents(eventName="PreparedToWithdrawDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
+        deactivatedDelegationEvents = self.__sfcContract.getEvents(eventName="DeactivatedDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
         withdrawnDelegationEvents = self.__sfcContract.getEvents(eventName="WithdrawnDelegation", fromBlock=lastSyncedDelegationBlockHeight + 1)
 
         events = []
@@ -29,9 +31,23 @@ class Delegations:
         events += list(map(lambda event: {
             "address": event["args"]["delegator"].lower(),
             "validatorId": event["args"]["stakerID"],
+            "newAmount": event["args"]["newAmount"],
+            "diff": event["args"]["diff"],
+            "block": event["blockNumber"],
+            "type": event["event"]
+        }, increasedDelegationEvents))
+        events += list(map(lambda event: {
+            "address": event["args"]["delegator"].lower(),
+            "validatorId": event["args"]["stakerID"],
             "block": event["blockNumber"],
             "type": event["event"]
         }, preparedToWithdrawDelegationEvents))
+        events += list(map(lambda event: {
+            "address": event["args"]["delegator"].lower(),
+            "validatorId": event["args"]["stakerID"],
+            "block": event["blockNumber"],
+            "type": event["event"]
+        }, deactivatedDelegationEvents))
         events += list(map(lambda event: {
             "address": event["args"]["delegator"].lower(),
             "validatorId": event["args"]["stakerID"],
@@ -65,13 +81,20 @@ class Delegations:
                     "withdrawn": False
                 }]
                 print("New delegation: " + str(event["amount"] / 1e18) + " FTM (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
-            elif event["type"] == "PreparedToWithdrawDelegation":
+            elif event["type"] == "IncreasedDelegation":
+                delegation = sorted(
+                    filter(lambda delegation: delegation["address"] == event["address"], self.__data),
+                    key=lambda delegation: delegation["block"], reverse=True
+                )[0]
+                delegation["amount"] = event["newAmount"] / 1e18
+                print("Increased delegation: " + str(delegation["amount"]) + " FTM; Diff: " + str(event["diff"] / 1e18) + " FTM; Start epoch: #" + str(delegation["startEpoch"]) + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
+            elif event["type"] == "DeactivatedDelegation" or event["type"] == "PreparedToWithdrawDelegation":
                 delegation = sorted(
                     filter(lambda delegation: delegation["address"] == event["address"], self.__data),
                     key=lambda delegation: delegation["block"], reverse=True
                 )[0]
                 delegation["endEpoch"] = block["epoch"]
-                print("PrepareToWithdraw delegation: " + str(delegation["amount"]) + " FTM; Start epoch: #" + str(delegation["startEpoch"]) + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
+                print("Deactivated delegation: " + str(delegation["amount"]) + " FTM; Start epoch: #" + str(delegation["startEpoch"]) + " (block #" + str(block["_id"]) + " | epoch #" + str(block["epoch"]) + ") ...")
             elif event["type"] == "WithdrawnDelegation":
                 delegation = sorted(
                     filter(lambda delegation: delegation["address"] == event["address"], self.__data),
