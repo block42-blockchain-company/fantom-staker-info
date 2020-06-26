@@ -73,15 +73,6 @@ function updateGeneral() {
     totalStakedProgressBar.setAttribute("style", `width: ${totalStakedPercent}`)
     totalStakedProgressBar.setAttribute("aria-valuenow", totalStakedPercent.replace("%", ""))
 
-    // Reward unlock progress
-    let differencePercent = general.rewardUnlockPercent - general.totalStakedPercent
-    differencePercent = differencePercent > 0 ? differencePercent : 0
-    const rewardUnlockPercent = numeral(general.rewardUnlockPercent).format("0.00%")
-    const rewardUnlockProgressBar = document.querySelector(".progress-bar-reward-unlock")
-    rewardUnlockProgressBar.innerText = rewardUnlockPercent
-    rewardUnlockProgressBar.setAttribute("style", `width: ${numeral(differencePercent).format("0.00%")}`)
-    rewardUnlockProgressBar.setAttribute("aria-valuenow", rewardUnlockPercent.replace("%", ""))
-
     // Total supply
     document.querySelector("#total-supply").innerText = numeral(general.totalSupply).format("0,0")
 
