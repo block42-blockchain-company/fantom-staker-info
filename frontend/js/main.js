@@ -65,8 +65,6 @@ function updateGeneral() {
     document.querySelector("#total-in-undelegation-percent").innerText = numeral(general.totalInUndelegationPercent).format("0.00%")
     document.querySelector("#total-staked-sum").innerText = numeral(general.totalStakedSum).format("0,0") + " FTM"
     document.querySelector("#total-staked-percent").innerText = numeral(general.totalStakedPercent).format("0.00%")
-    document.querySelector("#total-burned-reward-sum").innerText = numeral(general.totalBurnedRewardSum).format("0,0") + " FTM"
-    document.querySelector("#total-burned-reward-percent").innerText = numeral(general.totalBurnedRewardPercent).format("0.00%")
     
     // Total staked progress
     const totalStakedPercent = numeral(general.totalStakedPercent).format("0.00%")
@@ -92,8 +90,6 @@ function updateGeneral() {
     rewardUnlockDate.setTime(general.rewardUnlockDate * 1000)
     document.querySelector("#reward-roi").innerText = numeral(general.roi).format("0.00%")
     document.querySelector("#reward-validator-roi").innerText = numeral(general.validatorRoi).format("0.00%")
-    document.querySelector("#reward-unlock-date").innerText = rewardUnlockDate.toLocaleDateString()
-    document.querySelector("#reward-unlock-percent").innerText = numeral(general.rewardUnlockPercent).format("0.00%")
 
     // Last updated
     const lastUpdated = new Date()
