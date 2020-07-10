@@ -21,7 +21,7 @@ class StakersContract:
         return self.__instance.events[eventName].createFilter(fromBlock=fromBlock, toBlock=toBlock).get_all_entries()
 
     def getValidatorCount(self):
-        return self.__instance.functions.stakersNum().call()
+        return self.__instance.functions.stakersLastID().call()
 
     def getValidationStake(self, validatorId):
         return self.__instance.functions.stakers(validatorId).call()
