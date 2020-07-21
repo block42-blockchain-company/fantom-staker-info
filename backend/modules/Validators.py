@@ -53,6 +53,10 @@ class Validators:
         inUndelegationAmount = self.__database.getInUndelegationAmount(validatorId=validatorId)
         totalStakedAmount = selfStakedAmount + delegatedAmount
 
+        # Check if validator has been deactivated
+        if selfStakedAmount == 0:
+            return self
+
         # Calculate the available delegation capacity
         availableCapacityAmount = selfStakedAmount * 15 - delegatedAmount
 
