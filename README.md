@@ -96,4 +96,4 @@ stakerInfoContract.getInfo(STAKER_ID)
 
 ## Support
 
-If you have any issues updating your validator info do not hesitate to join our [validator group](https://t.me/block42_fantom) or contact [me](https://t.me/christianlanz) directly.
+If you have any issues updating your validator info do not hesitate to join our [validator group](https://t.me/block42_fantom).
