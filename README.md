@@ -4,7 +4,7 @@
   <a href="#">
     <img src="https://img.shields.io/badge/language-solidity-green.svg" alt="Language" />
   </a>
-  <a href="https://explorer.fantom.network/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4">
+  <a href="https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4#code">
     <img src="https://img.shields.io/badge/network-fantom-3478ef.svg" alt="Fantom" />
   </a>
   <a href="https://fantomstaker.info">
@@ -19,12 +19,6 @@
 </div>
 
 <br />
-
-A dapp on Fantom Opera to browse information about the network and its validators.
-
-![image](https://user-images.githubusercontent.com/6087393/73427360-e2c3d000-4336-11ea-94cd-7c293b618fcb.png)
-
-Find the dapp here: https://fantomstaker.info
 
 ## Why
 
