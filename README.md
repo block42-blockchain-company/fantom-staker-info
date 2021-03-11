@@ -18,8 +18,6 @@
   </a>
 </div>
 
-<br />
-
 ## Why
 
 Fantom delegators have a hard time finding the right validators to delegator their FTM to. The community started some efforts to create more transparency and collect more information about validators but nothing was nice and easy to use. There also were issues keeping the data up-to-date because it was maintained in a centralized manner.
@@ -34,8 +32,10 @@ A small backend application continously fetches all the validator data (to take 
 The smart contract is already deployed and can be found on the Fantom Opera MainNet at the following address:
 
 ```solidity
-0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
+[0x92ffad75b8a942d149621a39502cdd8ad1dd57b4](https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4)
 ```
+
+FTMScan: [https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4](https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4)
 
 ### How it looks like
 
