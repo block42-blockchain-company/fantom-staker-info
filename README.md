@@ -32,7 +32,7 @@ A small backend application continously fetches all the validator data (to take 
 The smart contract is already deployed and can be found on the Fantom Opera MainNet at the following address:
 
 ```solidity
-[0x92ffad75b8a942d149621a39502cdd8ad1dd57b4](https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4)
+0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
 ```
 
 FTMScan: [https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4](https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4)
