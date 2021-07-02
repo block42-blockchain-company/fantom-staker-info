@@ -47,6 +47,16 @@ module.exports = {
       network_id: "*",       // Any network (default: none)
     },
 
+    fantom: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rpc.ftm.tools`),
+      network_id: 250,
+      gas: 8500000,
+      gasPrice: 100000000000,  // 100 gwei (in wei)
+      confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: false    // Skip dry run before migrations? (default: false for public nets )
+    },
+
     // Another network with more advanced options...
     // advanced: {
       // port: 8777,             // Custom port
