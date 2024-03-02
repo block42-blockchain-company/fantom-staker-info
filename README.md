@@ -30,10 +30,24 @@ A small backend application continously fetches all the validator data (to take 
 ## What
 
 The smart contract is already deployed and can be found on the Fantom Opera MainNet at the following address:
-
+0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
 ```solidity
 0x92ffad75b8a942d149621a39502cdd8ad1dd57b4
-```
+```{
+  "name": "VALIDATOR_NAME", /* Name of the validator */
+  "logoUrl": "LOGO_URL", /* Validator logo (PNG|JPEG|SVG) - 100px x 100px is enough */
+  "website": "WEBSITE_URL", /* Website icon on the right */
+  "contact": "CONTACT_URL" /* Contact icon on the right */
+}
+
+/* It could look something like this 👇 */
+
+{
+  "name": "block42",
+  "logoUrl": "https://files.b42.tech/fantom/block42.png",
+  "website": "https://block42.tech",
+  "contact": "https://t.me/block42_fantom"
+}https://files.b42.tech/fantom/block42.png
 
 FTMScan: [https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4](https://ftmscan.com/address/0x92ffad75b8a942d149621a39502cdd8ad1dd57b4)
 
@@ -48,7 +62,7 @@ Most of the information that is shown is fetched automatically, but there are a 
 ### Config File
 
 Create a config file in `JSON` format that contains the following parameters (you can also leave parameters empty):
-
+https://block42.tech
 ```js
 {
   "name": "VALIDATOR_NAME", /* Name of the validator */
@@ -65,7 +79,7 @@ Create a config file in `JSON` format that contains the following parameters (yo
   "website": "https://block42.tech",
   "contact": "https://t.me/block42_fantom"
 }
-```
+```https://t.me/block42_fantom
 
 Then host it somewhere so it is publicly accessible!
 
@@ -74,7 +88,7 @@ Then host it somewhere so it is publicly accessible!
 1. Connect to your validator node
 2. Open up a lachesis console session via `lachesis attach`
 3. Load the StakerInfo contract ABI and instantiate the contract
-
+https://files.b42.tech/fantom/config.json
 ```solidity
 abi = JSON.parse('[{"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"stakerID","type":"uint256"}],"name":"InfoUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"stakerInfos","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_stakerContractAddress","type":"address"}],"name":"updateStakerContractAddress","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"string","name":"_configUrl","type":"string"}],"name":"updateInfo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"_stakerID","type":"uint256"}],"name":"getInfo","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}]')
 stakerInfoContract = web3.ftm.contract(abi).at("0x92ffad75b8a942d149621a39502cdd8ad1dd57b4")
